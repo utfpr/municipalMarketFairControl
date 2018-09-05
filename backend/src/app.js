@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 
 const app = express();
 
-app.use('/exemplo', require('./routes/exemplo'));
+app.use("/feirante", require("./routes/feirante"));
 
 module.exports = app;
