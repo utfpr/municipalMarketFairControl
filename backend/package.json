@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "license": "MIT",
+  "scripts": {
+    "serve": "nodemon src/server.js",
+    "lint": "eslint --fix src/*.js",
+    "prepush": "yarn run lint",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "node-pretty-log": "^1.1.0",
+    "sequelize": "^4.38.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "husky": "^0.14.3",
+    "jest": "^23.5.0",
+    "nodemon": "^1.18.4",
+    "supertest": "^3.1.0"
+  }
+}
