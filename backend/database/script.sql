@@ -1,5 +1,5 @@
 CREATE DATABASE IF NOT EXISTS feira_municipal;
-USE feira_municipal
+USE feira_municipal;
 
 DROP TABLE IF EXISTS feira;
 DROP TABLE IF EXISTS feirante;
@@ -8,8 +8,6 @@ DROP TABLE IF EXISTS subcategoria;
 DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS celula;
 DROP TABLE IF EXISTS supervisor;
-
-
 
 CREATE TABLE categoria (
 	id INTEGER AUTO_INCREMENT,
@@ -56,26 +54,31 @@ CREATE TABLE feirante (
 
 );
 
+CREATE TABLE celula (
+	id INTEGER,
+	cpf_feirante VARCHAR(15),
+	periodo INTEGER,
+	participa_cpf VARCHAR(15),
+	participa_data DATE,
+
+	PRIMARY KEY (id),
+	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE participa (
 	cpf_feirante VARCHAR(15),
 	data_feira DATE,
 	faturamento REAL,
+	celula_id INTEGER,
 
 
 	PRIMARY KEY (cpf_feirante, data_feira),
+	FOREIGN KEY (celula_id) REFERENCES celula (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (data_feira) REFERENCES feira (data) ON DELETE CASCADE ON UPDATE CASCADE
 
 );
 
-CREATE TABLE celula (
-	id INTEGER,
-	cpf_feirante VARCHAR(15),
-	periodo INTEGER,
-
-	PRIMARY KEY (id),
-	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE
-);
 
 CREATE TABLE supervisor (
 	cpf VARCHAR(15),
@@ -85,8 +88,3 @@ CREATE TABLE supervisor (
 
 	PRIMARY KEY (cpf)
 );
-
-
-
-
-
