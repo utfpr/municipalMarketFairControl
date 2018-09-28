@@ -68,8 +68,8 @@ module.exports = function(sequelize, DataTypes) {
   );
 
   Feirante.associate = models => {
-    models.feirante.belongsTo(models.sub_categoria, {
-      foreignKey: "sub_categoria",
+    models.feirante.belongsTo(models.subcategoria, {
+      foreignKey: "sub_categoria_id",
       targetKey: "id"
     });
     models.feirante.hasOne(models.celula, {

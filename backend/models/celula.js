@@ -40,7 +40,7 @@ module.exports = function(sequelize, DataTypes) {
   );
   Celula.associate = models => {
     models.celula.hasMany(models.participa, {
-      foreignKey: "celula",
+      foreignKey: "celula_id",
       sourceKey: "id"
     });
   };

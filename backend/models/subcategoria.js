@@ -32,12 +32,12 @@ module.exports = function(sequelize, DataTypes) {
   );
 
   SubCategoria.associate = models => {
-    models.sub_categoria.hasMany(models.feirante, {
-      foreignKey: "sub_categoria",
+    models.subcategoria.hasMany(models.feirante, {
+      foreignKey: "sub_categoria_id",
       sourceKey: "id"
     });
-    models.sub_categoria.belongsTo(models.categoria, {
-      foreignKey: "categoria",
+    models.subcategoria.belongsTo(models.categoria, {
+      foreignKey: "categoria_id",
       sourceKey: "id"
     });
   };

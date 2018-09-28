@@ -28,8 +28,8 @@ module.exports = function(sequelize, DataTypes) {
   );
 
   Categoria.associate = models => {
-    models.categoria.hasMany(models.sub_categoria, {
-      foreignKey: "categoria",
+    models.categoria.hasMany(models.subcategoria, {
+      foreignKey: "categoria_id",
       sourceKey: "id"
     });
   };

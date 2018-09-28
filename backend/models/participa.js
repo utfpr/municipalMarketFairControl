@@ -56,7 +56,7 @@ module.exports = function(sequelize, DataTypes) {
       foreignKey: "cpf_feirante"
     });
     models.participa.belongsTo(models.celula, {
-      foreignKey: "celula",
+      foreignKey: "celula_id",
       targetKey: "id",
       as: "Celula"
     });
