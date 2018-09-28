@@ -1,35 +1,37 @@
-const chance = require("chance").Chance();
-const { assert } = require("chai");
+// const chance = require("chance").Chance();
+// const { assert } = require("chai");
 
-const models = require("../../models");
+// const models = require("../../models");
 
-describe("Teste exemplo", () => {
-  // Essa função é executada antes de cada teste
-  beforeEach(() => {
-    // Limpa o banco
-    models.pessoa.destroy({ where: {} });
-    models.feirante.destroy({ where: {} });
-    models.categoria.destroy({ where: {} });
-    models.subcategoria.destroy({ where: {} });
-    models.feira.destroy({ where: {} });
-    models.layout.destroy({ where: {} });
-    models.celula.destroy({ where: {} });
+// after(() => {
+//   models.sequelize.close();
+// });
 
-    // Caso precisar adicionar algo no banco antes dos testes colocar aqui
-  });
+// describe("Teste exemplo", () => {
+//   // Essa função é executada antes de cada teste
+//   beforeEach(() => {
+//     // Limpa o banco
+//     models.feirante.destroy({ where: {} });
+//     models.categoria.destroy({ where: {} });
+//     models.subcategoria.destroy({ where: {} });
+//     models.feira.destroy({ where: {} });
+//     models.celula.destroy({ where: {} });
 
-  // Testa adicionar feira
-  it("Adiciona feira", async () => {
-    // Verifica se a feira não existe
-    let feira = await models.feira.findOne({ where: { data: "2018-12-31" } });
-    assert.isNull(feira);
+//     // Caso precisar adicionar algo no banco antes dos testes colocar aqui
+//   });
 
-    // Cria a feira
-    await models.feira.create({ data: "2018-12-31" });
-    feira = await models.feira.findOne({ where: { data: "2018-12-31" } });
+//   // Testa adicionar feira
+//   it("Adiciona feira", async () => {
+//     // Verifica se a feira não existe
+//     let feira = await models.feira.findOne({ where: { data: "2018-12-31" } });
+//     assert.isNull(feira);
 
-    // Verifica se a feira existe e se a data está correta
-    assert.isNotNull(feira);
-    assert.strictEqual(feira.data, "2018-12-31");
-  });
-});
+//     // Cria a feira
+//     await models.feira.create({ data: "2018-12-31" });
+//     feira = await models.feira.findOne({ where: { data: "2018-12-31" } });
+
+//     // Verifica se a feira existe e se a data está correta
+//     assert.isNotNull(feira);
+//     assert.strictEqual(feira.data, "2018-12-31");
+//   });
+// });

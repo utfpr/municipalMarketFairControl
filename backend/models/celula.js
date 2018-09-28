@@ -41,7 +41,8 @@ module.exports = function(sequelize, DataTypes) {
   Celula.associate = models => {
     models.celula.hasMany(models.participa, {
       foreignKey: "celula_id",
-      sourceKey: "id"
+      sourceKey: "id",
+      as: "CelulasParticipa"
     });
   };
   return Celula;

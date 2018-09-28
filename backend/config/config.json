@@ -1,14 +1,14 @@
 {
   "development": {
-    "username": "",
-    "password": null,
+    "username": "dennisurtubia",
+    "password": "1234",
     "database": "feira_municipal",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
-    "username": "",
-    "password": null,
+    "username": "dennisurtubia",
+    "password": "1234",
     "database": "feira_municipal",
     "host": "127.0.0.1",
     "dialect": "mysql"

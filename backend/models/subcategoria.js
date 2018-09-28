@@ -34,7 +34,8 @@ module.exports = function(sequelize, DataTypes) {
   SubCategoria.associate = models => {
     models.subcategoria.hasMany(models.feirante, {
       foreignKey: "sub_categoria_id",
-      sourceKey: "id"
+      sourceKey: "id",
+      as: "SubCategoriasFeirantes"
     });
     models.subcategoria.belongsTo(models.categoria, {
       foreignKey: "categoria_id",
