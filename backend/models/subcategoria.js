@@ -3,43 +3,43 @@
 
 module.exports = function(sequelize, DataTypes) {
   const SubCategoria = sequelize.define(
-    "subcategoria",
+    'subcategoria',
     {
       id: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
       nome: {
         type: DataTypes.STRING(200),
-        allowNull: true
+        allowNull: false,
       },
       categoria_id: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         references: {
-          model: "categoria",
-          key: "id"
-        }
-      }
+          model: 'categoria',
+          key: 'id',
+        },
+      },
     },
     {
-      tableName: "subcategoria",
+      tableName: 'subcategoria',
       timestamps: false,
-      createdAt: false
-    }
+      createdAt: false,
+    },
   );
 
   SubCategoria.associate = models => {
     models.subcategoria.hasMany(models.feirante, {
-      foreignKey: "sub_categoria_id",
-      sourceKey: "id",
-      as: "SubCategoriasFeirantes"
+      foreignKey: 'sub_categoria_id',
+      sourceKey: 'id',
+      as: 'SubCategoriasFeirantes',
     });
     models.subcategoria.belongsTo(models.categoria, {
-      foreignKey: "categoria_id",
-      sourceKey: "id"
+      foreignKey: 'categoria_id',
+      sourceKey: 'id',
     });
   };
 
