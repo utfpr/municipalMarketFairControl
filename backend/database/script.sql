@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS feira_municipal;
 CREATE DATABASE IF NOT EXISTS feira_municipal;
 USE feira_municipal;
 
@@ -11,15 +12,15 @@ DROP TABLE IF EXISTS supervisor;
 
 CREATE TABLE categoria (
 	id INTEGER AUTO_INCREMENT,
-	nome VARCHAR(200),
-	need_cnpj BOOLEAN,
-
+	nome VARCHAR(200) NOT NULL,
+	need_cnpj BOOLEAN NOT NULL,
+	
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE subcategoria (
 	id INTEGER AUTO_INCREMENT,
-	nome VARCHAR(200),
+	nome VARCHAR(200) NOT NULL,
 	categoria_id INTEGER NOT NULL,
 
 	PRIMARY KEY (id),
@@ -29,7 +30,7 @@ CREATE TABLE subcategoria (
 
 CREATE TABLE feira (
 	data DATE,
-	status BOOLEAN,
+	status BOOLEAN DEFAULT false,
 
 	PRIMARY KEY (data)
 );
@@ -37,16 +38,16 @@ CREATE TABLE feira (
 CREATE TABLE feirante (
 	cpf VARCHAR(15),
 	cnpj VARCHAR(15),
-	usa_ee BOOLEAN,
-	nome_ficticio VARCHAR(100),
-	razao_social VARCHAR(100),
-	comprimento_barraca REAL,
-	largura_barraca REAL,
-	endereco VARCHAR(200),
+	usa_ee BOOLEAN NOT NULL,
+	nome_ficticio VARCHAR(100) NOT NULL,
+	razao_social VARCHAR(100) NOT NULL,
+	comprimento_barraca REAL NOT NULL,
+	largura_barraca REAL NOT NULL,
+	endereco VARCHAR(200) NOT NULL,
 	voltagem_ee INTEGER,
-	status BOOLEAN,
+	status BOOLEAN DEFAULT true,
 	sub_categoria_id INTEGER NOT NULL,
-	senha VARCHAR(500),
+	senha VARCHAR(500) NOT NULL,
 
 
 	PRIMARY KEY (cpf),
@@ -57,7 +58,7 @@ CREATE TABLE feirante (
 CREATE TABLE celula (
 	id INTEGER,
 	cpf_feirante VARCHAR(15),
-	periodo INTEGER,
+	periodo INTEGER NOT NULL,
 	participa_cpf VARCHAR(15),
 	participa_data DATE,
 
@@ -68,7 +69,7 @@ CREATE TABLE celula (
 CREATE TABLE participa (
 	cpf_feirante VARCHAR(15),
 	data_feira DATE,
-	faturamento REAL,
+	faturamento REAL DEFAULT 0,
 	celula_id INTEGER,
 
 
@@ -82,9 +83,9 @@ CREATE TABLE participa (
 
 CREATE TABLE supervisor (
 	cpf VARCHAR(15),
-	nome VARCHAR(100),
-	senha VARCHAR(500),
-	is_adm BOOLEAN,
+	nome VARCHAR(100) NOT NULL,
+	senha VARCHAR(500) NOT NULL,
+	is_adm BOOLEAN DEFAULT false,
 
 	PRIMARY KEY (cpf)
 );
