@@ -3,77 +3,78 @@
 
 module.exports = function(sequelize, DataTypes) {
   const Feirante = sequelize.define(
-    "feirante",
+    'feirante',
     {
       cpf: {
         type: DataTypes.STRING(15),
         allowNull: false,
-        defaultValue: "",
-        primaryKey: true
+        defaultValue: '',
+        primaryKey: true,
       },
       cnpj: {
         type: DataTypes.STRING(15),
-        allowNull: true
+        allowNull: true,
       },
       usa_ee: {
         type: DataTypes.INTEGER(1),
-        allowNull: true
+        allowNull: false,
       },
       nome_ficticio: {
         type: DataTypes.STRING(100),
-        allowNull: true
+        allowNull: false,
       },
       razao_social: {
         type: DataTypes.STRING(100),
-        allowNull: true
+        allowNull: false,
       },
       comprimento_barraca: {
-        type: "DOUBLE",
-        allowNull: true
+        type: 'DOUBLE',
+        allowNull: false,
       },
       largura_barraca: {
-        type: "DOUBLE",
-        allowNull: true
+        type: 'DOUBLE',
+        allowNull: false,
       },
       endereco: {
         type: DataTypes.STRING(200),
-        allowNull: true
+        allowNull: false,
       },
       voltagem_ee: {
         type: DataTypes.INTEGER(11),
-        allowNull: true
+        allowNull: true,
       },
       status: {
         type: DataTypes.INTEGER(1),
-        allowNull: true
+        allowNull: true,
+        defaultValue: 1,
       },
       sub_categoria_id: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         references: {
-          model: "subcategoria",
-          key: "id"
-        }
+          model: 'subcategoria',
+          key: 'id',
+        },
       },
       senha: {
         type: DataTypes.STRING(500),
-        allowNull: true
-      }
+        allowNull: true,
+      },
     },
     {
-      tableName: "feirante",
+      tableName: 'feirante',
       timestamps: false,
-      createdAt: false
-    }
+      createdAt: false,
+    },
   );
 
   Feirante.associate = models => {
     models.feirante.belongsTo(models.subcategoria, {
-      foreignKey: "sub_categoria_id",
-      targetKey: "id"
+      foreignKey: 'sub_categoria_id',
+      targetKey: 'id',
     });
     models.feirante.hasOne(models.celula, {
-      as: "id"
+      as: 'id',
     });
   };
   return Feirante;

@@ -3,32 +3,33 @@
 
 module.exports = function(sequelize, DataTypes) {
   const Supervisor = sequelize.define(
-    "supervisor",
+    'supervisor',
     {
       cpf: {
         type: DataTypes.STRING(15),
         allowNull: false,
-        defaultValue: "",
-        primaryKey: true
+        defaultValue: '',
+        primaryKey: true,
       },
       nome: {
         type: DataTypes.STRING(100),
-        allowNull: true
+        allowNull: false,
       },
       senha: {
         type: DataTypes.STRING(500),
-        allowNull: true
+        allowNull: false,
       },
       is_adm: {
         type: DataTypes.INTEGER(1),
-        allowNull: true
-      }
+        allowNull: true,
+        defaultValue: 0,
+      },
     },
     {
-      tableName: "supervisor",
+      tableName: 'supervisor',
       timestamps: false,
-      createdAt: false
-    }
+      createdAt: false,
+    },
   );
   return Supervisor;
 };
