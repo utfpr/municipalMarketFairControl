@@ -36,6 +36,10 @@ module.exports = function(sequelize, DataTypes) {
       sourceKey: "id",
       as: "CelulasParticipa"
     });
+    models.celula.belongsTo(models.feirante, {
+      foreignKey: 'cpf_feirante',
+      targetKey: 'cpf'
+    })
   };
   return Celula;
 };

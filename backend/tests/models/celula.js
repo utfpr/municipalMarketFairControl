@@ -19,14 +19,38 @@ describe.only('Testando Celula', () => {
    });
 
   it('Adiciona Celula', async () => {
-    
+
+    let categoria = await models.categoria.create({
+      id: 1,
+      nome: "Alimentos",
+      need_cnpj: true
+    });
+    let subcategoria = await models.subcategoria.create({
+      id: 1,
+      nome: "Pasteis",
+      categoria_id: 1
+    });
+
+    let feirante = await models.feirante.create({
+      cpf: "111.555.999",
+      cnpj: "222.222.222-22",
+      usa_ee: false,
+      nome_ficticio: "Pastel do Tio",
+      razao_social: "Tio do pastel LTDA",
+      comprimento_barraca: 2,
+      largura_barraca: 3,
+      endereco: "Rua da feira",
+      voltagem_ee: null,
+      status: true,
+      sub_categoria_id: 1,
+      senha: "12345678"
+    });
+
     let celula = await models.celula.findOne({ 
       where: { 
         id: 1,
         cpf_feirante: '111.555.999',
-        periodo: 1,
-        participa_cpf: '555.999.444',
-        participa_data: '2018-01-01'
+        periodo: 1
       } 
     });
     assert.isNull(celula);
@@ -34,18 +58,9 @@ describe.only('Testando Celula', () => {
     celula = await models.celula.create({ 
       id: 1,
       cpf_feirante: '111.555.999',
-      periodo: 1,
-      participa_cpf: '555.999.444',
-      participa_data: '2018-01-01' 
+      periodo: 1
     });
 
-    celula = await models.celula.findOne({ 
-      where: { id: 1 },
-      where: { cpf_feirante: '111.555.999'},
-      where: { periodo: 1 },
-      where: { participa_cpf: '555.999.444' },
-      where: { participa_cpf: '2018-01-01' }
-    });
 
     assert.isNotNull(celula);
     assert.strictEqual(celula.cpf_feirante, '111.555.999' );

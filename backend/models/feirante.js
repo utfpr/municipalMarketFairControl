@@ -75,6 +75,7 @@ module.exports = function(sequelize, DataTypes) {
     });
     models.feirante.hasOne(models.celula, {
       as: 'id',
+      foreignKey: 'cpf_feirante'
     });
   };
   return Feirante;
