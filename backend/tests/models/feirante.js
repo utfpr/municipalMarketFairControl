@@ -52,17 +52,17 @@ describe("Testando Feirante", () => {
     assert.isNull(feirante);
     feirante = await models.feirante.create({
       cpf: "111.111.111-11",
-        cnpj: "222.222.222-22",
-        usa_ee: false,
-        nome_ficticio: "Pastel do Tio",
-        razao_social: "Tio do pastel LTDA",
-        comprimento_barraca: 2,
-        largura_barraca: 3,
-        endereco: "Rua da feira",
-        voltagem_ee: null,
-        status: true,
-        sub_categoria_id: 1,
-        senha: "12345678"
+      cnpj: "222.222.222-22",
+      usa_ee: false,
+      nome_ficticio: "Pastel do Tio",
+      razao_social: "Tio do pastel LTDA",
+      comprimento_barraca: 2,
+      largura_barraca: 3,
+      endereco: "Rua da feira",
+      voltagem_ee: true,
+      status: true,
+      sub_categoria_id: 1,
+      senha: "12345678"
     });
     feirante = await models.feirante.findOne({
       where: {
@@ -92,10 +92,17 @@ describe("Testando Feirante", () => {
     });
     let feirante = await models.feirante.create({
       cpf: "111.111.111-11",
+      cnpj: "222.222.222-22",
+      usa_ee: false,
       nome_ficticio: "Pastel do Tio",
       razao_social: "Tio do pastel LTDA",
-      senha: "12345678",
-      sub_categoria_id: 1
+      comprimento_barraca: 2,
+      largura_barraca: 3,
+      endereco: "Rua da feira",
+      voltagem_ee: true,
+      status: true,
+      sub_categoria_id: 1,
+      senha: "12345678"
     });
     let feira = await models.feira.create({ data: "2018-12-31" });
     let celula = await models.celula.create({ 
