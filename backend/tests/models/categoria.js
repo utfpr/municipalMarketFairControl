@@ -50,14 +50,8 @@ describe("Testando categoria", () => {
       need_cnpj: false
     });
 
-    const subcategoria = await models.subcategoria.create({
-      id: 1,
-      nome: "pastel do tio",
-      categoria_id: 1
-    });
-
     assert.lengthOf(await categoria.getSubCategorias(), 0);
-    await categoria.addSubCategorias(subcategoria);
+    await categoria.createSubCategoria({ nome: "pastel" });
     assert.lengthOf(await categoria.getSubCategorias(), 1);
   });
 });
