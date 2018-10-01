@@ -17,7 +17,7 @@ describe('Testando participa', () => {
     models.participa.destroy({ where: {} });
   });
 
-  it('Adiciona feirante na feira', async () => {
+  it.only('Adiciona feirante na feira', async () => {
     const feira = await models.feira.create({ data: '2018-09-28' });
     const categoria = await models.categoria.create({
       id: 1,
@@ -25,7 +25,7 @@ describe('Testando participa', () => {
       need_cnpj: false,
     });
 
-    const subCategoria = await categoria.createSubCategoria({ id: 0, nome: 'SubCategoria 1' });
+    const subCategoria = await categoria.createSubCategoria({ nome: 'SubCategoria 1' });
 
     const feirante = await models.feirante.create({
       cpf: '1',
