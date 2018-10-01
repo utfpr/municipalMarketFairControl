@@ -3,63 +3,71 @@
 
 module.exports = function(sequelize, DataTypes) {
   const Participa = sequelize.define(
-    'participa',
+    "participa",
     {
       cpf_feirante: {
         type: DataTypes.STRING(15),
         allowNull: false,
-        defaultValue: '',
+        defaultValue: "",
         primaryKey: true,
         references: {
-          model: 'feirante',
-          key: 'cpf',
-        },
+          model: "feirante",
+          key: "cpf"
+        }
       },
       data_feira: {
         type: DataTypes.DATEONLY,
         allowNull: false,
-        defaultValue: '0000-00-00',
+        defaultValue: "0000-00-00",
         primaryKey: true,
         references: {
-          model: 'feira',
-          key: 'data',
-        },
+          model: "feira",
+          key: "data"
+        }
       },
       faturamento: {
-        type: 'DOUBLE',
+        type: "DOUBLE",
         allowNull: true,
-        defaultValue: 0,
+        defaultValue: 0
+      },
+      periodo: {
+        type: DataTypes.INTEGER(11),
+        allowNull: false
+      },
+      hora_confirmacao: {
+        type: DataTypes.DATE,
+        allowNull: true
       },
       celula_id: {
         type: DataTypes.INTEGER(11),
         allowNull: true,
         references: {
-          model: 'celula',
-          key: 'id',
-        },
-      },
+          model: "celula",
+          key: "id"
+        }
+      }
     },
     {
-      tableName: 'participa',
+      tableName: "participa",
       timestamps: false,
-      createdAt: false,
-    },
+      createdAt: false
+    }
   );
   Participa.associate = models => {
     models.feira.belongsToMany(models.feirante, {
       through: models.participa,
-      as: 'Feirantes',
-      foreignKey: 'data_feira',
+      as: "Feirantes",
+      foreignKey: "data_feira"
     });
     models.feirante.belongsToMany(models.feira, {
       through: models.participa,
-      as: 'Feiras',
-      foreignKey: 'cpf_feirante',
+      as: "Feiras",
+      foreignKey: "cpf_feirante"
     });
     models.participa.belongsTo(models.celula, {
-      foreignKey: 'celula_id',
-      targetKey: 'id',
-      as: 'Celula',
+      foreignKey: "celula_id",
+      targetKey: "id",
+      as: "Celula"
     });
   };
   return Participa;

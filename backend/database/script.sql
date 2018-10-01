@@ -59,8 +59,6 @@ CREATE TABLE celula (
 	id INTEGER,
 	cpf_feirante VARCHAR(15),
 	periodo INTEGER NOT NULL,
-	participa_cpf VARCHAR(15),
-	participa_data DATE,
 
 	PRIMARY KEY (id),
 	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE
@@ -70,6 +68,8 @@ CREATE TABLE participa (
 	cpf_feirante VARCHAR(15),
 	data_feira DATE,
 	faturamento REAL DEFAULT 0,
+	periodo INTEGER NOT NULL,
+	hora_confirmacao DATETIME,
 	celula_id INTEGER,
 
 
