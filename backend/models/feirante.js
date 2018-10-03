@@ -58,7 +58,7 @@ module.exports = function(sequelize, DataTypes) {
       },
       senha: {
         type: DataTypes.STRING(500),
-        allowNull: true,
+        allowNull: false,
       },
     },
     {
