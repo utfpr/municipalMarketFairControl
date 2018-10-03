@@ -2,7 +2,7 @@ const chance = require('chance').Chance();
 const { assert } = require('chai');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const secrets = require('../../config/secrets.json');
+const keys = require('../../config/keys.json');
 const loginController = require('../../controllers/login');
 const supervisorController = require('../../controllers/supervisor');
 const models = require('../../models');
@@ -28,7 +28,7 @@ describe('Teste controller login', () => {
       largura_barraca: 4,
       endereco: 'aaa',
       sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('4321', secrets.bcrypt),
+      senha: await bcrypt.hash('4321', 10),
     });
 
     await models.feirante.create({
@@ -40,7 +40,7 @@ describe('Teste controller login', () => {
       largura_barraca: 4,
       endereco: 'aaa',
       sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('4321', secrets.bcrypt),
+      senha: await bcrypt.hash('4321', 10),
     });
 
     await models.feirante.create({
@@ -52,7 +52,7 @@ describe('Teste controller login', () => {
       largura_barraca: 4,
       endereco: 'aaa',
       sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('54321', secrets.bcrypt),
+      senha: await bcrypt.hash('54321', 10),
     });
 
     await supervisorController.addSupervisor('11111111111', 'Nome', '1234', false);
@@ -64,7 +64,7 @@ describe('Teste controller login', () => {
   it('Faz login corretamente (supervisor)', async () => {
     const token = await loginController.login('11111111111', '1234');
     assert.isNotFalse(token);
-    const decoded = await jwt.verify(token.token, secrets.jwt);
+    const decoded = await jwt.verify(token.token, keys.jwt);
     assert.strictEqual(decoded, '11111111111');
   });
 
@@ -86,7 +86,7 @@ describe('Teste controller login', () => {
   it('Faz login corretamente (feirante)', async () => {
     const token = await loginController.login('22222222222', '4321');
     assert.isNotFalse(token);
-    const decoded = await jwt.verify(token.token, secrets.jwt);
+    const decoded = await jwt.verify(token.token, keys.jwt);
     assert.strictEqual(decoded, '22222222222');
   });
 

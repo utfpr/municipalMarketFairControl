@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 const models = require('../models');
-const secrets = require('../config/secrets.json');
+
 
 // Cadastra supervisor
 const addSupervisor = async (cpf, nome, senha, isAdm) => {
-  const hashSenha = await bcrypt.hash(senha, secrets.bcrypt);
+  const hashSenha = await bcrypt.hash(senha, 10);
 
   // Verifica se o supervisor já existe (e está ativo)
   const supervisor = await models.supervisor.findOne({
@@ -78,7 +78,7 @@ const updateSupervisor = async (cpf, dados) => {
 
   // Se for atualizar a senha, computar o hash
   if ('senha' in obj) {
-    obj.senha = await bcrypt.hash(obj.senha, secrets.bcrypt);
+    obj.senha = await bcrypt.hash(obj.senha, 10);
   }
   try {
     await supervisor.update(obj);

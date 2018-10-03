@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const models = require('../models');
-const secrets = require('../config/secrets.json');
+const keys = require('../config/keys.json');
 
 const login = async (cpf, senha) => {
   let user = await models.supervisor.findOne({ where: { cpf } });
@@ -9,7 +9,7 @@ const login = async (cpf, senha) => {
   if (user !== null) {
     if (await bcrypt.compare(senha, user.senha)) {
       return {
-        token: jwt.sign(cpf, secrets.jwt),
+        token: jwt.sign(cpf, keys.jwt),
       };
     }
 
@@ -21,7 +21,7 @@ const login = async (cpf, senha) => {
   if (user !== null) {
     if (await bcrypt.compare(senha, user.senha)) {
       return {
-        token: jwt.sign(cpf, secrets.jwt),
+        token: jwt.sign(cpf, keys.jwt),
       };
     }
 
