@@ -39,7 +39,7 @@ CREATE TABLE feirante (
 	cpf VARCHAR(15),
 	cnpj VARCHAR(15),
 	usa_ee BOOLEAN NOT NULL,
-	nome_ficticio VARCHAR(100) NOT NULL,
+	nome_fantasia VARCHAR(100) NOT NULL,
 	razao_social VARCHAR(100) NOT NULL,
 	comprimento_barraca REAL NOT NULL,
 	largura_barraca REAL NOT NULL,
