@@ -1,5 +1,6 @@
 const chance = require('chance').Chance();
 const { assert } = require('chai');
+const bcrypt = require('bcrypt');
 const supervisorController = require('../../controllers/supervisor');
 const models = require('../../models');
 
@@ -92,6 +93,60 @@ describe('Teste controller supervisor', () => {
   it('Busca supervisor pelo cpf - inexistente', async () => {
     const s1 = await supervisorController.findSupervisorByCpf('11111111116');
     assert.isFalse(s1);
+  });
+
+  it('Atualiza supervisor', async () => {
+    let supervisor = await supervisorController.findSupervisorByCpf('11111111114');
+    assert.strictEqual(supervisor.nome, 'Jorel');
+
+    const res = await supervisorController.updateSupervisor('11111111114', { nome: 'Jorel2' });
+    assert.isTrue(res);
+
+    supervisor = await supervisorController.findSupervisorByCpf('11111111114');
+    assert.strictEqual(supervisor.nome, 'Jorel2');
+  });
+
+  it('Atualiza supervisor (vários campos)', async () => {
+    let supervisor = await supervisorController.findSupervisorByCpf('11111111114');
+    assert.strictEqual(supervisor.nome, 'Jorel2');
+    assert.strictEqual(supervisor.is_adm, 0);
+
+    const res = await supervisorController.updateSupervisor('11111111114', {
+      nome: 'Jorel3',
+      is_adm: 1,
+    });
+    assert.isTrue(res);
+
+    supervisor = await supervisorController.findSupervisorByCpf('11111111114');
+    assert.strictEqual(supervisor.nome, 'Jorel3');
+    assert.strictEqual(supervisor.is_adm, 1);
+  });
+
+  it('Atualiza senha supervisor', async () => {
+    let supervisor = await supervisorController.findSupervisorByCpf('11111111114');
+
+    const res = await supervisorController.updateSupervisor('11111111114', {
+      senha: 'nova_senha',
+    });
+    assert.isTrue(res);
+
+    supervisor = await models.supervisor.findOne({ where: { cpf: '11111111114' } });
+    assert.isTrue(await bcrypt.compare('nova_senha', supervisor.senha));
+  });
+
+  it('Não deixa atualizar status supervisor', async () => {
+    const res = await supervisorController.updateSupervisor('11111111114', {
+      status: 0,
+    });
+    assert.isTrue(res);
+
+    const supervisor = await supervisorController.findSupervisorByCpf('11111111114');
+    assert.isNotFalse(supervisor);
+  });
+
+  it('Não atualiza supervisor inexistente', async () => {
+    const res = await supervisorController.updateSupervisor('11111111118', { nome: 'Jorel2' });
+    assert.isFalse(res);
   });
 
   it('Deleta supervisor', async () => {
