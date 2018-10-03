@@ -2,6 +2,7 @@ const chance = require('chance').Chance();
 const { assert } = require('chai');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const secrets = require('../../config/secrets.json');
 const loginController = require('../../controllers/login');
 const supervisorController = require('../../controllers/supervisor');
 const models = require('../../models');
@@ -10,7 +11,7 @@ after(() => {
   models.sequelize.close();
 });
 
-describe.only('Teste controller login', () => {
+describe('Teste controller login', () => {
   before(async () => {
     await models.supervisor.destroy({ where: {} });
     await models.feirante.destroy({ where: {} });
@@ -21,37 +22,37 @@ describe.only('Teste controller login', () => {
     await models.feirante.create({
       cpf: '22222222222',
       usa_ee: false,
-      nome_ficticio: 'aaa',
+      nome_fantasia: 'aaa',
       razao_social: 'aaa',
       comprimento_barraca: 4,
       largura_barraca: 4,
       endereco: 'aaa',
       sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('4321', 10),
+      senha: await bcrypt.hash('4321', secrets.bcrypt),
     });
 
     await models.feirante.create({
       cpf: '22222222223',
       usa_ee: false,
-      nome_ficticio: 'aaa',
+      nome_fantasia: 'aaa',
       razao_social: 'aaa',
       comprimento_barraca: 4,
       largura_barraca: 4,
       endereco: 'aaa',
       sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('4321', 10),
+      senha: await bcrypt.hash('4321', secrets.bcrypt),
     });
 
     await models.feirante.create({
       cpf: '22222222224',
       usa_ee: false,
-      nome_ficticio: 'aaa',
+      nome_fantasia: 'aaa',
       razao_social: 'aaa',
       comprimento_barraca: 4,
       largura_barraca: 4,
       endereco: 'aaa',
       sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('54321', 10),
+      senha: await bcrypt.hash('54321', secrets.bcrypt),
     });
 
     await supervisorController.addSupervisor('11111111111', 'Nome', '1234', false);
@@ -63,7 +64,7 @@ describe.only('Teste controller login', () => {
   it('Faz login corretamente (supervisor)', async () => {
     const token = await loginController.login('11111111111', '1234');
     assert.isNotFalse(token);
-    const decoded = await jwt.verify(token.token, 'secret');
+    const decoded = await jwt.verify(token.token, secrets.jwt);
     assert.strictEqual(decoded, '11111111111');
   });
 
@@ -85,7 +86,7 @@ describe.only('Teste controller login', () => {
   it('Faz login corretamente (feirante)', async () => {
     const token = await loginController.login('22222222222', '4321');
     assert.isNotFalse(token);
-    const decoded = await jwt.verify(token.token, 'secret');
+    const decoded = await jwt.verify(token.token, secrets.jwt);
     assert.strictEqual(decoded, '22222222222');
   });
 
