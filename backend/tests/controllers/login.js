@@ -63,45 +63,45 @@ describe('Teste controller login', () => {
 
   it('Faz login corretamente (supervisor)', async () => {
     const token = await loginController.login('11111111111', '1234');
-    assert.isNotFalse(token);
+    assert.isNotNull(token);
     const decoded = await jwt.verify(token.token, keys.jwt);
     assert.strictEqual(decoded, '11111111111');
   });
 
   it('Não faz login com senha incorreta (supervisor)', async () => {
     const token = await loginController.login('11111111111', '12345');
-    assert.isFalse(token);
+    assert.isNull(token);
   });
 
   it('Não faz login com cpf incorreto (supervisor)', async () => {
     const token = await loginController.login('22222222222', '1234');
-    assert.isFalse(token);
+    assert.isNull(token);
   });
 
   it('Não faz login com cpf inexistente (supervisor)', async () => {
     const token = await loginController.login('11111111117', '1234');
-    assert.isFalse(token);
+    assert.isNull(token);
   });
 
   it('Faz login corretamente (feirante)', async () => {
     const token = await loginController.login('22222222222', '4321');
-    assert.isNotFalse(token);
+    assert.isNotNull(token);
     const decoded = await jwt.verify(token.token, keys.jwt);
     assert.strictEqual(decoded, '22222222222');
   });
 
   it('Não faz login com senha incorreta (feirante)', async () => {
     const token = await loginController.login('22222222223', '54321');
-    assert.isFalse(token);
+    assert.isNull(token);
   });
 
   it('Não faz login com cpf incorreto (feirante)', async () => {
     const token = await loginController.login('11111111111', '4321');
-    assert.isFalse(token);
+    assert.isNull(token);
   });
 
   it('Não faz login com cpf inexistente (feirante)', async () => {
     const token = await loginController.login('22222222224', '4321');
-    assert.isFalse(token);
+    assert.isNull(token);
   });
 });

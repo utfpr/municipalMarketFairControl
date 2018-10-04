@@ -13,7 +13,7 @@ const login = async (cpf, senha) => {
       };
     }
 
-    return false;
+    return null;
   }
 
   user = await models.feirante.findOne({ where: { cpf } });
@@ -25,10 +25,10 @@ const login = async (cpf, senha) => {
       };
     }
 
-    return false;
+    return null;
   }
 
-  return false;
+  return null;
 };
 
 module.exports = { login };

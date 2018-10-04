@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const models = require('../models');
 
-
 // Cadastra supervisor
 const addSupervisor = async (cpf, nome, senha, isAdm) => {
   const hashSenha = await bcrypt.hash(senha, 10);
@@ -11,8 +10,8 @@ const addSupervisor = async (cpf, nome, senha, isAdm) => {
     where: { cpf, status: true },
   });
 
-  // Se não encontrar, retorna false
-  if (supervisor !== null) return false;
+  // Se não encontrar, retorna null
+  if (supervisor !== null) return null;
 
   // Tenta criar
   try {
@@ -23,10 +22,9 @@ const addSupervisor = async (cpf, nome, senha, isAdm) => {
       is_adm: isAdm,
       status: 1, // Isso é opcional, pois no banco está como DEFAULT true
     });
-    return true;
   } catch (error) {
-    // Se der erro, retorna false
-    return false;
+    // Se der erro, retorna null
+    return null;
   }
 };
 
@@ -55,7 +53,7 @@ const findSupervisorByCpf = async (cpf) => {
     },
   });
 
-  if (supervisor === null) return false;
+  if (supervisor === null) return null;
 
   // Retorna somente os dados necessários (não retornar status, senha, ...)
   return {
@@ -70,7 +68,7 @@ const updateSupervisor = async (cpf, dados) => {
     where: { cpf, status: true },
   });
 
-  if (supervisor === null) return false;
+  if (supervisor === null) return null;
 
   // https://stackoverflow.com/questions/34698905/clone-a-js-object-except-for-one-key
   // Não deixa atualizar o status
@@ -82,9 +80,8 @@ const updateSupervisor = async (cpf, dados) => {
   }
   try {
     await supervisor.update(obj);
-    return true;
   } catch (error) {
-    return false;
+    return null;
   }
 };
 
@@ -93,10 +90,9 @@ const deleteSupervisor = async (cpf) => {
   const supervisor = await models.supervisor.findOne({
     where: { cpf, status: true },
   });
-  if (supervisor === null) return false;
+  if (supervisor === null) return null;
 
   await supervisor.update({ status: false });
-  return true;
 };
 
 module.exports = {
