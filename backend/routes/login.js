@@ -66,7 +66,7 @@ router.post('/', async (req, res) => { // enviar os dados para verificacao
             resposta = "falta confirmaçao do grupo"
             // a definir
         } else { // caso nao encontre usuario
-            reaposta = "usuario nao cadastrado";
+            resposta = "usuario nao cadastrado";
         }
 
         res.json({
