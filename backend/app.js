@@ -8,14 +8,14 @@ var app = express();
 
 var login = require('./routes/login');
 
-app.get('/', (req, res) => {
-    console.log("logadaço");
-});
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+
+app.get('/', (req, res) => {
+    console.log("logadaço");
+});
 
 app.use('/login', login);
 
