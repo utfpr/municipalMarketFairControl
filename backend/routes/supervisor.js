@@ -1,7 +1,7 @@
 const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 
-const supervisor_controler = require('../controllers/superviror');
+const supervisor_controler = require('../controllers/supervisor');
 
 // get cadastro supervisor
 router.get('/cadastro', (req, res) => {
@@ -58,7 +58,7 @@ router.post('/cadastro', (req, res) => {
         });
     }
     else{
-        var cpfExist = await supervisor_controler.findSupervisorByCpf(cpf); // retorna null se cpf não existir
+        var cpfExist = supervisor_controler.findSupervisorByCpf(cpf); // retorna null se cpf não existir
 
         var resposta = '';
         if(cpfExist == null){ 
@@ -66,15 +66,6 @@ router.post('/cadastro', (req, res) => {
         }
         else{
             resposta = 'CPF já cadastrado'; // Não pode cadastrar o mesmo cpf duas vezes
-
-            /* se a função findSupervisorByCpf() retornasse o status */
-            //cpfExist = cpfExist.split('');
-            // if(cpfExist[3] === false){
-            //     resposta = 'Inativo'; // cpf ja cadastrado mas inativo
-            // }
-            // else{
-            //     resposta = 'CPF já cadastrado e ativo'; // Não pode cadastrar o mesmo cpf duas vezes
-            // }
         }
 
         res.json({
@@ -82,3 +73,5 @@ router.post('/cadastro', (req, res) => {
         });
     }
 });
+
+module.exports = router;
