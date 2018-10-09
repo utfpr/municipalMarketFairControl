@@ -1,4 +1,3 @@
-const chance = require('chance').Chance();
 const { assert } = require('chai');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');

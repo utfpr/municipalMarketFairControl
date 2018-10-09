@@ -1,4 +1,3 @@
-const chance = require('chance').Chance();
 const { assert } = require('chai');
 const bcrypt = require('bcrypt');
 const supervisorController = require('../../controllers/supervisor');
