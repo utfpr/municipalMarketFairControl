@@ -1,24 +1,17 @@
-/* eslint-disable */
+const express = require('express');
+const bodyParser = require('body-parser');
 
-var express = require('express');
-var bodyParser = require('body-parser');
-var morgan = require('morgan');
+const app = express();
 
-var app = express();
-
-var login = require('./routes/login');
-
+const login = require('./routes/login');
+const testes = require('./routes/testes');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(morgan('dev'));
-
-app.get('/', (req, res) => {
-    console.log("logadaço");
-});
 
 app.use('/login', login);
 
-
+// Gambiarra. Remover depois.
+app.use('/testes', testes);
 
 module.exports = app;

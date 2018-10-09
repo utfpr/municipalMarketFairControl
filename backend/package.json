@@ -7,7 +7,8 @@
     "serve": "nodemon server.js",
     "test:models": "mocha ./tests/models/*.js",
     "test:controllers": "mocha tests/controllers/*.js",
-    "test:routes": "mocha ./tests/routes/*.js"
+    "test:routes": "mocha ./tests/routes/*.js",
+    "test:middlewares": "mocha ./tests/middlewares/*.js"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -17,8 +18,10 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "mocha": "^5.2.0",
+    "node-mocks-http": "^1.7.2",
     "nodemon": "^1.18.4",
-    "sequelize-auto": "^0.4.29"
+    "sequelize-auto": "^0.4.29",
+    "sinon": "^6.3.5"
   },
   "dependencies": {
     "bcrypt": "^3.0.1",
