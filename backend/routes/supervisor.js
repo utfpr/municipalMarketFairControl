@@ -1,12 +1,12 @@
 const express = require('express');
 const router = require('express').Router();
-
+const authMiddleware = require('../middlewares/auth');
 const supervisor_controler = require('../controllers/supervisor');
 
 // get cadastro supervisor
-router.get('/cadastro', (req, res) => {
+router.get('/', (req, res) => {
     res.json({
-        message: "Cadastro Supervisor"
+        message: "Ok"
     });
 });
 
@@ -48,7 +48,7 @@ var cpf_validation = (cpfString) =>{
 }
 
 // post cadastro supervisor
-router.post('/cadastro', (req, res) => {
+router.post('/', authMiddleware.isSupervisor, (req, res) => {
     var cpf = req.body.cpf;
     var senha = req.body.senha;
 
@@ -62,7 +62,7 @@ router.post('/cadastro', (req, res) => {
 
         var resposta = '';
         if(cpfExist == null){ 
-            resposta = 'Cadastrar'; // cpf não consta na base de dados, pode ser cadastrado
+            resposta = 'Ok'; // cpf não consta na base de dados, pode ser cadastrado
         }
         else{
             resposta = 'CPF já cadastrado'; // Não pode cadastrar o mesmo cpf duas vezes
