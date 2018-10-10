@@ -19,7 +19,7 @@ const findCelula = async (id) => {
 };
 
 // rota pra listar todas as celulas
-router.get('/listCelulas', (req, res) => {
+router.get('/list', (req, res) => {
     var lista = celula_controller.listCelulas();
     res.json({
         message: "Listar celulas"
@@ -27,7 +27,7 @@ router.get('/listCelulas', (req, res) => {
 });
 
 // rota pra listar informações de uma celula
-router.get('/listCelulas/infoCelula', (req, res) => {
+router.get('/list/info', (req, res) => {
     var id = req.body.id;
     var celula = findCelula(id);
 
@@ -61,3 +61,5 @@ router.post('/setFeirante', (req, res) => {
         message: resposta
     });
 });
+
+module.exports = router;

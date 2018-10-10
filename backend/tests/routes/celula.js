@@ -6,14 +6,14 @@ chai.use(chaiHttp);
 
 describe('Teste routes celula', () => {
 
-    it('Teste celula/listCelulas', () => {
-        chai.request(app).get('/celula/listCelulas').end((err, res) => {
+    it('Teste celula/list', () => {
+        chai.request(app).get('/celula/list').end((err, res) => {
             chai.expect(res).to.have.status(200);
         });
     });
 
-    it('Teste celula/listCelulas/infoCelula', () => {
-        chai.request(app).get('/celula/listCelulas/infoCelula').end((err, res) => {
+    it('Teste celula/list/info', () => {
+        chai.request(app).get('/celula/list/info').end((err, res) => {
             chai.expect(res).to.have.status(200);
         });
     });
