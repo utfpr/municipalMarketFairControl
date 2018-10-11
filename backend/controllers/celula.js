@@ -1,5 +1,19 @@
 const models = require('../models');
 
+const findCelula = async (id) => {
+    const celula = await models.celula.findOne({
+      where: { id }
+    });
+  
+    if (celula === null) return null;
+  
+    return {
+      id: celula.id,
+      cpf_feirante: celula.cpf_feirante,
+      periodo: celula.periodo
+    };
+};
+
 const listCelulas = async () => {
   const celulas = await models.celula.findAll();
   return celulas.map(el => ({
@@ -30,4 +44,4 @@ const setFeirante = async (id, cpfFeirante) => {
   }
 };
 
-module.exports = { listCelulas, getFeirante, setFeirante };
+module.exports = { findCelula, listCelulas, getFeirante, setFeirante };
