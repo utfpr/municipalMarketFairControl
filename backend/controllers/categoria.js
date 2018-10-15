@@ -15,9 +15,7 @@ const addCategoria = async(nome, need_cnpj) => {
 };
 
 const listCategorias = async() =>{
-    const categorias = await models.categoria.findAll({
-        where = {}
-    });
+    const categorias = await models.categoria.findAll();
     return categorias.map(el => ({
         id: el.id,
         nome: el.nome,
@@ -49,4 +47,12 @@ const removeCategoria = async(id) =>{
     models.categoria.destroy({
         where:{ id }
     })
+}
+
+module.exports = {
+    addCategoria,
+    listCategorias,
+    findById,
+    findByNome,
+    removeCategoria
 }
