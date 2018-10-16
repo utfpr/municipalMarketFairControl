@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const celula_controller = require('../controllers/celula');
+const authMiddleware = require('../middlewares/auth');
 const models = require('../models');
 
 // rota pra listar todas as celulas
@@ -29,7 +30,7 @@ router.get('/list/info', (req, res) => {
 });
 
 // rota pra setar feirante
-router.post('/setFeirante', (req, res) => {
+router.post('/setFeirante', authMiddleware.isSupervisor, (req, res) => {
     var id_celula = req.body.id;
     var cpf_feirante = req.body.cpf_feirante;
     

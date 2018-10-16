@@ -4,7 +4,7 @@ const authMiddleware = require('../middlewares/auth');
 const supervisor_controler = require('../controllers/supervisor');
 
 // get cadastro supervisor
-router.get('/', (req, res) => {
+router.get('/', authMiddleware.isAdmin, (req, res) => {
     res.json({
         message: "Ok"
     });
@@ -48,7 +48,7 @@ var cpf_validation = (cpfString) =>{
 }
 
 // post cadastro supervisor
-router.post('/', authMiddleware.isSupervisor, (req, res) => {
+router.post('/', authMiddleware.isAdmin, (req, res) => {
     var cpf = req.body.cpf;
     var senha = req.body.senha;
 
