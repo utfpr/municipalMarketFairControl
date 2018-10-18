@@ -1,6 +1,6 @@
 # Feira
 
-## `GET /feira` - Informações da feira atual (data, cancelado)
+## `GET /feira/info` - Informações da feira atual (data, cancelado)
 
 - Headers
 
