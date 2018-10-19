@@ -25,6 +25,8 @@ describe.only("Teste controller feirante", () => {
     let res = await feiranteController.addFeirante(
       "108.142.869-41",
       "111111111",
+      "orivaldo",
+      "111111111",
       1,
       "daniel orivaldo da silva",
       "daniel orivaldo da silva",
@@ -41,6 +43,8 @@ describe.only("Teste controller feirante", () => {
   it("Não permitir cadastrar feirante sem categoria", async () => {
     let res1 = await feiranteController.addFeirante(
       "108.142.869-42",
+      "111111111",
+      "orivaldo",
       "111111111",
       1,
       "daniel orivaldo da silvaa",
@@ -67,6 +71,8 @@ describe.only("Teste controller feirante", () => {
     let res = await feiranteController.addFeirante(
       "108.142.869-41",
       "111111111",
+      "orivaldo",
+      "111111111",
       1,
       "daniel orivaldo da silva",
       "daniel orivaldo da silva",
@@ -83,6 +89,8 @@ describe.only("Teste controller feirante", () => {
   it("Não permite cadastrar feirante com dados faltantes", async () => {
     let res = await feiranteController.addFeirante(
       "108.142.869-41",
+      "111111111",
+      "orivaldo",
       "111111111",
       1,
       "daniel orivaldo da silva",
@@ -107,6 +115,8 @@ describe.only("Teste controller feirante", () => {
     assert.isNotNull(feirante);
     assert.deepEqual(feirante, {
       cpf: "108.142.869-41",
+      rg: "111111111",
+      nome: "orivaldo",
       cnpj: "111111111",
       usa_ee: 1,
       nome_fantasia: "daniel orivaldo da silva",

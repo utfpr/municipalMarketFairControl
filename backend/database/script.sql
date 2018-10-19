@@ -39,6 +39,8 @@ CREATE TABLE feira (
 
 CREATE TABLE feirante (
 	cpf VARCHAR(15),
+	rg VARCHAR(15) NOT NULL,
+	nome VARCHAR(100) NOT NULL,
 	cnpj VARCHAR(15),
 	usa_ee BOOLEAN NOT NULL,
 	nome_fantasia VARCHAR(100) NOT NULL,
