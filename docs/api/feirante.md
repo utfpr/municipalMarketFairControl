@@ -30,20 +30,26 @@
 
 - Resposta _#1A_ - **Code 200** - Feirante cadastrado
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF existente
 
-```
-cpf_existente
+```javascript
+{
+    "msg": "cpf_existente"
+}
 ```
 
 - Resposta _#1C_ - **Code 200** - Subcategoria não existe
 
-```
-subcategoria_nao_existe
+```javascript
+{
+    "msg": "subcategoria_nao_existe"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/faltando
@@ -121,10 +127,12 @@ subcategoria_nao_existe
 }
 ```
 
-- Resposta _#1B_ - **Code 200** - CPF não existe
+- Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existe
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
@@ -148,14 +156,17 @@ cpf_nao_existe
 
 - Resposta _#1A_ - **Code 200** - Feirante atualizado
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF não existente
-
-```
-cpf_nao_existente
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/CPF inválido
@@ -171,14 +182,18 @@ cpf_nao_existente
 
 - Resposta _#1A_ - **Code 200** - Sucesso
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existente
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
@@ -213,10 +228,12 @@ cpf_nao_existente
 ];
 ```
 
-- Resposta _#1B_ - **Code 200** - CPF não existe
+- Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existe
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
@@ -240,20 +257,26 @@ cpf_nao_existe
 
 - Resposta _#1A_ - **Code 200** - Feirante confirmado
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - Periodo inválido (diferente de 1,2,3)
 
-```
-periodo_invalido
+```javascript
+{
+    "msg": "periodo_invalido"
+}
 ```
 
 - Resposta _#1C_ - **Code 200** - Feirante não confirmado (feira não existe/cancelada)
 
-```
-feirante_nao_confirmado
+```javascript
+{
+    "msg": "feirante_nao_confirmado"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/faltando

@@ -21,14 +21,18 @@
 
 - Resposta _#1A_ - **Code 200** - Supervisor cadastrado
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF existente
 
-```
-cpf_existente
+```javascript
+{
+    "msg": "cpf_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/faltando
@@ -79,10 +83,12 @@ cpf_existente
 }
 ```
 
-- Resposta _#1B_ - **Code 200** - CPF não existe
+- Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existe
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
@@ -106,14 +112,18 @@ cpf_nao_existe
 
 - Resposta _#1A_ - **Code 200** - Supervisor atualizado
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existente
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/CPF inválido
@@ -129,14 +139,18 @@ cpf_nao_existente
 
 - Resposta _#1A_ - **Code 200** - Sucesso
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existente
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
