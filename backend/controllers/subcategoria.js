@@ -26,6 +26,12 @@ const getSubcategoria = async (nome, categoria_id) => {
   });
 }
 
+const findSubcategoriaById = async (id) => {
+  return models.subcategoria.findOne({
+    where: { id: id }
+  });
+}
+
 const setSubcategoria = async (nome, categoria_nome, novo_nome) => {
   // Verificando se existe a categoria
   const categoria = await getCategoria(categoria_nome);
@@ -124,6 +130,8 @@ const listSubcategoriasByCategoria = async (categoria_nome) => {
 
 module.exports = {
   getSubcategoria, setSubcategoria,
+
+  findSubcategoriaById,
 
   addSubcategoria, deleteSubcategoria,
 
