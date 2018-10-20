@@ -12,10 +12,10 @@
 
 ```javascript
 {
-    "cpf": "11111111111",
-    "cnpj": "19014667000171",
+    "cpf": "111.111.111-11",
+    "cnpj": "19.014.667/0001-71",
     "nome": "João Paulo",
-    "rg": "111111111",
+    "rg": "11.111.111-1",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão",
     "razao_social": "João LTDA",
@@ -68,10 +68,10 @@
 ```javascript
 [
   {
-    "cpf": "11111111111",
-    "cnpj": "19014667000171",
+    "cpf": "111.111.111-11",
+    "cnpj": "19.014.667/0001-71",
     "nome": "João Paulo",
-    "rg": "111111111",
+    "rg": "11.111.111-1",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão",
     "razao_social": "João LTDA",
@@ -82,10 +82,10 @@
     "sub_categoria_id": 2
   },
   {
-    "cpf": "11111111122",
-    "cnpj": "19014667000172",
+    "cpf": "111.111.111-22",
+    "cnpj": "19.014.667/0001-72",
     "nome": "João Paulo",
-    "rg": "111111111",
+    "rg": "11.111.111-1",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão 2",
     "razao_social": "João LTDA 2",
@@ -112,10 +112,10 @@
 
 ```javascript
 {
-    "cpf": "11111111111",
-    "cnpj": "19014667000171",
+    "cpf": "111.111.111-11",
+    "cnpj": "19.014.667/0001-71",
     "nome": "João Paulo",
-    "rg": "111111111",
+    "rg": "11.111.111-1",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão",
     "razao_social": "João LTDA",
