@@ -1,141 +1,131 @@
 const models = require('../models');
 
-const addSubcategoria = async (nome, categoria_id) => {
-  // O banco de dados não pode fazer essas verificações para mim?
-
-  // Verificando se existe alguma categoria com esse id
-  const categoria = await models.categoria.findOne({
-    where: {
-      id: categoria_id,
-    }
+//OKAY
+const exist = (obj) => {
+  return obj !== null;
+}
+// OKAY
+const notExist = (obj) => {
+  return obj === null;
+}
+// OKAY
+const getCategoria = async (nome) => {
+  return models.categoria.findOne({
+    where: { nome: nome }
   });
+}
 
-  if (categoria === null)
-    return null;
-  
-  // Verificando se existe alguma subcategoria com essas caracteristicas
-  const subcategoria = await models.subcategoria.findOne({
-    where: {
-      categoria_id: categoria_id,
-      nome: nome,
-    }
+/* ******************************************************************** */
+/*             Funções acima não devem estar neste arquivo              */
+/* ******************************************************************** */
+
+// OKAY
+const getSubcategoria = async (nome, categoria_id) => {
+  return models.subcategoria.findOne({
+    where: { nome: nome, categoria_id: categoria_id }
   });
+}
 
-  if (subcategoria !== null)
+const setSubcategoria = async (nome, categoria_nome, novo_nome) => {
+  // Verificando se existe a categoria
+  const categoria = await getCategoria(categoria_nome);
+
+  // Se a categoria não existir, não é possível fazer a atualização
+  if (notExist(categoria))
     return null;
 
-  // Adicionando subcategoria
+  // Verificando se já existe essa subcategoria
+  const subcategoria = await getSubcategoria(nome, categoria.id);
+
+  // Se a subcategoria não existir, não é possível fazer a atualização
+  if (notExist(subcategoria))
+    return null;
+
+  // Caso contrario, atualiza
+  models.subcategoria.update(
+    { nome: novo_nome },
+    { where: {nome: nome, categoria_id: categoria.id} }
+  );
+}
+// OKAY
+const addSubcategoria = async (nome, categoria_nome) => {
+  // Verificando se existe a categoria
+  const categoria = await getCategoria(categoria_nome);
+
+  // Se a categoria não existir, não é possível adicionar
+  if (notExist(categoria))
+    return null;
+
+  // Verificando se já existe essa subcategoria
+  const subcategoria = await getSubcategoria(nome, categoria.id);
+
+  // Se já existe, não é preciso adicionar
+  if (exist(subcategoria))
+    return null;
+
+  // Caso contrario, adiciona
   try {
-    return await models.subcategoria.create({
+    // Tentando adicionar e retornar uma subcategoria nova
+    return models.subcategoria.create({
       nome: nome,
-      categoria_id: categoria_id,
+      categoria_id: categoria.id,
     });
   } catch (error) {
+    // Se acontecer algum erro retorna null
     return null;
   }
 };
 
+const deleteSubcategoria = (nome, categoria_nome) => {
+  // Verificando se existe a categoria
+  const categoria = getCategoria(categoria_nome);
+
+  // Se a categoria não existir, não é possível fazer a atualização
+  if (notExist(categoria))
+    return null;
+
+  // Verificando se já existe essa subcategoria
+  const subcategoria = getSubcategoria(nome, categoria.id);
+
+  // Se a subcategoria não existir, não é possível fazer a atualização
+  if (notExist(subcategoria))
+    return null;
+
+  // Caso contrário, deleta
+  try {
+    // Removendo subcategoria
+    subcategoria.destroy();
+  } catch (error) {
+    return null;
+  }
+};
+// OKAY
 const listSubcategorias = async () => {
   // Retorna todas as subcategorias, de todas as categorias
   // Se não houver nenhuma, retorna um array vazio
-  const subcategorias = await models.subcategoria.findAll({
-    where : {}
+  return models.subcategoria.findAll({
+    where: {}
   });
-
-  return subcategorias.map(el => ({
-    id: el.id,
-    nome: el.nome,
-    categoria_id: el.categoria_id
-  }));
 };
+// OKAY
+const listSubcategoriasByCategoria = async (categoria_nome) => {
+  // Verificando se a categoria existe
+  const categoria = await getCategoria(categoria_nome);
 
-const listSubcategoriasByCategoria = async (nome_categoria) => {
-  // Retorna todas as subcategorias de uma categoria
-  // Se não existir a categoria ou nao existir subcategorias dessa categoria,
-  // retorna um array vazio
-
-  // Buscando a categoria
-  const categoria = await models.categoria.findOne({
-    where: {nome: nome_categoria}
-  });
-  if (categoria === NULL)
-    return {};
-
-  // Buscando as subcategorias da categoria
-  const subcategorias = await models.subcategoria.findAll({
-    where: {categoria_id: categoria.id}
-  });
-
-  return subcategorias.map(el => ({
-    id: el.id,
-    nome: el.nome,
-    categoria_id: el.categoria_id,
-  }));
-}
-
-const getSubcategoria = async (id) => {
-  // Por que eu buscaria uma subcategoria em específico?
-
-  return await models.subcategoria.findOne({
-    where: { id: id },
-  })
-
-  /*
-  const subcategoria = await models.subcategoria.findOne({
-    where: { nome: nome },
-  });
-
-  if (subcategoria === null)
+  // Se a categoria não existir, não é possível listar as suas subcategorias
+  if (notExist(categoria))
     return null;
 
-  return {
-    id: subcategoria.id,
-    nome: subcategoria.nome,
-    categoria_id: subcategoria.categoria_id
-  };
-  */
-}
-
-const setSubcategoria = async (id, novo_nome) => {
-  const subcategoria = getSubcategoria(id);
-  
-  if(subcategoria === null)
-    return null;
-  
-  // Por que usar try?
-  try {
-    const res = await subcategoria.update({
-      nome: novo_nome
-    });
-    return res;
-  } catch (error) {
-    return null;
-  }
-}
-
-const deleteSubcategoria = async (id) => {
-  // Verificando se existe uma subcategoria com esse id
-  const subcategoria = await models.subcategoria.findOne({
-    where: { id: id }
+  // Caso contrário, retorna uma lista das subcategorias da categoria
+  return await models.subcategoria.findAll({
+    where: { categoria_id: categoria.id }
   });
-
-  // Retorna false caso nao consiga?
-  if (subcategoria === null)
-    return false;
-
-  // Removendo subcategoria
-  await models.subcategoria.destroy({
-    where: {id : subcategoria.id}
-  });
-
-  return true;
-};
+}
 
 module.exports = {
-  addSubcategoria,
-  listSubcategorias,
-  listSubcategoriasByCategoria,
-  getSubcategoria,
-  setSubcategoria,
-  deleteSubcategoria,
+  getSubcategoria, setSubcategoria,
+
+  addSubcategoria, deleteSubcategoria,
+
+  listSubcategorias, listSubcategoriasByCategoria,
 }
