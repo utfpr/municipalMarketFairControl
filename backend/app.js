@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+const feira = require('./routes/feira');
 const login = require('./routes/login');
 const supervisor = require('./routes/supervisor');
 const celula = require('./routes/celula');
@@ -14,6 +15,8 @@ app.use(bodyParser.json());
 app.use('/login', login);
 app.use('/supervisor', supervisor);
 app.use('/celula', celula);
+app.use('/feira', feira);
+
 
 // Gambiarra. Remover depois.
 app.use('/testes', testes);

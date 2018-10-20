@@ -100,7 +100,9 @@ cpf_nao_existe
 
 ```javascript
 {
-    "is_adm": true
+    "is_adm": true,
+    "nome:" "Novo João",
+    "senha": "nova123456",
 }
 ```
 
