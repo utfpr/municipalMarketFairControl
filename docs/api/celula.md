@@ -11,11 +11,11 @@
 ```javascript
 [
     {
-        "cpf_feirante": "111.111.111-11",
+        "cpf_feirante": "11111111111",
         "periodo": "1"
     },
     {
-        "cpf_feirante": "111.111.333-22",
+        "cpf_feirante": "11111133322",
         "periodo": "2"
     }
 ]
@@ -31,7 +31,7 @@
 - Resposta *#1A* - **Code 200** - Sucesso
 ```javascript
 {
-    "cpf_feirante": "111.111.111-11",
+    "cpf_feirante": "11111111111",
     "periodo": "1"
 }
 ```
@@ -54,7 +54,7 @@
 
 ```javascript
 {
-    "cpf_feirante": "111.111.111-11",
+    "cpf_feirante": "11111111111",
     "periodo": "1"
 }
 ```

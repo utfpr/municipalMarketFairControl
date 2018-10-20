@@ -12,7 +12,7 @@
 
 ```javascript
 {
-    "cpf": "111.111.111-11",
+    "cpf": "11111111111",
     "nome:" "João",
     "senha": "123456",
     "is_adm": false
@@ -51,12 +51,12 @@
 ```javascript
 [
   {
-    "cpf": "111.111.111-11",
+    "cpf": "11111111111",
     "nome": "João",
     "is_adm": false
   },
   {
-    "cpf": "111.111.222-22",
+    "cpf": "11111122222",
     "nome": "José",
     "is_adm": true
   }
@@ -77,7 +77,7 @@
 
 ```javascript
 {
-    "cpf": "111.111.111-11",
+    "cpf": "11111111111",
     "nome": "João",
     "is_adm": false
 }
