@@ -14,6 +14,8 @@
 {
     "cpf": "111.111.111-11",
     "cnpj": "19.014.667/0001-71",
+    "nome": "João Paulo",
+    "rg": "11.111.111-1",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão",
     "razao_social": "João LTDA",
@@ -62,6 +64,8 @@ subcategoria_nao_existe
   {
     "cpf": "111.111.111-11",
     "cnpj": "19.014.667/0001-71",
+    "nome": "João Paulo",
+    "rg": "11.111.111-1",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão",
     "razao_social": "João LTDA",
@@ -74,6 +78,8 @@ subcategoria_nao_existe
   {
     "cpf": "111.111.111-22",
     "cnpj": "19.014.667/0001-72",
+    "nome": "João Paulo",
+    "rg": "11.111.111-1",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão 2",
     "razao_social": "João LTDA 2",
@@ -102,6 +108,8 @@ subcategoria_nao_existe
 {
     "cpf": "111.111.111-11",
     "cnpj": "19.014.667/0001-71",
+    "nome": "João Paulo",
+    "rg": "11.111.111-1",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão",
     "razao_social": "João LTDA",
