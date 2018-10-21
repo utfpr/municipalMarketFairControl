@@ -9,19 +9,19 @@ router.get('/', (req, res) => { // get da pagina de login
     });
 });
 
-router.post('/', async (req, res) => { // enviar os dados para verificacao
+// Realiza login feirante/supervisor 
+router.post('/', async (req, res) => {
 
-    var cpf = req.body.cpf; // login com cpf
-    var senha = req.body.senha;  // senha
+    var cpf = req.body.cpf;
+    var senha = req.body.senha;
 
     const cpfValido = CPF.validate(CPF.strip(cpf));
-    if (cpfValido.code === 'INVALID' || cpfValido.code === 'LENGTH' || senhaS.lenght < 6) { // verifica se o cpf é valido e a senha é grando o suficiente
+    if (cpfValido.code === 'INVALID' || cpfValido.code === 'LENGTH' || senha.lenght < 6) { // verifica se o cpf é valido e a senha é grande o suficiente
         res.status(400)
     } 
     else {
         var token = await login_controller.login(cpf, senha); // coleta token do controller (supervisor ou feirante)
 
-        var resposta = '';
         if (token !== false) { // reuniao com o grupo para definir as coisas
             res.status(200).send({
                 msg: token,

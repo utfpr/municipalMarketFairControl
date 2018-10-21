@@ -3,6 +3,8 @@ const authMiddleware = require('../middlewares/auth');
 const subcategoriaController = require('../controllers/subcategoria');
 const categoriaController = require('../controllers/categoria');
 
+// verificar o que os metodos add, update, e remove estão retornando nos controllers
+
 // Adicionar subcategoria
 router.post('/', authMiddleware.isSupervisor, async (req, res) => {
     const nome_sub = req.body.nome;

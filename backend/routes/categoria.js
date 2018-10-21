@@ -3,14 +3,16 @@ const authMiddleware = require('../middlewares/auth');
 const categoriaController = require('../controllers/categoria');
 const subcategoriaController = require('../controllers/subcategoria');
 
-// verificar o que os controllers add, update, e remove estão retornando
+// verificar o que os metodos add, update, e remove estão retornando nos controllers
 
 // Adiciona categoria
 router.post('/', authMiddleware.isSupervisor, async (req, res) => {
     const nome = req.body.nome;
     const need_cnpj = req.body.need_cnpj;
 
-    if (nome == null || need_cnpj == null){
+    if ( (nome == null) || (need_cnpj == null) || 
+         (need_cnpj != '0') || (need_cnpj != '1') )
+    {
         res.status(400);
     } else{
         const categoria = await categoriaController.addCategoria(
@@ -91,7 +93,6 @@ router.remove('/:id', authMiddleware.isSupervisor, async (req, res) => {
     if(categoriaValidate != null){
 
         const categoria = await categoriaController.removeCategoria(id_cat);
-        // duvida sobre o retorno do metodo removeCategoria
         if(categoria != null){
             res.status(200).send({
                 msg: 'ok',
