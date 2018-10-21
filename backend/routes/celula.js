@@ -1,51 +1,53 @@
 const express = require('express');
+const { check, validationResult } = require('express-validator/check');
+const CPF = require('cpf-check');
+
 const router = express.Router();
-const celula_controller = require('../controllers/celula');
+const celulaController = require('../controllers/celula');
+const feiranteController = require('../controllers/feirante');
 const authMiddleware = require('../middlewares/auth');
-const models = require('../models');
 
-// rota pra listar todas as celulas
-router.get('/list', (req, res) => {
-    var lista = celula_controller.listCelulas();
-    res.json({
-        message: "Listar celulas"
-    });
+router.get('/', authMiddleware.isSupervisor, async (req, res) => {
+  const celulas = await celulaController.listCelulas();
+  return res.json(
+    celulas.map(celula => ({ cpf_feirante: celula.cpf_feirante, periodo: celula.periodo })),
+  );
 });
 
-// rota pra listar informações de uma celula
-router.get('/list/info', (req, res) => {
-    var id = req.body.id;
-    var celula = celula_controller.findCelula(id);
+router.get('/:id', authMiddleware.isSupervisor, [check('id').isInt()], async (req, res) => {
+  if (!validationResult(req).isEmpty()) return res.json({ msg: 'id_nao_existente' });
 
-    var resposta;
-    if(celula != null){
-        resposta = 'Informações da celula';
-    } else{
-        resposta = 'Celula nao existe'
-    }
+  const { id } = req.params;
+  const celula = await celulaController.findCelula(id);
 
-    res.json({
-        message: resposta
-    });
+  if (celula === null) return res.json({ msg: 'id_nao_existente' });
+
+  return res.json({ cpf_feirante: celula.cpf_feirante, periodo: celula.periodo });
 });
 
-// rota pra setar feirante
-router.post('/setFeirante', authMiddleware.isSupervisor, (req, res) => {
-    var id_celula = req.body.id;
-    var cpf_feirante = req.body.cpf_feirante;
-    
-    var set = celula_controller.setFeirante(id_celula, cpf_feirante);
+router.put(
+  '/:id',
+  authMiddleware.isSupervisor,
+  [check('id').isInt(), check('cpf_feirante').isString(), check('periodo').isInt()],
+  async (req, res) => {
+    if (!validationResult(req).isEmpty()) return res.status(400).send();
 
-    var resposta;
-    if(set != null){
-        resposta = "Setou";
-    } else{
-        resposta = "Deu ruim";
-    }
+    const cpfFeirante = req.body.cpf_feirante;
+    const { periodo } = req.body;
+    const { id } = req.params;
 
-    res.json({
-        message: resposta
-    });
-});
+    if (CPF.validate(CPF.strip(cpfFeirante))) return res.status(400).send();
 
+    const feirante = await feiranteController.findFeiranteByCpf(cpfFeirante);
+    if (feirante === null) return res.json({ msg: 'cpf_nao_existente' });
+
+    const celula = await celulaController.findCelula(id);
+    if (celula === null) return res.json({ msg: 'id_nao_existe' });
+
+    const atualizado = await celulaController.updateCelula(id, cpfFeirante, periodo);
+    if (atualizado === null) return res.json({ msg: 'celula_nao_atualizada' });
+
+    return res.json({ msg: 'ok' });
+  },
+);
 module.exports = router;
