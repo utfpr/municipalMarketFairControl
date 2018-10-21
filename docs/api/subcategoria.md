@@ -18,13 +18,9 @@
 ```
 ok
 ```
-- Resposta *#1B* - **Code 200** - Nome existente
+- Resposta *#1B* - **Code 200** - ID não existente (categoria)
 ```
-nome_existente
-```
-- Resposta *#1C* - **Code 200** - ID não existente (categoria)
-```
-id_nao_existente
+categoria_nao_existente
 ```
 - Resposta *#2* - **Code 400** - Atributos incorretos/faltando
 - Resposta *#3* - **Code 401** - Token inválido

@@ -16,10 +16,6 @@
 ```
 ok
 ```
-- Resposta *#1B* - **Code 200** - Nome existente
-```
-nome_existente
-```
 - Resposta *#2* - **Code 400** - Atributos incorretos/faltando
 - Resposta *#3* - **Code 401** - Token inválido
 
