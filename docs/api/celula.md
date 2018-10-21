@@ -36,8 +36,10 @@
 }
 ```
 - Resposta *#1B* - **Code 200** - ID não existente
-```
-id_nao_existente
+```javascript
+{
+    "msg": "id_nao_existente"
+}
 ```
 - Resposta *#2* - **Code 401** - Token inválido
 
@@ -58,16 +60,28 @@ id_nao_existente
 ```
 
 - Resposta *#1A* - **Code 200** - Célula atualizada
+```javascript
+{
+    "msg": "ok"
+}
 ```
-ok
+- Resposta *#1B* - **Code 200** - Célula não atualizada
+```javascript
+{
+    "msg": "celula_nao_atualizada"
+}
 ```
-- Resposta *#1B* - **Code 200** - ID não existente
+- Resposta *#1C* - **Code 200** - ID não existente
+```javascript
+{
+    "msg": "id_nao_existente"
+}
 ```
-id_nao_existente
-```
-- Resposta *#1C* - **Code 200** - CPF não existente
-```
-cpf_nao_existente
+- Resposta *#1D* - **Code 200** - CPF não existente
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 - Resposta *#2* - **Code 400** - Atributos incorretos/CPF inválido
 - Resposta *#3* - **Code 401** - Token inválido

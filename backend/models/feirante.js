@@ -11,6 +11,14 @@ module.exports = function(sequelize, DataTypes) {
         defaultValue: "",
         primaryKey: true
       },
+      rg: {
+        type: DataTypes.STRING(15),
+        allowNull: false
+      },
+      nome: {
+        type: DataTypes.STRING(100),
+        allowNull: false
+      },
       cnpj: {
         type: DataTypes.STRING(15),
         allowNull: true

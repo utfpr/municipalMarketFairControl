@@ -3,6 +3,8 @@ const models = require("../models");
 
 const addFeirante = async (
   cpf,
+  rg,
+  nome,
   cnpj,
   usa_ee,
   nome_fantasia,
@@ -20,16 +22,19 @@ const addFeirante = async (
     where: { cpf, status: true }
   });
 
+  if (feirante !== null) return null;
+
   const subcategoria = await models.subcategoria.findOne({
     where: { id: sub_categoria_id }
   });
 
-  if (feirante !== null) return null;
   if (subcategoria === null) return null;
 
   try {
     await models.feirante.create({
       cpf,
+      rg,
+      nome,
       cnpj,
       usa_ee,
       nome_fantasia,
@@ -55,6 +60,8 @@ const listFeirantes = async () => {
 
   return feirantes.map(el => ({
     cpf: el.cpf,
+    rg: el.rg,
+    nome: el.nome,
     cnpj: el.cnpj,
     usa_ee: el.usa_ee,
     nome_fantasia: el.nome_fantasia,
@@ -79,6 +86,8 @@ const findFeiranteByCpf = async cpf => {
 
   return {
     cpf: feirante.cpf,
+    rg: feirante.rg,
+    nome: feirante.nome,
     cnpj: feirante.cnpj,
     usa_ee: feirante.usa_ee,
     nome_fantasia: feirante.nome_fantasia,
