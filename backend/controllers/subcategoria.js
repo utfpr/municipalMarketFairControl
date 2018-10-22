@@ -56,7 +56,7 @@ const setSubcategoria = async (nome, categoria_id, novo_nome) => {
 
   // Caso contrario, atualiza
   models.subcategoria.update(
-    { nome: novo_nome },
+    { nome: novo_nome},
     { where: {nome: nome, categoria_id: categoria.id} }
   );
 }
