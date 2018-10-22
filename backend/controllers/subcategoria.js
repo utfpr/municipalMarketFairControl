@@ -1,5 +1,5 @@
 const models = require('../models');
-
+//const controllerCategoria = require('categoria');
 //OKAY
 const exist = (obj) => {
   return obj !== null;
@@ -9,11 +9,18 @@ const notExist = (obj) => {
   return obj === null;
 }
 // OKAY
-const getCategoria = async (nome) => {
+const getCategoriaByNome = async (nome) => {
   return models.categoria.findOne({
     where: { nome: nome }
   });
 }
+// OKAY
+const getCategoriaById = async (id) => {
+  return models.categoria.findOne({
+    where: { id: id }
+  });
+}
+
 
 /* ******************************************************************** */
 /*             Funções acima não devem estar neste arquivo              */
@@ -32,9 +39,9 @@ const findSubcategoriaById = async (id) => {
   });
 }
 
-const setSubcategoria = async (nome, categoria_nome, novo_nome) => {
+const setSubcategoria = async (nome, categoria_id, novo_nome) => {
   // Verificando se existe a categoria
-  const categoria = await getCategoria(categoria_nome);
+  const categoria = await getCategoriaById(categoria_id);
 
   // Se a categoria não existir, não é possível fazer a atualização
   if (notExist(categoria))
@@ -54,9 +61,9 @@ const setSubcategoria = async (nome, categoria_nome, novo_nome) => {
   );
 }
 // OKAY
-const addSubcategoria = async (nome, categoria_nome) => {
+const addSubcategoria = async (nome, categoria_id) => {
   // Verificando se existe a categoria
-  const categoria = await getCategoria(categoria_nome);
+  const categoria = await getCategoriaById(categoria_id);
 
   // Se a categoria não existir, não é possível adicionar
   if (notExist(categoria))
@@ -82,9 +89,9 @@ const addSubcategoria = async (nome, categoria_nome) => {
   }
 };
 
-const deleteSubcategoria = (nome, categoria_nome) => {
+const deleteSubcategoria = (nome, categoria_id) => {
   // Verificando se existe a categoria
-  const categoria = getCategoria(categoria_nome);
+  const categoria = getCategoriaById(categoria_id);
 
   // Se a categoria não existir, não é possível fazer a atualização
   if (notExist(categoria))
@@ -114,9 +121,9 @@ const listSubcategorias = async () => {
   });
 };
 // OKAY
-const listSubcategoriasByCategoria = async (categoria_nome) => {
+const listSubcategoriasByCategoria = async (categoria_id) => {
   // Verificando se a categoria existe
-  const categoria = await getCategoria(categoria_nome);
+  const categoria = await getCategoriaById(categoria_id);
 
   // Se a categoria não existir, não é possível listar as suas subcategorias
   if (notExist(categoria))
