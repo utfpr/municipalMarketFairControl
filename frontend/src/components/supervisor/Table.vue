@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="button-container">
-      <a-button type="primary" size="large" @click="showModal('add')" icon="plus">Adicionar</a-button>
+      <a-button type="primary" size="large" @click="showModal('','add')" icon="plus">Adicionar</a-button>
       <a-button type="danger" size="large" :disabled="!hasSelected">Excluir</a-button>
     </div>
     <a-table :columns="columns" :dataSource="data" size="middle" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" bordered> {
@@ -21,7 +21,7 @@
       </template>
     </a-table>
 
-    <a-modal title="Basic Modal" v-model="modal" @ok="handleOk">
+    <a-modal :title="titles[this.action]" v-model="modal" @ok="handleOk">
       <Modal :model="this.model" @updateModel="this.updateModel" :action="this.action" />
     </a-modal>
   </div>
@@ -29,6 +29,12 @@
 
 <script>
 import Modal from '@/components/supervisor/Modal.vue';
+
+const titles = {
+  'view': 'Visualizar',
+  'edit': 'Atualizar',
+  'add': 'Adicionar'
+}
 
 const columns = [
   {
@@ -79,6 +85,7 @@ export default {
     return {
       columns,
       data,
+      titles,
       model: {
         cpf: '',
         nome: ''
@@ -97,7 +104,7 @@ export default {
 
   methods: {
     showModal(key, action) {
-      this.modal = true;
+
       this.action = action;
 
       if (action === 'add')
@@ -107,6 +114,8 @@ export default {
         };
       else
         this.model = this.data.filter(item => key === item.cpf)[0];
+
+      this.modal = true;
     },
 
     onSelectChange(selectedRowKeys) {
@@ -115,6 +124,19 @@ export default {
 
     handleOk() {
       this.modal = false;
+
+      if (this.action === 'add') {
+        this.data = [...this.data, {
+          ...this.model
+        }];
+        // Fazer POST
+      } else if (this.action === 'edit') {
+        // Fazer PUT
+        // Atualizar this.data
+      } else if (this.action === 'view') {
+
+      }
+
     },
 
     updateModel(newValue) {
