@@ -4,7 +4,7 @@ const addCategoria = async(nome, need_cnpj) => {
     const categoria = await models.categoria.findOne({
         where:{ nome }
     });
-    if(categoria == null) return null;
+    if(categoria != null) return null;
     try {
         await models.categoria.create({
             nome, need_cnpj
