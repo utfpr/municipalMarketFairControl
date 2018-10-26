@@ -86,7 +86,7 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
 });
 
 // Remove categoria
-router.remove('/:id', authMiddleware.isSupervisor, async (req, res) => {
+router.delete('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
     const categoriaValidate = await categoriaController.findById(id_cat);
