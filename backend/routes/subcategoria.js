@@ -26,6 +26,9 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
             if (cadastro != null) {
                 resposta = 'ok';
             }
+            else {
+                resposta = 'erro';
+            }
         }
         res.status(200).send({
             msg: resposta,
@@ -55,20 +58,22 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
     if(nome == null){
         res.status(400);
     } else{
+        let resposta = '';
         const subcategoriaValidate = await subcategoriaController.findSubcategoriaById(id_sub);
         if(subcategoriaValidate != null){
             const subcategoria = await subcategoriaController.updateSubcategoria(id_sub, {nome});
             
             if (subcategoria != null) {
-                res.status(200).send({
-                    msg: 'ok',
-                });
+                resposta = 'ok';
+            } else {
+                resposta = 'erro';
             }
         } else {
-            res.status(200).send({
-                msg: 'id_nao_existente',
-            });
+            resposta = 'id_nao_existente';
         }
+        res.status(200).send({
+            msg: resposta,
+        });
     }
 });
 
@@ -76,19 +81,21 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
 router.delete('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_sub = req.params.id;
     
+    let resposta = '';
     const subcategoriaValidate = await subcategoriaController.findSubcategoriaById(id_sub);
     if(subcategoriaValidate != null){
         const subcategoria = subcategoriaController.deleteSubcategoria(id_sub);
         if(subcategoria != null){
-            res.status(200).send({
-                msg: 'ok',
-            });
+            resposta = 'ok';
+        } else {
+            resposta = 'erro';
         }
     } else {
-        res.status(200).send({
-            msg: 'id_nao_existente',
-        });
+        resposta = 'id_nao_existente';
     }
+    res.status(200).send({
+        msg: resposta,
+    });
 });
 
 module.exports = router;

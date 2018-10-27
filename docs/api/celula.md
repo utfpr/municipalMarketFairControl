@@ -65,10 +65,10 @@
     "msg": "ok"
 }
 ```
-- Resposta *#1B* - **Code 200** - Célula não atualizada
+- Resposta *#1B* - **Code 200** - Erro no banco de dados
 ```javascript
 {
-    "msg": "celula_nao_atualizada"
+    "msg": "erro"
 }
 ```
 - Resposta *#1C* - **Code 200** - ID não existente
