@@ -65,13 +65,19 @@
     "msg": "ok"
 }
 ```
-- Resposta *#1B* - **Code 200** - ID não existente
+- Resposta *#1B* - **Code 200** - Erro no banco de dados
+```javascript
+{
+    "msg": "erro"
+}
+```
+- Resposta *#1C* - **Code 200** - ID não existente
 ```javascript
 {
     "msg": "id_nao_existente"
 }
 ```
-- Resposta *#1C* - **Code 200** - CPF não existente
+- Resposta *#1D* - **Code 200** - CPF não existente
 ```javascript
 {
     "msg": "cpf_nao_existente"

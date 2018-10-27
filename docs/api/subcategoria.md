@@ -20,19 +20,19 @@
     "msg": "ok"
 }
 ```
-- Resposta *#1B* - **Code 200** - Nome existente
+- Resposta *#1B* - **Code 200** - Erro no banco de dados
 ```javascript
 {
-    "msg": "nome_existente"
+    "msg": "erro"
 }
 ```
 - Resposta *#1C* - **Code 200** - ID não existente (categoria)
 ```javascript
 {
-    "msg": "id_nao_existente"
+    "msg": "categoria_nao_existente"
 }
 ```
-- Resposta *#2* - **Code 400** - Atributos incorretos/faltando
+- Resposta *#2* - **Code 400** - Atributos faltando
 - Resposta *#3* - **Code 401** - Token inválido
 
 ## ```GET /subcategoria/1``` - Retorna informações de uma subcategoria pelo ID
@@ -76,7 +76,13 @@
     "msg": "ok"
 }
 ```
-- Resposta *#1B* - **Code 200** - ID não existente
+- Resposta *#1B* - **Code 200** - Erro no banco de dados
+```javascript
+{
+    "msg": "erro"
+}
+```
+- Resposta *#1C* - **Code 200** - ID não existente
 ```javascript
 {
     "msg": "id_nao_existente"
@@ -97,7 +103,13 @@
     "msg": "ok"
 }
 ```
-- Resposta *#1B* - **Code 200** - ID não existente
+- Resposta *#1B* - **Code 200** - Erro no banco de dados
+```javascript
+{
+    "msg": "erro"
+}
+```
+- Resposta *#1C* - **Code 200** - ID não existente
 ```javascript
 {
     "msg": "id_nao_existente"

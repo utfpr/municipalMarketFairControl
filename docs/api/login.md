@@ -16,8 +16,8 @@
 ```javascript
 {
 	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-}
+}	
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos
-- Resposta _#3_ - **Code 401** - Senha errada
+- Resposta _#3_ - **Code 401** - Credenciais incorretas

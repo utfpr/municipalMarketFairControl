@@ -106,7 +106,9 @@
 
 ```javascript
 {
-    "is_adm": true
+    "is_adm": true,
+    "nome:" "Novo João",
+    "senha": "nova123456",
 }
 ```
 
