@@ -9,6 +9,9 @@ DROP TABLE IF EXISTS subcategoria;
 DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS celula;
 DROP TABLE IF EXISTS supervisor;
+DROP TABLE IF EXISTS endereco;
+
+
 
 CREATE TABLE categoria (
 	id INTEGER AUTO_INCREMENT,
@@ -27,7 +30,6 @@ CREATE TABLE subcategoria (
 	FOREIGN KEY (categoria_id) REFERENCES categoria (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
 CREATE TABLE feira (
 	data DATE,
 	status BOOLEAN DEFAULT false,
@@ -37,13 +39,14 @@ CREATE TABLE feira (
 
 CREATE TABLE feirante (
 	cpf VARCHAR(15),
+	rg VARCHAR(15) NOT NULL,
+	nome VARCHAR(100) NOT NULL,
 	cnpj VARCHAR(15),
 	usa_ee BOOLEAN NOT NULL,
 	nome_fantasia VARCHAR(100) NOT NULL,
 	razao_social VARCHAR(100) NOT NULL,
 	comprimento_barraca REAL NOT NULL,
 	largura_barraca REAL NOT NULL,
-	endereco VARCHAR(200) NOT NULL,
 	voltagem_ee INTEGER,
 	status BOOLEAN DEFAULT true,
 	sub_categoria_id INTEGER NOT NULL,
@@ -53,6 +56,18 @@ CREATE TABLE feirante (
 	PRIMARY KEY (cpf),
 	FOREIGN KEY (sub_categoria_id) REFERENCES subcategoria (id) ON DELETE CASCADE ON UPDATE CASCADE
 
+);
+
+CREATE TABLE endereco (
+	id INTEGER AUTO_INCREMENT,
+	logradouro VARCHAR(100),
+	bairro VARCHAR (100),
+	numero INTEGER,
+	CEP VARCHAR(10),
+	cpf_feirante VARCHAR(15),
+
+	PRIMARY KEY (id),
+	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE celula (
@@ -79,7 +94,6 @@ CREATE TABLE participa (
 	FOREIGN KEY (data_feira) REFERENCES feira (data) ON DELETE CASCADE ON UPDATE CASCADE
 
 );
-
 
 CREATE TABLE supervisor (
 	cpf VARCHAR(15),

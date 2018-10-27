@@ -15,7 +15,7 @@ const addSupervisor = async (cpf, nome, senha, isAdm) => {
 
   // Tenta criar
   try {
-    await models.supervisor.create({
+    return await models.supervisor.create({
       cpf,
       nome,
       senha: hashSenha, // Salva o hash da senha no banco
@@ -79,7 +79,7 @@ const updateSupervisor = async (cpf, dados) => {
     obj.senha = await bcrypt.hash(obj.senha, 10);
   }
   try {
-    await supervisor.update(obj);
+    return await supervisor.update(obj);
   } catch (error) {
     return null;
   }
@@ -92,7 +92,8 @@ const deleteSupervisor = async (cpf) => {
   });
   if (supervisor === null) return null;
 
-  await supervisor.update({ status: false });
+  const ret = await supervisor.update({ status: false });
+  return ret;
 };
 
 module.exports = {
