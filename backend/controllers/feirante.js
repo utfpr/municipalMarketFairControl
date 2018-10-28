@@ -6,6 +6,7 @@ const addFeirante = async (
   rg,
   nome,
   cnpj,
+  senha,
   usa_ee,
   nome_fantasia,
   razao_social,
@@ -13,8 +14,7 @@ const addFeirante = async (
   largura_barraca,
   endereco,
   voltagem_ee,
-  sub_categoria_id,
-  senha
+  sub_categoria_id
 ) => {
   const hashSenha = await bcrypt.hash(senha, 10);
 
@@ -36,15 +36,20 @@ const addFeirante = async (
       rg,
       nome,
       cnpj,
+      senha: hashSenha,
       usa_ee,
       nome_fantasia,
       razao_social,
       comprimento_barraca,
       largura_barraca,
-      endereco,
       voltagem_ee,
-      sub_categoria_id,
-      senha: hashSenha
+      sub_categoria_id
+    });
+    await models.endereco.create({
+      logradouro: endereco.logradouro,
+      bairro: endereco.bairro,
+      numero: endereco.numero,
+      CEP: endereco.cep
     });
   } catch (error) {
     return null;
@@ -81,6 +86,11 @@ const findFeiranteByCpf = async cpf => {
       status: true
     }
   });
+  const endereco = await models.endereco.findOne({
+    where: {
+      cpf_feirante: feirante.cpf
+    }
+  });
 
   if (feirante === null) return null;
 
@@ -94,7 +104,10 @@ const findFeiranteByCpf = async cpf => {
     razao_social: feirante.razao_social,
     comprimento_barraca: feirante.comprimento_barraca,
     largura_barraca: feirante.largura_barraca,
-    endereco: feirante.endereco,
+    logradouro: endereco.logradouro,
+    bairro: endereco.bairro,
+    numero: endereco.numero,
+    cep: endereco.cep,
     voltagem_ee: feirante.voltagem_ee,
     sub_categoria_id: feirante.sub_categoria_id
   };
