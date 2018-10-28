@@ -1,44 +1,58 @@
 const models = require('../models');
 
 
-const findSubcategoriaById = async (subcategoria_id) => {
+const findSubcategoriaById = async (subcategoriaId) => {
   return models.subcategoria.findOne({
-    where: { id: subcategoria_id }
+    where: { id: subcategoriaId },
   });
-}
+};
 
-const addSubcategoria = async (nome, categoria_id) => {
+const addSubcategoria = async (nome, categoriaId) => {
   try {
     return models.subcategoria.create({
-      nome: nome,
-      categoria_id: categoria_id,
+      nome,
+      categoria_id: categoriaId,
     });
   } catch (error) {
     console.log(error);
     return null;
   }
-}
+};
 
-const updateSubcategoria = async (subcategoria_id, novo_nome) => {
+const updateSubcategoria = async (subcategoriaId, novoNome) => {
   try {
-    models.subcategoria.update(
-      { nome: novo_nome },
-      { where: { id: subcategoria_id } }
+    return await models.subcategoria.update(
+      { nome: novoNome },
+      { where: { id: subcategoriaId } },
     );
   } catch (error) {
     console.log(error);
     return null;
   }
-}
+};
 
-const deleteSubcategoria = async (subcategoria_id) => {
+const deleteSubcategoria = async (subcategoriaId) => {
   try {
-    models.subcategoria.destroy({ where: { id: subcategoria_id } });
+    return await models.subcategoria.destroy({ where: { id: subcategoriaId } });
   } catch (error) {
     console.log(error);
     return null;
   }
-}
+};
+
+const listSubcategoriasByCategoria = async (categoriaId) => {
+  const subcategorias = await models.subcategoria.findAll({
+    where: {
+      categoria_id: categoriaId,
+    },
+  });
+
+  if (subcategorias != null) {
+    return subcategorias;
+  }
+
+  return null;
+};
 
 module.exports = {
   findSubcategoriaById,
@@ -48,4 +62,6 @@ module.exports = {
   updateSubcategoria,
 
   deleteSubcategoria,
-}
+
+  listSubcategoriasByCategoria,
+};
