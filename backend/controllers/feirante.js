@@ -187,6 +187,7 @@ const updateFeirante = async (cpf, dados) => {
       return null;
     }
   }
+  return null;
 };
 
 const deleteFeirante = async (cpf) => {

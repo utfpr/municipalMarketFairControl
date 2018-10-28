@@ -1,5 +1,4 @@
 const models = require('../models');
-const feiranteController = require('../controllers/feirante');
 
 const findCelulaById = async (id) => {
   const celula = await models.celula.findOne({

@@ -1,10 +1,10 @@
 const models = require('../models');
 
-
 const findSubcategoriaById = async (subcategoriaId) => {
-  return models.subcategoria.findOne({
+  const res = await models.subcategoria.findOne({
     where: { id: subcategoriaId },
   });
+  return res;
 };
 
 const addSubcategoria = async (nome, categoriaId) => {
@@ -14,19 +14,18 @@ const addSubcategoria = async (nome, categoriaId) => {
       categoria_id: categoriaId,
     });
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
 
-const updateSubcategoria = async (subcategoriaId, novoNome) => {
+const updateSubcategoria = async (id, nome) => {
+  const subcategoria = await models.subcategoria.findOne({ where: { id } });
+  if (subcategoria === null) return null;
+
   try {
-    return await models.subcategoria.update(
-      { nome: novoNome },
-      { where: { id: subcategoriaId } },
-    );
+    const res = await subcategoria.update({ nome });
+    return res;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
@@ -35,33 +34,28 @@ const deleteSubcategoria = async (subcategoriaId) => {
   try {
     return await models.subcategoria.destroy({ where: { id: subcategoriaId } });
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
 
-const listSubcategoriasByCategoria = async (categoriaId) => {
-  const subcategorias = await models.subcategoria.findAll({
-    where: {
-      categoria_id: categoriaId,
-    },
-  });
+// const listSubcategoriasByCategoria = async (categoriaId) => {
+//   const subcategorias = await models.subcategoria.findAll({
+//     where: {
+//       categoria_id: categoriaId,
+//     },
+//   });
 
-  if (subcategorias != null) {
-    return subcategorias;
-  }
+//   if (subcategorias != null) {
+//     return subcategorias;
+//   }
 
-  return null;
-};
+//   return null;
+// };
 
 module.exports = {
   findSubcategoriaById,
-
   addSubcategoria,
-
   updateSubcategoria,
-
   deleteSubcategoria,
-
-  listSubcategoriasByCategoria,
+  // listSubcategoriasByCategoria,
 };

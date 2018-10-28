@@ -1,7 +1,8 @@
 const { assert } = require('chai');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const faker = require('faker');
 const keys = require('../../config/keys.json');
+const feiranteController = require('../../controllers/feirante');
 const loginController = require('../../controllers/login');
 const supervisorController = require('../../controllers/supervisor');
 const models = require('../../models');
@@ -10,70 +11,80 @@ after(() => {
   models.sequelize.close();
 });
 
-describe('Teste controller login', () => {
+describe('login.js', () => {
+  let feirante1;
+  let feirante2;
+  let supervisor1;
+  let supervisor2;
+
   before(async () => {
+    await models.categoria.destroy({ where: {} });
     await models.supervisor.destroy({ where: {} });
     await models.feirante.destroy({ where: {} });
 
     const categoria = await models.categoria.create({ nome: 'Categoria', need_cnpj: false });
-    const sub = await categoria.createSubCategoria({ nome: 'SubCategoria' });
+    const subcategoria = await categoria.createSubCategoria({ nome: 'SubCategoria' });
 
-    await models.feirante.create({
-      cpf: '22222222222',
-      usa_ee: false,
-      nome_fantasia: 'aaa',
-      razao_social: 'aaa',
-      comprimento_barraca: 4,
-      largura_barraca: 4,
-      endereco: 'aaa',
-      sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('4321', 10),
-    });
+    feirante1 = await feiranteController.addFeirante(
+      '58295846035',
+      '469964807',
+      faker.name.firstName(),
+      '',
+      '4321',
+      true,
+      faker.name.firstName(),
+      faker.name.firstName(),
+      4,
+      4,
+      {
+        logradouro: faker.address.streetAddress(),
+        bairro: faker.address.secondaryAddress(),
+        numero: 100,
+        CEP: '87.303-065',
+      },
+      110,
+      subcategoria.id,
+    );
 
-    await models.feirante.create({
-      cpf: '22222222223',
-      usa_ee: false,
-      nome_fantasia: 'aaa',
-      razao_social: 'aaa',
-      comprimento_barraca: 4,
-      largura_barraca: 4,
-      endereco: 'aaa',
-      sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('4321', 10),
-    });
+    feirante2 = await feiranteController.addFeirante(
+      '72268053083',
+      '469964807',
+      faker.name.firstName(),
+      '',
+      faker.name.firstName(),
+      true,
+      faker.name.firstName(),
+      faker.name.firstName(),
+      4,
+      4,
+      {
+        logradouro: faker.address.streetAddress(),
+        bairro: faker.address.secondaryAddress(),
+        numero: 100,
+        CEP: '87.303-065',
+      },
+      110,
+      subcategoria.id,
+    );
 
-    await models.feirante.create({
-      cpf: '22222222224',
-      usa_ee: false,
-      nome_fantasia: 'aaa',
-      razao_social: 'aaa',
-      comprimento_barraca: 4,
-      largura_barraca: 4,
-      endereco: 'aaa',
-      sub_categoria_id: sub.id,
-      senha: await bcrypt.hash('54321', 10),
-    });
-
-    await supervisorController.addSupervisor('11111111111', 'Nome', '1234', false);
-    await supervisorController.addSupervisor('11111111112', 'Nome', '12345', false);
-
-    // todo: criar feirante
+    supervisor1 = await supervisorController.addSupervisor('73332119087', 'Nome', '1234', false);
+    supervisor2 = await supervisorController.addSupervisor('79381775044', 'Nome', '12345', false);
   });
 
   it('Faz login corretamente (supervisor)', async () => {
-    const token = await loginController.login('11111111111', '1234');
+    const token = await loginController.login(supervisor1.cpf, '1234');
     assert.isNotNull(token);
     const decoded = await jwt.verify(token.token, keys.jwt);
-    assert.strictEqual(decoded, '11111111111');
+    assert.strictEqual(decoded, supervisor1.cpf);
   });
 
   it('Não faz login com senha incorreta (supervisor)', async () => {
-    const token = await loginController.login('11111111111', '12345');
+    const token = await loginController.login(supervisor1.cpf, '12345');
     assert.isNull(token);
   });
 
   it('Não faz login com cpf incorreto (supervisor)', async () => {
-    const token = await loginController.login('22222222222', '1234');
+    const token = await loginController.login(supervisor2.cpf, '1234');
     assert.isNull(token);
   });
 
@@ -83,19 +94,19 @@ describe('Teste controller login', () => {
   });
 
   it('Faz login corretamente (feirante)', async () => {
-    const token = await loginController.login('22222222222', '4321');
+    const token = await loginController.login(feirante1.cpf, '4321');
     assert.isNotNull(token);
     const decoded = await jwt.verify(token.token, keys.jwt);
-    assert.strictEqual(decoded, '22222222222');
+    assert.strictEqual(decoded, feirante1.cpf);
   });
 
   it('Não faz login com senha incorreta (feirante)', async () => {
-    const token = await loginController.login('22222222223', '54321');
+    const token = await loginController.login(feirante1.cpf, '54321');
     assert.isNull(token);
   });
 
   it('Não faz login com cpf incorreto (feirante)', async () => {
-    const token = await loginController.login('11111111111', '4321');
+    const token = await loginController.login(feirante2.cpf, '4321');
     assert.isNull(token);
   });
 

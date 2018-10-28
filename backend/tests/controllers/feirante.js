@@ -13,6 +13,7 @@ describe('feirante.js', () => {
   let subcategoria;
 
   before(async () => {
+    await models.categoria.destroy({ where: {} });
     const categoria = await categoriaController.addCategoria('Alimento', false);
     subcategoria = await categoria.createSubCategoria({ nome: 'Salgado' });
   });
