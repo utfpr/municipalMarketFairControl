@@ -15,12 +15,22 @@
 ```
 
 - Resposta *#1A* - **Code 200** - Subcategoria cadastrada
+```javascript
+{
+    "msg": "ok"
+}
 ```
-ok
+- Resposta *#1B* - **Code 200** - Erro no banco de dados
+```javascript
+{
+    "msg": "erro"
+}
 ```
-- Resposta *#1B* - **Code 200** - ID não existente (categoria)
-```
-categoria_nao_existente
+- Resposta *#1C* - **Code 200** - ID não existente (categoria)
+```javascript
+{
+    "msg": "categoria_nao_existente"
+}
 ```
 - Resposta *#2* - **Code 400** - Atributos faltando
 - Resposta *#3* - **Code 401** - Token inválido
@@ -40,8 +50,10 @@ categoria_nao_existente
 }
 ```
 - Resposta *#1B* - **Code 200** - ID não existente
-```
-id_nao_existente
+```javascript
+{
+    "msg": "id_nao_existente"
+}
 ```
 - Resposta *#2* - **Code 401** - Token inválido
 
@@ -59,12 +71,22 @@ id_nao_existente
 ```
 
 - Resposta *#1A* - **Code 200** - Subcategoria atualizada
+```javascript
+{
+    "msg": "ok"
+}
 ```
-ok
+- Resposta *#1B* - **Code 200** - Erro no banco de dados
+```javascript
+{
+    "msg": "erro"
+}
 ```
-- Resposta *#1B* - **Code 200** - ID não existente
-```
-id_nao_existente
+- Resposta *#1C* - **Code 200** - ID não existente
+```javascript
+{
+    "msg": "id_nao_existente"
+}
 ```
 - Resposta *#2* - **Code 400** - Atributo incorreto
 - Resposta *#3* - **Code 401** - Token inválido
@@ -76,11 +98,21 @@ id_nao_existente
 ```
 
 - Resposta *#1A* - **Code 200** - Sucesso
+```javascript
+{
+    "msg": "ok"
+}
 ```
-ok
+- Resposta *#1B* - **Code 200** - Erro no banco de dados
+```javascript
+{
+    "msg": "erro"
+}
 ```
-- Resposta *#1B* - **Code 200** - ID não existente
-```
-id_nao_existente
+- Resposta *#1C* - **Code 200** - ID não existente
+```javascript
+{
+    "msg": "id_nao_existente"
+}
 ```
 - Resposta *#2* - **Code 401** - Token inválido

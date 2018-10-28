@@ -19,10 +19,13 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
             nome, need_cnpj
         );
         if (categoria != null){
-            res.status(200).send({
-                msg: 'ok',
-            });
+            resposta = 'ok';
+        } else {
+            resposta = 'erro';
         }
+        res.status(200).send({
+            msg: resposta,
+        });
     }
 });
 
@@ -68,20 +71,29 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const { nome, need_cnpj } = req.body;
     const id_cat = req.params.id;
 
-    const categoriaValidate = await categoriaController.findById(id_cat);
-    if(categoriaValidate != null){
-        // falta esse metodo no controller
-        const categoria = await categoriaController.categoriaUpdate(id_cat, {nome, need_cnpj});
+    if ( (nome == null) || (need_cnpj == null) || 
+         (need_cnpj != '0') || (need_cnpj != '1') )
+    {
+        res.status(400);
+    }
+    else{
+        let resposta = '';
+        const categoriaValidate = await categoriaController.findById(id_cat);
+        if(categoriaValidate != null){
+            // falta esse metodo no controller
+            const categoria = await categoriaController.categoriaUpdate(id_cat, {nome, need_cnpj});
 
-        if(categoria != null){
-            res.status(200).send({
-                msg: 'ok',
-            });
-        }  
-    } else {
+            if(categoria != null){
+                resposta = 'ok';
+            } else {
+                resposta = 'erro';
+            }  
+        } else {
+            resposta = 'id_nao_existente';  
+        }
         res.status(200).send({
-            msg: 'id_nao_existente',
-        });      
+            msg: resposta,
+        }); 
     }
 });
 
@@ -89,20 +101,22 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
 router.delete('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
+    let resposta = '';
     const categoriaValidate = await categoriaController.findById(id_cat);
     if(categoriaValidate != null){
 
         const categoria = await categoriaController.removeCategoria(id_cat);
         if(categoria != null){
-            res.status(200).send({
-                msg: 'ok',
-            });
+            resposta = 'ok';
+        } else {
+            resposta = 'erro';
         }
     } else {
-        res.status(200).send({
-            msg: 'id_nao_existente',
-        });
+        resposta = 'id_nao_existente';
     }
+    res.status(200).send({
+        msg: resposta,
+    });
 });
 
 module.exports = router;
