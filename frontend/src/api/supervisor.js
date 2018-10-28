@@ -1,23 +1,27 @@
 import axios from 'axios';
 
-const host = 'https://a.com/api';
+const host = 'http://localhost:3000/supervisor';
 
 export async function get() {
-  return [
-    {
-      cpf: '111.111.111-11',
-      nome: 'Ademir',
-      isAdm: true,
-    },
-    {
-      cpf: '111.111.111-22',
-      nome: 'Ademir 2',
-      isAdm: false,
-    },
-  ];
-  //  await axios.get(`${host}/supervisor`);
+  return (await axios.get(host)).data;
 }
 
-export async function post() {
-  await axios.get(`${host}/supervisor`);
+export async function post(cpf, nome, senha, isAdm) {
+  await axios.post(host, {
+    cpf,
+    nome,
+    senha,
+    isAdm,
+  });
+}
+
+export async function put(cpf, nome, isAdm) {
+  await axios.put(`${host}/${cpf}`, {
+    nome,
+    isAdm,
+  });
+}
+
+export async function del(cpf) {
+  axios.delete(`${host}/${cpf}`);
 }
