@@ -76,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: 'id',
     });
     models.feirante.hasOne(models.endereco, {
-      as: 'id_endereco',
+      as: 'endereco',
       foreignKey: 'cpf_feirante',
     });
     models.feirante.hasOne(models.celula, {

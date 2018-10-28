@@ -1,5 +1,4 @@
 const { assert } = require('chai');
-const bcrypt = require('bcrypt');
 const faker = require('faker');
 const supervisorController = require('../../controllers/supervisor');
 const models = require('../../models');
