@@ -9,7 +9,7 @@ after(() => {
   models.sequelize.close();
 });
 
-describe.only('feirante.js', () => {
+describe('feirante.js', () => {
   let subcategoria;
 
   before(async () => {

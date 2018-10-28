@@ -7,7 +7,7 @@ after(() => {
   models.sequelize.close();
 });
 
-describe.only('supervisor.js', () => {
+describe('supervisor.js', () => {
   beforeEach(async () => {
     await models.supervisor.destroy({ where: {} });
   });
