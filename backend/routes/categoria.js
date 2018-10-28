@@ -10,8 +10,8 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
     const nome = req.body.nome;
     const need_cnpj = req.body.need_cnpj;
 
-    if ( (nome == null) || (need_cnpj == null) || 
-         (need_cnpj != '0') || (need_cnpj != '1') )
+    if ( (nome == null) || (need_cnpj == null)
+    || (need_cnpj != '0' && need_cnpj != '1') )
     {
         res.status(400);
     } else{
@@ -39,7 +39,7 @@ router.get('/', authMiddleware.isSupervisor, async (req, res) => {
 router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
-    const categoria = await categoriaController.findById(id_cat);
+    const categoria = await categoriaController.findByid(id_cat);
     if(categoria != null){
         res.status(200).send(categoria);
 
@@ -54,7 +54,7 @@ router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
 router.get('/:id/subcategorias', authMiddleware.isSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
-    const categoria = await categoriaController.findById(id_cat);
+    const categoria = await categoriaController.findByid(id_cat);
     if(categoria == null){
         res.status(200)({
             msg: 'id_nao_existente',
@@ -72,16 +72,16 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
     if ( (nome == null) || (need_cnpj == null) || 
-         (need_cnpj != '0') || (need_cnpj != '1') )
+         (need_cnpj != '0' && need_cnpj != '1') )
     {
         res.status(400);
     }
     else{
         let resposta = '';
-        const categoriaValidate = await categoriaController.findById(id_cat);
+        const categoriaValidate = await categoriaController.findByid(id_cat);
         if(categoriaValidate != null){
             // falta esse metodo no controller
-            const categoria = await categoriaController.categoriaUpdate(id_cat, {nome, need_cnpj});
+            const categoria = await categoriaController.updateCategoria(id_cat, {nome, need_cnpj});
 
             if(categoria != null){
                 resposta = 'ok';
@@ -102,7 +102,7 @@ router.delete('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
     let resposta = '';
-    const categoriaValidate = await categoriaController.findById(id_cat);
+    const categoriaValidate = await categoriaController.findByid(id_cat);
     if(categoriaValidate != null){
 
         const categoria = await categoriaController.removeCategoria(id_cat);

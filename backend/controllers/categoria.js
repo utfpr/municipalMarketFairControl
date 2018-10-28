@@ -56,7 +56,7 @@ const updateCategoria = async(id, dados) =>{
     if (categoria == null) {
         return null;
     }
-    await categoria.update(dados);
+    return await categoria.update(dados);
 }
 
 module.exports = {
