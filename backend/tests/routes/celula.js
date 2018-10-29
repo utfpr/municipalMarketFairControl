@@ -12,7 +12,7 @@ const { assert } = chai;
 
 chai.use(chaiHttp);
 
-describe('Teste routes celula', () => {
+describe('celula.js', () => {
   let tokenFeirante;
   let feirante;
   let tokenSupervisor;
@@ -59,10 +59,10 @@ describe('Teste routes celula', () => {
     await models.subcategoria.destroy({ where: {} });
     await models.feirante.destroy({ where: {} });
     await models.supervisor.destroy({ where: {} });
-    await models.sequelize.close();
+    // await models.sequelize.close();
   });
 
-  describe('GET /', () => {
+  describe('GET /celula', () => {
     it('Feirante não pode listar celulas', async () => {
       const res = await chai
         .request(app)
@@ -82,7 +82,7 @@ describe('Teste routes celula', () => {
       assert.strictEqual(res.body[0].periodo, 1);
     });
   });
-  describe('GET /:id', () => {
+  describe('GET /celula/:id', () => {
     it('Lista celula inexistente', async () => {
       const res = await chai
         .request(app)
@@ -103,7 +103,7 @@ describe('Teste routes celula', () => {
       assert.strictEqual(res.body.periodo, 1);
     });
   });
-  describe('PUT /:id', () => {
+  describe('PUT /celula/:id', () => {
     it('Atributo inválido', async () => {
       const res = await chai
         .request(app)
