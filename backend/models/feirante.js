@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       rg: {
         type: DataTypes.STRING(15),
-        allowNull: false
+        allowNull: false,
       },
       nome: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: false,
       },
       cnpj: {
         type: DataTypes.STRING(15),
@@ -71,7 +71,8 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Feirante.associate = (models) => {
-    models.feirante.belongsTo(models.subcategoria, {
+    models.feirante.hasOne(models.subcategoria, {
+      as: 'sub_categoria',
       foreignKey: 'sub_categoria_id',
       targetKey: 'id',
     });
@@ -82,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
     models.feirante.hasOne(models.celula, {
       as: 'id',
       foreignKey: 'cpf_feirante',
+    });
+    models.feirante.belongsToMany(models.participa, {
+      foreignKey: 'cpf_feirante',
+      targetKey: 'cpf',
     });
   };
   return Feirante;

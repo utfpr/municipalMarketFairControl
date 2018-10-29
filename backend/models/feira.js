@@ -1,7 +1,6 @@
 /* jshint indent: 2 */
-/* eslint-disable */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = (sequelize, DataTypes) => {
   const Feira = sequelize.define(
     'feira',
     {
@@ -23,5 +22,11 @@ module.exports = function(sequelize, DataTypes) {
       createdAt: false,
     },
   );
+  Feira.associate = (models) => {
+    models.feira.belongsToMany(models.participa, {
+      as: 'Feira',
+      foreignKey: 'data',
+    });
+  };
   return Feira;
 };
