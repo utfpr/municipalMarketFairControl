@@ -15,7 +15,6 @@
     "eslint": "^5.6.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "faker": "^4.1.0",
     "mocha": "^5.2.0",
     "node-mocks-http": "^1.7.2",
     "nodemon": "^1.18.4",
@@ -27,6 +26,7 @@
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
+    "cnpj": "^2.0.0",
     "cpf-check": "^2.0.4",
     "express": "^4.16.4",
     "express-validator": "^5.3.0",
@@ -34,6 +34,7 @@
     "morgan": "^1.9.1",
     "mysql2": "^1.6.1",
     "sequelize": "^4.39.0",
-    "yarn": "^1.10.1"
+    "yarn": "^1.10.1",
+    "faker": "^4.1.0"
   }
 }
