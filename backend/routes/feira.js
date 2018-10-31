@@ -1,9 +1,8 @@
 const router = require('express').Router();
-const authMiddleware = require('../middlewares/auth');
+// const authMiddleware = require('../middlewares/auth');
 const constrollerFeira = require('../controllers/feira');
 
-
-router.get('/info', authMiddleware.isSupervisor, authMiddleware.isFeirante, async (req, res) => {
+router.get('/info', async (req, res) => {
   const feira = await constrollerFeira.feiraInfo();
   if (feira != null) {
     res.status(200).send(feira);
@@ -15,24 +14,24 @@ router.get('/info', authMiddleware.isSupervisor, authMiddleware.isFeirante, asyn
 });
 
 
-router.post('/', authMiddleware.isSupervisor, async (req, res) => {
-  const { data } = req.body;
+router.post('/', async (req, res) => {
+  const dataA = req.body.data;
 
-  if (data == null) {
+  if (dataA == null) {
     res.status(400);
   }
+
+  const dataSplitted = [dataA.slice(0, 2), dataA.slice(3, 5), dataA.slice(6, 10)];
   const date = new Date();
 
-  const dataSplitted = data.split('/');
-
-  if (data.getDate() >= dataSplitted[0].parseInt()
-  || date.getMonth() >= dataSplitted[1].parseInt()
-  || date.getFullYear >= dataSplitted[2].parseInt()) {
+  if (date.getDate() > dataSplitted[0].parseInt
+  || date.getMonth() >= dataSplitted[1].parseInt
+  || date.getFullYear() >= dataSplitted[2].parseInt) {
     res.status(200).send({
       msg: 'data_nao_permitida',
     });
   } else {
-    const feira = await constrollerFeira.addFeira(data);
+    const feira = await constrollerFeira.addFeira(dataA.replace('/', '-').replace('/', '-'));
 
     if (feira == null) {
       res.status(400);
@@ -43,7 +42,7 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
     }
   }
 });
-router.post('/cancelar', authMiddleware.isSupervisor, async (req, res) => {
+router.post('/cancelar', async (req, res) => {
   const feira = await constrollerFeira.calcelaFeira();
 
   if (feira == null) {
