@@ -54,13 +54,15 @@ module.exports = function(sequelize, DataTypes) {
     }
   );
   Participa.associate = models => {
-    models.participa.hasMany(models.feira, {
-      foreignKey: 'data_feira',
-      targetKey: 'data',
+    models.feira.belongsToMany(models.feirante, {
+      through: models.participa,
+      as: "Feirantes",
+      foreignKey: "data_feira"
     });
-    models.participa.hasMany(models.feirante, {
-      foreignKey: "cpf_feirante",
-      targetKey: 'cpf',
+    models.feirante.belongsToMany(models.feira, {
+      through: models.participa,
+      as: "Feiras",
+      foreignKey: "cpf_feirante"
     });
     models.participa.belongsTo(models.celula, {
       foreignKey: "celula_id",
