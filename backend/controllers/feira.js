@@ -1,20 +1,33 @@
 const Sequelize = require('sequelize');
 const models = require('../models/');
+const { proximaSexta } = require('./utils');
 
 const op = Sequelize.Op;
 
-const findFeira = async () => {
+const findFeira = async (dataFeira) => {
+  const feira = await models.feira.findOne({
+    where: { data: dataFeira.toISOString().split('T')[0] },
+  });
+  if (feira === null) return null;
+  return feira;
+};
+
+const findFeiraAtual = async () => {
   const dataAtual = new Date();
   const nextData = new Date();
   dataAtual.setDate(dataAtual.getDate() - 1);
   nextData.setDate(nextData.getDate() + 7);
 
-  let hoje = dataAtual.getFullYear().toString();
-  hoje = hoje.concat('-', dataAtual.getMonth().toString(), '-', dataAtual.getDate().toString());
-  let prox = nextData.getFullYear().toString();
-  prox = prox.concat('-', nextData.getMonth().toString(), '-', nextData.getDate().toString());
+  // let hoje = dataAtual.getFullYear().toString();
+  // hoje = hoje.concat('-', dataAtual.getMonth().toString(), '-', dataAtual.getDate().toString());
+  // let prox = nextData.getFullYear().toString();
+  // prox = prox.concat('-', nextData.getMonth().toString(), '-', nextData.getDate().toString());
 
-  const feira = await models.feira.findOne({ // encontra a feira da semana
+  const hoje = dataAtual.toISOString().split('T')[0];
+  const prox = nextData.toISOString().split('T')[0];
+
+  const feira = await models.feira.findOne({
+    // encontra a feira da semana
     where: {
       data: {
         [op.between]: [hoje, prox],
@@ -25,8 +38,8 @@ const findFeira = async () => {
   return feira;
 };
 
-const feiraInfo = async () => {
-  const feira = await findFeira();
+const feiraAtualInfo = async () => {
+  const feira = await findFeiraAtual();
 
   if (feira != null) {
     return {
@@ -40,22 +53,23 @@ const feiraInfo = async () => {
   // senao retorna null
 };
 
-const addFeira = async (date) => {
-  const data = date.slice(6, 10).concat('-', date.slice(3, 5), '-', date.slice(0, 2));
+const addFeira = async (dataFeira) => {
+  //  const data = date.slice(6, 10).concat('-', date.slice(3, 5), '-', date.slice(0, 2));
 
-  const feira = await models.feira.findOne({
-    where: {
-      data,
-    },
-  });
-  if (feira != null) {
-    return null;
-  }
-
+  // const feira = await models.feira.findOne({
+  //   where: {
+  //     data,
+  //   },
+  // });
+  // console.log('aaaa')
+  // if (feira != null) {
+  //   return null;
+  // }
   const status = true;
   try {
     return await models.feira.create({
-      data,
+      data: dataFeira.toISOString().split('T')[0],
+      data_limite: proximaSexta().toISOString(),
       status,
     });
   } catch (error) {
@@ -66,10 +80,10 @@ const addFeira = async (date) => {
   // caso algum erro ocorra devolve null
 };
 
-const calcelaFeira = async () => {
-  const feira = await findFeira();
+const calcelaFeiraAtual = async () => {
+  const feira = await findFeiraAtual();
 
-  if (feira != null) {
+  if (feira !== null) {
     const disable = await feira.update({ status: false });
     return disable;
   }
@@ -79,8 +93,11 @@ const calcelaFeira = async () => {
   // desativa
   // retorna null se der errado
 };
+
 module.exports = {
-  feiraInfo,
+  findFeira,
+  findFeiraAtual,
+  feiraAtualInfo,
   addFeira,
-  calcelaFeira,
+  calcelaFeiraAtual,
 };

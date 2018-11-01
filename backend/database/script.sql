@@ -32,6 +32,7 @@ CREATE TABLE subcategoria (
 
 CREATE TABLE feira (
 	data DATE,
+	data_limite DATETIME,
 	status BOOLEAN DEFAULT false,
 
 	PRIMARY KEY (data)
