@@ -3,25 +3,23 @@ const authMiddleware = require('../middlewares/auth');
 const subcategoriaController = require('../controllers/subcategoria');
 const categoriaController = require('../controllers/categoria');
 
-// verificar o que os metodos add, update, e remove estão retornando nos controllers
-
 // Adicionar subcategoria
 router.post('/', authMiddleware.isSupervisor, async (req, res) => {
     const nome_sub = req.body.nome;
     const categoria_id = req.body.categoria_id;
 
-    if (nome_sub == null || categoria_id == null){
-        res.status(400);
+    if ( (nome_sub == null) || (categoria_id == null) ){
+        res.status(400).send();
     }
     else {
-        const categoria = await categoriaController.findById(categoria_id);
+        const categoria = await categoriaController.findCategoriaById(categoria_id);
         let resposta = '';
 
         if (categoria == null){
             resposta = 'categoria_nao_existente';
         } else {
             const cadastro = await subcategoriaController.addSubcategoria(
-                nome_sub, categoria.nome
+                nome_sub, categoria_id
             );
             if (cadastro != null) {
                 resposta = 'ok';
@@ -53,10 +51,10 @@ router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
 // Atualiza subcategoria
 router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_sub = req.params.id;
-    const nome = req.body.nome;
+    const { nome } = req.body;
 
     if(nome == null){
-        res.status(400);
+        res.status(400).send();
     } else{
         let resposta = '';
         const subcategoriaValidate = await subcategoriaController.findSubcategoriaById(id_sub);

@@ -23,7 +23,7 @@ const updateSubcategoria = async (id, nome) => {
   if (subcategoria === null) return null;
 
   try {
-    const res = await subcategoria.update({ nome });
+    const res = await subcategoria.update(nome);
     return res;
   } catch (error) {
     return null;
@@ -37,25 +37,24 @@ const deleteSubcategoria = async (subcategoriaId) => {
     return null;
   }
 };
+const listSubcategoriasByCategoria = async (categoriaId) => {
+  const subcategorias = await models.subcategoria.findAll({
+    where: {
+      categoria_id: categoriaId,
+    },
+  });
 
-// const listSubcategoriasByCategoria = async (categoriaId) => {
-//   const subcategorias = await models.subcategoria.findAll({
-//     where: {
-//       categoria_id: categoriaId,
-//     },
-//   });
+  if (subcategorias != null) {
+    return subcategorias;
+  }
 
-//   if (subcategorias != null) {
-//     return subcategorias;
-//   }
-
-//   return null;
-// };
+  return null;
+};
 
 module.exports = {
   findSubcategoriaById,
   addSubcategoria,
   updateSubcategoria,
   deleteSubcategoria,
-  // listSubcategoriasByCategoria,
+  listSubcategoriasByCategoria,
 };
