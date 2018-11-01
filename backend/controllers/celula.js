@@ -14,6 +14,20 @@ const findCelulaById = async (id) => {
   };
 };
 
+// Retorna celula reservada para um feirante
+const findCelulaByFeirante = async (cpfFeirante) => {
+  const celula = await models.celula.findOne({
+    where: { cpf_feirante: cpfFeirante },
+  });
+  if (celula === null) return null;
+
+  return {
+    id: celula.id,
+    cpf_feirante: celula.cpf_feirante,
+    periodo: celula.periodo,
+  };
+};
+
 const listCelula = async () => {
   const celulas = await models.celula.findAll();
   return celulas.map(el => ({
@@ -40,6 +54,7 @@ const updateCelula = async (id, dados) => {
 
 module.exports = {
   findCelulaById,
+  findCelulaByFeirante,
   listCelula,
   updateCelula,
 };

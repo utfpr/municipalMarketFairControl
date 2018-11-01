@@ -3,13 +3,15 @@ const categoriaController = require('../../controllers/categoria');
 const subCategoriaController = require('../../controllers/subcategoria');
 const models = require('../../models');
 
-after(() => {
-  models.sequelize.close();
-});
-
 describe('categoria.js', () => {
   beforeEach(() => {
     models.categoria.destroy({ where: {} });
+    models.subcategoria.destroy({ where: {} });
+  });
+
+  after(() => {
+    models.categoria.destroy({ where: {} });
+    models.subcategoria.destroy({ where: {} });
   });
 
   it('Cadastrar categorias', async () => {

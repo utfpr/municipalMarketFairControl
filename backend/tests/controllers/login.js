@@ -7,10 +7,6 @@ const loginController = require('../../controllers/login');
 const supervisorController = require('../../controllers/supervisor');
 const models = require('../../models');
 
-after(() => {
-  models.sequelize.close();
-});
-
 describe('login.js', () => {
   let feirante1;
   let feirante2;
@@ -69,6 +65,12 @@ describe('login.js', () => {
 
     supervisor1 = await supervisorController.addSupervisor('73332119087', 'Nome', '1234', false);
     supervisor2 = await supervisorController.addSupervisor('79381775044', 'Nome', '12345', false);
+  });
+
+  after(() => {
+    models.categoria.destroy({ where: {} });
+    models.supervisor.destroy({ where: {} });
+    models.feirante.destroy({ where: {} });
   });
 
   it('Faz login corretamente (supervisor)', async () => {

@@ -6,6 +6,7 @@ before(async () => {
   await models.subcategoria.destroy({ where: {} });
   await models.feirante.destroy({ where: {} });
   await models.supervisor.destroy({ where: {} });
+  await models.feira.destroy({ where: {} });
 });
 
 after(() => {
