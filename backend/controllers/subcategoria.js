@@ -23,7 +23,7 @@ const updateSubcategoria = async (id, nome) => {
   if (subcategoria === null) return null;
 
   try {
-    const res = await subcategoria.update(nome);
+    const res = await subcategoria.update({ nome });
     return res;
   } catch (error) {
     return null;
