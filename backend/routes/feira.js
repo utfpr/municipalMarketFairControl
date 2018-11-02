@@ -1,10 +1,10 @@
 const router = require('express').Router();
-// const authMiddleware = require('../middlewares/auth');
+const authMiddleware = require('../middlewares/auth');
 const constrollerFeira = require('../controllers/feira');
 
-router.get('/info', async (req, res) => {
-  const feira = await constrollerFeira.feiraInfo();
-  if (feira != null) {
+router.get('/info', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
+  const feira = await constrollerFeira.feiraAtualInfo();
+  if (feira !== null) {
     res.status(200).send(feira);
   } else {
     res.status(200).send({
@@ -13,37 +13,38 @@ router.get('/info', async (req, res) => {
   }
 });
 
-
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware.isSupervisor, async (req, res) => {
   const dataA = req.body.data;
-
-  if (dataA == null) {
-    res.status(400);
+  if (dataA === null || dataA === undefined) {
+    return res.status(400).send();
   }
 
   const dataSplitted = [dataA.slice(0, 2), dataA.slice(3, 5), dataA.slice(6, 10)];
-  const date = new Date();
+  const date = new Date(dataSplitted[2], dataSplitted[1], dataSplitted[0]);
 
-  if (date.getDate() > dataSplitted[0].parseInt
-  || date.getMonth() >= dataSplitted[1].parseInt
-  || date.getFullYear() >= dataSplitted[2].parseInt) {
-    res.status(200).send({
+  // if (
+  //   date.getDate() > dataSplitted[0].parseInt
+  //   || date.getMonth() >= dataSplitted[1].parseInt
+  //   || date.getFullYear() >= dataSplitted[2].parseInt
+  // ) {
+  if (date < new Date()) {
+    return res.status(200).send({
       msg: 'data_nao_permitida',
     });
-  } else {
-    const feira = await constrollerFeira.addFeira(dataA.replace('/', '-').replace('/', '-'));
-
-    if (feira == null) {
-      res.status(400);
-    } else {
-      res.status(200).send({
-        msg: 'ok',
-      });
-    }
   }
+
+  const feira = await constrollerFeira.addFeira(date);
+
+  if (feira === null) {
+    return res.status(400).send();
+  }
+  return res.status(200).send({
+    msg: 'ok',
+  });
 });
-router.post('/cancelar', async (req, res) => {
-  const feira = await constrollerFeira.calcelaFeira();
+
+router.post('/cancelar', authMiddleware.isSupervisor, async (req, res) => {
+  const feira = await constrollerFeira.cancelaFeiraAtual();
 
   if (feira == null) {
     res.status(200).send({
@@ -55,6 +56,5 @@ router.post('/cancelar', async (req, res) => {
     });
   }
 });
-
 
 module.exports = router;

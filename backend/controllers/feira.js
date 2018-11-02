@@ -32,18 +32,21 @@ const findFeiraAtual = async () => {
       data: {
         [op.between]: [hoje, prox],
       },
+      status: true,
     },
   });
 
   return feira;
 };
 
+// Realmente necessário?
 const feiraAtualInfo = async () => {
   const feira = await findFeiraAtual();
 
-  if (feira != null) {
+  if (feira !== null) {
     return {
       data: feira.data,
+      data_limite: feira.data_limite,
       status: feira.status,
     };
   }
@@ -51,6 +54,20 @@ const feiraAtualInfo = async () => {
   return null;
   // devolve a {data, status} da feira casa haja
   // senao retorna null
+};
+
+const setDataLimiteFeiraAtual = async (dataHora) => {
+  const feira = await findFeiraAtual();
+  if (feira === null) return null;
+
+  const agora = new Date();
+  if (dataHora < agora) return null;
+
+  try {
+    return await feira.update({ data_limite: dataHora });
+  } catch (error) {
+    return null;
+  }
 };
 
 const addFeira = async (dataFeira) => {
@@ -65,6 +82,10 @@ const addFeira = async (dataFeira) => {
   // if (feira != null) {
   //   return null;
   // }
+
+  const agora = new Date();
+  if (dataFeira < agora) return null;
+
   const status = true;
   try {
     return await models.feira.create({
@@ -80,7 +101,7 @@ const addFeira = async (dataFeira) => {
   // caso algum erro ocorra devolve null
 };
 
-const calcelaFeiraAtual = async () => {
+const cancelaFeiraAtual = async () => {
   const feira = await findFeiraAtual();
 
   if (feira !== null) {
@@ -98,6 +119,7 @@ module.exports = {
   findFeira,
   findFeiraAtual,
   feiraAtualInfo,
+  setDataLimiteFeiraAtual,
   addFeira,
-  calcelaFeiraAtual,
+  cancelaFeiraAtual,
 };

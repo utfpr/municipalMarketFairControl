@@ -9,6 +9,8 @@ const proximaSexta = () => {
   tmp.setDate(tmp.getDate() + ((((7 - tmp.getDay()) % 7) + 5) % 7));
   tmp.setUTCHours(18);
   tmp.setUTCMinutes(0);
+  tmp.setUTCSeconds(0);
+  tmp.setUTCMilliseconds(0);
   return tmp;
 };
 
