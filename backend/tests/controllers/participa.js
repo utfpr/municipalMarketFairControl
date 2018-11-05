@@ -203,10 +203,10 @@ describe('participa.js', () => {
       let clock = sinon.useFakeTimers(new Date('10-28-2018'));
       const feira = await feiraController.addFeira(proximaSexta());
       assert.isNotNull(feira);
-      clock.restore();
 
       const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       assert.isNotNull(confirmacao);
+      clock.restore();
 
       const data = new Date('11-02-2018');
       data.setUTCHours(18);
@@ -221,10 +221,10 @@ describe('participa.js', () => {
       let clock = sinon.useFakeTimers(new Date('10-28-2018'));
       const feira = await feiraController.addFeira(proximaSexta());
       assert.isNotNull(feira);
-      clock.restore();
 
       const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       assert.isNotNull(confirmacao);
+      clock.restore();
 
       const data = new Date('11-02-2018');
       data.setUTCHours(17);
@@ -275,4 +275,20 @@ describe('participa.js', () => {
   });
 
   describe('setPosicaoFeiranteFeiraAtual', () => {});
+
+  describe('isFeiranteConfirmadoFeiraAtual', () => {
+    it('Retorna true se feirante está confirmado na feira atual', async () => {
+      const feira = await feiraController.addFeira(amanha());
+      const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
+      assert.isNotNull(confirmacao);
+      assert.isTrue(await participaController.isFeiranteConfirmadoFeiraAtual(feirante.cpf));
+    });
+
+    it('Retorna false se feirante não está confirmado na feira atual', async () => {
+      const feira = await feiraController.addFeira(amanha());
+      // const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
+      // assert.isNotNull(confirmacao);
+      assert.isFalse(await participaController.isFeiranteConfirmadoFeiraAtual(feirante.cpf));
+    });
+  });
 });

@@ -102,4 +102,6 @@ const isAdmin = async (req, res, next) => {
   return res.status(401).end();
 };
 
-module.exports = { isFeirante, isSupervisor, isFeiranteOrSupervisor, isAdmin };
+module.exports = {
+  isFeirante, isSupervisor, isFeiranteOrSupervisor, isAdmin,
+};

@@ -40,6 +40,20 @@ const listFeirantesConfirmadosFeiraAtual = async () => {
   return ret;
 };
 
+const isFeiranteConfirmadoFeiraAtual = async (cpfFeirante) => {
+  const feiraAtual = await feiraController.findFeiraAtual();
+  if (feiraAtual === null) return null;
+
+  const participacao = await models.participa.findOne({
+    where: {
+      cpf_feirante: cpfFeirante,
+      data_feira: feiraAtual.data,
+    },
+  });
+  if (participacao === null) return false;
+  return true;
+};
+
 const confirmaPresencaFeiraAtual = async (cpfFeirante, periodo) => {
   if (periodo < 1 || periodo > 3) return null;
 
@@ -144,11 +158,14 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
 
   if (confirmacao === null) return null;
 
-  const celula = await celulaController.findCelulaById(celulaId);
-  if (celula.periodo !== confirmacao.periodo) return null;
-
+  if (celulaId !== null) {
+    const celula = await celulaController.findCelulaById(celulaId);
+    if (celula.periodo !== confirmacao.periodo) return null;
+  }
+ 
   if (celulaId === null) {
     try {
+     
       return await confirmacao.update({ celula_id: null });
     } catch (error) {
       return null;
@@ -185,4 +202,5 @@ module.exports = {
   cancelaPresencaFeiraAtual,
   getDadosCelulaFeiraAtual,
   setPosicaoFeiranteFeiraAtual,
+  isFeiranteConfirmadoFeiraAtual,
 };
