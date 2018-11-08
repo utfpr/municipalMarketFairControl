@@ -1,5 +1,5 @@
-const supervisorController = require('../controllers/supervisor')
+const supervisorController = require('../controllers/supervisor');
 
 supervisorController.addSupervisor('56662192007', 'Admin', '123456', true).then(() => {
-    process.exit(0)
+  process.exit(0);
 });
