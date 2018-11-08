@@ -67,9 +67,11 @@ router.post('/', authMiddleware.isAdmin, async (req, res) => {
 // put update supervisor
 router.put('/:cpf', authMiddleware.isAdmin, async (req, res) => {
   const { nome, senha } = req.body;
+  const isAdm = req.body.is_adm;
   const cpfS = req.params.cpf;
 
   const cpfValido = CPF.validate(CPF.strip(cpfS));
+
 
   if (cpfValido.code === 'INVALID' || cpfValido.code === 'LENGTH') {
     // validação cpf
@@ -80,8 +82,15 @@ router.put('/:cpf', authMiddleware.isAdmin, async (req, res) => {
 
   if (supervisorValidate != null) {
     // supervisor encontrado
-    const status = true;
-    const supervisor = await supervisorController.updateSupervisor(cpfS, { status, nome, senha });
+    // const status = true; // WTF?
+    //const supervisor = await supervisorController.updateSupervisor(cpfS, { status, nome, senha });
+
+
+    const supervisor = await supervisorController.updateSupervisor(cpfS, {
+      ...(nome !== undefined ? { nome } : {}),
+      ...(senha !== undefined ? { senha } : {}),
+      ...(isAdm !== undefined ? { is_adm: isAdm } : {}),
+    })
 
     if (supervisor != null) {
       res.status(200).send({
@@ -110,6 +119,16 @@ router.delete('/:cpf', authMiddleware.isAdmin, async (req, res) => {
   const supervisorValidate = await supervisorController.findSupervisorByCpf(cpfS);
 
   if (supervisorValidate != null) {
+
+    // Possível problema no futuro: E se o ultimo administrador for excluido?
+    const admins = (await supervisorController.listSupervisor()).filter(supervisor => supervisor.is_adm);
+    if (admins.length <= 1) {
+      return res.send({
+        msg: 'ultimo_admin',
+      });
+    }
+
+
     // supervisor encontrado
     const supervisor = await supervisorController.deleteSupervisor(cpfS);
     if (supervisor != null) {

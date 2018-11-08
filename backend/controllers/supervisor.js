@@ -46,7 +46,7 @@ const listSupervisor = async () => {
   return supervisores.map(el => ({
     cpf: el.cpf,
     nome: el.nome,
-    is_adm: el.is_adm,
+    is_adm: el.is_adm === 1,
   }));
 };
 
@@ -71,6 +71,7 @@ const updateSupervisor = async (cpf, dados) => {
   const supervisor = await models.supervisor.findOne({
     where: { cpf, status: true },
   });
+
 
   if (supervisor === null) return null;
 
