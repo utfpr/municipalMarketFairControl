@@ -37,7 +37,7 @@
                       <a-button type="primary">Adicionar</a-button>
                     </a-form-item>
                   </a-col>
-                </div>  
+                </div>
               </a-form>
             </div>
           </div>
@@ -47,6 +47,7 @@
   </a-layout>
 </template>
 <script>
+import * as categoriaAPI from '@/api/categoria'
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 8 },
