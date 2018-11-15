@@ -10,6 +10,11 @@ describe('subcategoria.js', () => {
     await models.subcategoria.destroy({ where: {} });
   });
 
+  after(() => {
+    models.categoria.destroy({ where: {} });
+    models.subcategoria.destroy({ where: {} });
+  });
+
   describe('findSubcategoriaById', () => {
     it('Retorna null caso não encontrar', async () => {
       // Recuperando um subcategoria inexistente

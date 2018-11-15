@@ -3,7 +3,6 @@ const CPF = require('cpf-check');
 const authMiddleware = require('../middlewares/auth');
 const supervisorController = require('../controllers/supervisor');
 
-
 // get supervisores
 router.get('/', async (req, res) => {
   const supervisores = await supervisorController.listSupervisor();
@@ -49,7 +48,10 @@ router.post('/', authMiddleware.isAdmin, async (req, res) => {
     if (cpfExist == null) {
       // cpf não consta na base de dados, pode ser cadastrado
       const cadastro = await supervisorController.addSupervisor(
-        CPF.strip(cpfS), nomeS, senhaS, isAdm,
+        CPF.strip(cpfS),
+        nomeS,
+        senhaS,
+        isAdm,
       );
       if (cadastro != null) {
         resposta = 'ok';
@@ -67,6 +69,7 @@ router.post('/', authMiddleware.isAdmin, async (req, res) => {
 // put update supervisor
 router.put('/:cpf', authMiddleware.isAdmin, async (req, res) => {
   const { nome, senha } = req.body;
+  const isAdm = req.body.is_adm;
   const cpfS = req.params.cpf;
 
   const cpfValido = CPF.validate(CPF.strip(cpfS));
@@ -80,8 +83,15 @@ router.put('/:cpf', authMiddleware.isAdmin, async (req, res) => {
 
   if (supervisorValidate != null) {
     // supervisor encontrado
-    const status = true;
-    const supervisor = await supervisorController.updateSupervisor(cpfS, { status, nome, senha });
+    // const status = true; // WTF?
+    // const supervisor =
+    // await supervisorController.updateSupervisor(cpfS, { status, nome, senha });
+
+    const supervisor = await supervisorController.updateSupervisor(cpfS, {
+      ...(nome !== undefined ? { nome } : {}),
+      ...(senha !== undefined ? { senha } : {}),
+      ...(isAdm !== undefined ? { is_adm: isAdm } : {}),
+    });
 
     if (supervisor != null) {
       res.status(200).send({
@@ -104,26 +114,35 @@ router.delete('/:cpf', authMiddleware.isAdmin, async (req, res) => {
 
   if (cpfValido.code === 'INVALID' || cpfValido.code === 'LENGTH') {
     // validação cpf
-    res.status(400);
+    return res.status(400);
   }
 
   const supervisorValidate = await supervisorController.findSupervisorByCpf(cpfS);
 
   if (supervisorValidate != null) {
+    // Possível problema no futuro: E se o ultimo administrador for excluido?
+    const admins = (await supervisorController.listSupervisor()).filter(
+      supervisor => supervisor.is_adm,
+    );
+    if (admins.length <= 1) {
+      return res.send({
+        msg: 'ultimo_admin',
+      });
+    }
+
     // supervisor encontrado
     const supervisor = await supervisorController.deleteSupervisor(cpfS);
     if (supervisor != null) {
       // supervisor "removido"
-      res.status(200).send({
+      return res.status(200).send({
         msg: 'ok',
       });
     }
-  } else {
-    // supervisor nao encontrado
-    res.status(200).send({
-      msg: 'cpf_nao_existente',
-    });
   }
+  // supervisor nao encontrado
+  return res.status(200).send({
+    msg: 'cpf_nao_existente',
+  });
 });
 
 module.exports = router;

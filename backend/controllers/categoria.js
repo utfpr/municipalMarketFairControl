@@ -38,9 +38,11 @@ const findCategoriaById = async (id) => {
 };
 
 const deleteCategoria = async (id) => {
-  await models.categoria.destroy({
-    where: { id },
-  });
+  try {
+    return await models.categoria.destroy({ where: { id } });
+  } catch (error) {
+    return null;
+  }
 };
 
 const updateCategoria = async (id, dados) => {

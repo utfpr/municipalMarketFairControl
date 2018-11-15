@@ -3,13 +3,13 @@ const faker = require('faker');
 const supervisorController = require('../../controllers/supervisor');
 const models = require('../../models');
 
-after(() => {
-  models.sequelize.close();
-});
-
 describe('supervisor.js', () => {
   beforeEach(async () => {
     await models.supervisor.destroy({ where: {} });
+  });
+
+  after(() => {
+    models.supervisor.destroy({ where: {} });
   });
 
   describe('addSupervisor', () => {

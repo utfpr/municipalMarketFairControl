@@ -1,13 +1,11 @@
 const { assert } = require('chai');
 const faker = require('faker');
 
+const participaController = require('../../controllers/participa');
+const feiraController = require('../../controllers/feira');
 const categoriaController = require('../../controllers/categoria');
 const feiranteController = require('../../controllers/feirante');
 const models = require('../../models');
-
-after(() => {
-  models.sequelize.close();
-});
 
 describe('feirante.js', () => {
   let subcategoria;
@@ -19,8 +17,17 @@ describe('feirante.js', () => {
   });
 
   beforeEach(async () => {
+    await models.participa.destroy({ where: {} });
+    await models.feira.destroy({ where: {} });
     await models.endereco.destroy({ where: {} });
     await models.feirante.destroy({ where: {} });
+  });
+
+  after(() => {
+    models.participa.destroy({ where: {} });
+    models.feira.destroy({ where: {} });
+    models.endereco.destroy({ where: {} });
+    models.feirante.destroy({ where: {} });
   });
 
   describe('addFeirante', () => {
