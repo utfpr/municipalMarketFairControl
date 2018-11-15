@@ -32,6 +32,7 @@ CREATE TABLE subcategoria (
 
 CREATE TABLE feira (
 	data DATE,
+	data_limite DATETIME,
 	status BOOLEAN DEFAULT false,
 
 	PRIMARY KEY (data)
@@ -60,11 +61,11 @@ CREATE TABLE feirante (
 
 CREATE TABLE endereco (
 	id INTEGER AUTO_INCREMENT,
-	logradouro VARCHAR(100),
+	logradouro VARCHAR(100) NOT NULL,
 	bairro VARCHAR (100),
 	numero INTEGER,
 	CEP VARCHAR(10),
-	cpf_feirante VARCHAR(15),
+	cpf_feirante VARCHAR(15) NOT NULL,
 
 	PRIMARY KEY (id),
 	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE

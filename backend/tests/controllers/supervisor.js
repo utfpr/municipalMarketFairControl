@@ -1,172 +1,265 @@
 const { assert } = require('chai');
-const bcrypt = require('bcrypt');
+const faker = require('faker');
 const supervisorController = require('../../controllers/supervisor');
 const models = require('../../models');
 
-after(() => {
-  models.sequelize.close();
-});
+describe('supervisor.js', () => {
+  beforeEach(async () => {
+    await models.supervisor.destroy({ where: {} });
+  });
 
-describe('Teste controller supervisor', () => {
-  before(() => {
+  after(() => {
     models.supervisor.destroy({ where: {} });
   });
 
-  it('Cadastra alguns supervisores', async () => {
-    let res = await supervisorController.addSupervisor(
-      '11111111111',
-      'Carlos Sumaré',
-      '1234',
-      true,
-    );
-    assert.isNotNull(res);
-
-    res = await supervisorController.addSupervisor('11111111112', 'Daniel Ourival', '1234', false);
-    assert.isNotNull(res);
-
-    res = await supervisorController.addSupervisor(
-      '11111111113',
-      'Demervaldo Batista',
-      '1234',
-      false,
-    );
-    assert.isNotNull(res);
-
-    res = await supervisorController.addSupervisor('11111111114', 'Jorel', '1234', false);
-    assert.isNotNull(res);
-  });
-
-  it('Não cadastra um supervisor existente', async () => {
-    const res = await supervisorController.addSupervisor(
-      '11111111111',
-      'Carlos Sumaré',
-      '1234',
-      false,
-    );
-    assert.isNull(res);
-  });
-
-  it('Não cadastra um supervisor com informações faltando', async () => {
-    const res = await supervisorController.addSupervisor('11111111111', null, '1234', false);
-    assert.isNull(res);
-  });
-
-  it('Lista supervisores', async () => {
-    const supervisores = await supervisorController.listSupervisor();
-    assert.lengthOf(supervisores, 4);
-
-    assert.deepEqual(supervisores.filter(el => el.cpf === '11111111111')[0], {
-      cpf: '11111111111',
-      nome: 'Carlos Sumaré',
-      is_adm: 1,
+  describe('addSupervisor', () => {
+    it('Cadastra um supervisor', async () => {
+      const supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+      assert.isNotNull(supervisor);
     });
 
-    assert.deepEqual(supervisores.filter(el => el.cpf === '11111111112')[0], {
-      cpf: '11111111112',
-      nome: 'Daniel Ourival',
-      is_adm: 0,
+    it('Não cadastra um supervisor com informação faltando', async () => {
+      const supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        null,
+        faker.name.firstName(),
+        true,
+      );
+      assert.isNull(supervisor);
     });
 
-    assert.deepEqual(supervisores.filter(el => el.cpf === '11111111113')[0], {
-      cpf: '11111111113',
-      nome: 'Demervaldo Batista',
-      is_adm: 0,
+    it('Não cadastra um supervisor repetido', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+      assert.isNotNull(supervisor);
+
+      supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+      assert.isNull(supervisor);
     });
 
-    assert.deepEqual(supervisores.filter(el => el.cpf === '11111111114')[0], {
-      cpf: '11111111114',
-      nome: 'Jorel',
-      is_adm: 0,
+    it('Re-ativa um supervisor', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+      assert.isNotNull(supervisor);
+
+      const res = await supervisorController.deleteSupervisor(supervisor.cpf);
+      assert.isNotNull(res);
+
+      supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+      assert.isNotNull(supervisor);
     });
   });
 
-  it('Busca supervisor pelo cpf - existente', async () => {
-    const s1 = await supervisorController.findSupervisorByCpf('11111111114');
-    assert.deepEqual(s1, {
-      cpf: '11111111114',
-      nome: 'Jorel',
-      is_adm: 0,
+  describe('listSupervisor', () => {
+    it('Retorna vazio se não existir supervisor', async () => {
+      const supervisores = await supervisorController.listSupervisor();
+      assert.lengthOf(supervisores, 0);
+    });
+
+    it('Retorna lista de supervisores', async () => {
+      let supervisores = await supervisorController.listSupervisor();
+      assert.lengthOf(supervisores, 0);
+
+      const supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+      supervisores = await supervisorController.listSupervisor();
+      assert.lengthOf(supervisores, 1);
+      assert.strictEqual(supervisores[0].cpf, supervisor.cpf);
+    });
+
+    it('Não lista supervisor inativo', async () => {
+      let supervisores = await supervisorController.listSupervisor();
+      assert.lengthOf(supervisores, 0);
+
+      const supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+
+      const supervisor2 = await supervisorController.addSupervisor(
+        '83762032076',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+      await supervisorController.deleteSupervisor(supervisor2.cpf);
+
+      supervisores = await supervisorController.listSupervisor();
+      assert.lengthOf(supervisores, 1);
+      assert.strictEqual(supervisores[0].cpf, supervisor.cpf);
     });
   });
 
-  it('Busca supervisor pelo cpf - inexistente', async () => {
-    const s1 = await supervisorController.findSupervisorByCpf('11111111116');
-    assert.isNull(s1);
-  });
-
-  it('Atualiza supervisor', async () => {
-    let supervisor = await supervisorController.findSupervisorByCpf('11111111114');
-    assert.strictEqual(supervisor.nome, 'Jorel');
-
-    const res = await supervisorController.updateSupervisor('11111111114', { nome: 'Jorel2' });
-    assert.isNotNull(res);
-
-    supervisor = await supervisorController.findSupervisorByCpf('11111111114');
-    assert.strictEqual(supervisor.nome, 'Jorel2');
-  });
-
-  it('Atualiza supervisor (vários campos)', async () => {
-    let supervisor = await supervisorController.findSupervisorByCpf('11111111114');
-    assert.strictEqual(supervisor.nome, 'Jorel2');
-    assert.strictEqual(supervisor.is_adm, 0);
-
-    const res = await supervisorController.updateSupervisor('11111111114', {
-      nome: 'Jorel3',
-      is_adm: 1,
+  describe('findSupervisorByCpf', () => {
+    it('Retorna null se supervisor não existe', async () => {
+      const supervisor = await supervisorController.findSupervisorByCpf('58295846035');
+      assert.isNull(supervisor);
     });
-    assert.isNotNull(res);
 
-    supervisor = await supervisorController.findSupervisorByCpf('11111111114');
-    assert.strictEqual(supervisor.nome, 'Jorel3');
-    assert.strictEqual(supervisor.is_adm, 1);
-  });
+    it('Retorna supervisor', async () => {
+      const supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
 
-  it('Atualiza senha supervisor', async () => {
-    let supervisor = await supervisorController.findSupervisorByCpf('11111111114');
-
-    const res = await supervisorController.updateSupervisor('11111111114', {
-      senha: 'nova_senha',
+      const supervisorFind = await supervisorController.findSupervisorByCpf('58295846035');
+      assert.isNotNull(supervisorFind);
+      assert.strictEqual(supervisor.cpf, supervisorFind.cpf);
     });
-    assert.isNotNull(res);
 
-    supervisor = await models.supervisor.findOne({ where: { cpf: '11111111114' } });
-    assert.isTrue(await bcrypt.compare('nova_senha', supervisor.senha));
-  });
+    it('Retorna null se supervisor for inativo', async () => {
+      const supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
 
-  it('Não deixa atualizar status supervisor', async () => {
-    const res = await supervisorController.updateSupervisor('11111111114', {
-      status: 0,
+      await supervisorController.deleteSupervisor(supervisor.cpf);
+
+      const supervisorFind = await supervisorController.findSupervisorByCpf('58295846035');
+      assert.isNull(supervisorFind);
     });
-    assert.isNotNull(res);
-
-    const supervisor = await supervisorController.findSupervisorByCpf('11111111114');
-    assert.isNotNull(supervisor);
   });
 
-  it('Não atualiza supervisor inexistente', async () => {
-    const res = await supervisorController.updateSupervisor('11111111118', { nome: 'Jorel2' });
-    assert.isNull(res);
+  describe('updateSupervisor', () => {
+    it('Não atualiza supervisor que não existe', async () => {
+      const supervisor = await supervisorController.updateSupervisor('58295846035', {
+        nome: faker.name.firstName(),
+        senha: faker.name.firstName(),
+        is_adm: true,
+      });
+      assert.isNull(supervisor);
+    });
+
+    it('Não atualiza supervisor desativado', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+
+      await supervisorController.deleteSupervisor(supervisor.cpf);
+
+      supervisor = await supervisorController.updateSupervisor('58295846035', {
+        nome: faker.name.firstName(),
+        senha: faker.name.firstName(),
+        is_adm: true,
+      });
+      assert.isNull(supervisor);
+    });
+
+    it('Não deixa atualizar status', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+
+      supervisor = await supervisorController.updateSupervisor('58295846035', {
+        status: false,
+      });
+      assert.isNull(supervisor);
+    });
+
+    it('Atualiza somente senha', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+
+      supervisor = await supervisorController.updateSupervisor('58295846035', {
+        senha: faker.name.firstName(),
+      });
+      assert.isNotNull(supervisor);
+    });
+
+    it('Atualiza todos os campos exceto senha', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+
+      const novoNome = faker.name.firstName();
+
+      supervisor = await supervisorController.updateSupervisor('58295846035', {
+        nome: novoNome,
+        is_adm: false,
+      });
+      assert.isNotNull(supervisor);
+      assert.strictEqual(supervisor.nome, novoNome);
+    });
   });
 
-  it('Deleta supervisor', async () => {
-    let res = await supervisorController.findSupervisorByCpf('11111111114');
-    assert.isNotNull(res);
+  describe('deleteSupervisor', () => {
+    it('Não deleta supervisor que não existe', async () => {
+      const supervisor = await supervisorController.deleteSupervisor('58295846035');
+      assert.isNull(supervisor);
+    });
 
-    res = await supervisorController.deleteSupervisor('11111111114');
-    assert.isNotNull(res);
+    it('Não deleta supervisor desativado', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
 
-    res = await supervisorController.findSupervisorByCpf('11111111114');
-    assert.isNull(res);
-  });
+      await supervisorController.deleteSupervisor(supervisor.cpf);
+      supervisor = await supervisorController.deleteSupervisor(supervisor.cpf);
+      assert.isNull(supervisor);
+    });
 
-  it('Não delete supervisor que já foi deletado', async () => {
-    const res = await supervisorController.deleteSupervisor('11111111114');
-    assert.isNull(res);
-  });
+    it('Deleta supervisor', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
 
-  it('Retorna um array vazio quando não tem supervisor', async () => {
-    await models.supervisor.destroy({ where: {} });
-    const supervisores = await supervisorController.listSupervisor();
-    assert.lengthOf(supervisores, 0);
+      supervisor = await supervisorController.deleteSupervisor(supervisor.cpf);
+      assert.isNotNull(supervisor);
+
+      supervisor = await supervisorController.findSupervisorByCpf(supervisor.cpf);
+      assert.isNull(supervisor);
+    });
   });
 });

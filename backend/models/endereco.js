@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       logradouro: {
         type: DataTypes.STRING(100),
-        allowNull: true,
+        allowNull: false,
       },
       bairro: {
         type: DataTypes.STRING(100),
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       cpf_feirante: {
         type: DataTypes.STRING(15),
-        allowNull: true,
+        allowNull: false,
         references: {
           model: 'feirante',
           key: 'cpf',

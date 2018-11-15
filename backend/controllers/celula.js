@@ -1,11 +1,24 @@
 const models = require('../models');
-const feiranteController = require('../controllers/feirante');
 
 const findCelulaById = async (id) => {
   const celula = await models.celula.findOne({
     where: { id },
   });
 
+  if (celula === null) return null;
+
+  return {
+    id: celula.id,
+    cpf_feirante: celula.cpf_feirante,
+    periodo: celula.periodo,
+  };
+};
+
+// Retorna celula reservada para um feirante
+const findCelulaByFeirante = async (cpfFeirante) => {
+  const celula = await models.celula.findOne({
+    where: { cpf_feirante: cpfFeirante },
+  });
   if (celula === null) return null;
 
   return {
@@ -24,28 +37,24 @@ const listCelula = async () => {
   }));
 };
 
-const updateCelula = async (id, cpfFeirante, periodo) => {
+const updateCelula = async (id, dados) => {
   const celula = await models.celula.findOne({ where: { id } });
   if (celula === null) return null;
 
-  const feirante = await models.feirante.findOne({
-    where: { cpf: cpfFeirante, status: true },
-  });
-  if (feirante === null) return null;
+  const { periodo } = dados;
 
-  if (periodo === 1 || periodo === 2 || periodo === 3) {
-    try {
-      return await celula.update({ cpf_feirante: cpfFeirante, periodo });
-    } catch (error) {
-      return null;
-    }
+  if (periodo !== undefined && (periodo < 1 || periodo > 3)) return null;
+
+  try {
+    return await celula.update(dados);
+  } catch (error) {
+    return null;
   }
-
-  return null;
 };
 
 module.exports = {
   findCelulaById,
+  findCelulaByFeirante,
   listCelula,
   updateCelula,
 };

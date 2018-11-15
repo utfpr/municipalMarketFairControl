@@ -1,64 +1,86 @@
-const chance = require('chance').Chance();
 const { assert } = require('chai');
 const categoriaController = require('../../controllers/categoria');
+const subCategoriaController = require('../../controllers/subcategoria');
 const models = require('../../models');
 
-after(() => {
-    models.sequelize.close();
+describe('categoria.js', () => {
+  beforeEach(() => {
+    models.categoria.destroy({ where: {} });
+    models.subcategoria.destroy({ where: {} });
   });
 
-  describe.only('Teste categoria controller', ()=>{
-    beforeEach(() => {
-        models.categoria.destroy({ where: {} });
-      });
-
-  it('Cadastrar categorias', async()=>{
-      models.categoria.destroy({ where: {} });
-      let res = await categoriaController.addCategoria('Salgadinhos', true);
-      //console.log(res.dataValues.id);
-      assert.isNotNull(res);
-
+  after(() => {
+    models.categoria.destroy({ where: {} });
+    models.subcategoria.destroy({ where: {} });
   });
- 
-  it('Achar por id', async()=>{
-    await models.categoria.destroy({ where: { } });
-    let res = await categoriaController.addCategoria('Pastel', true);
+
+  it('Cadastrar categorias', async () => {
+    models.categoria.destroy({ where: {} });
+    const res = await categoriaController.addCategoria('Salgadinhos', true);
     assert.isNotNull(res);
-    let categoria = await categoriaController.findByid(res.dataValues.id);
+  });
+
+  it('Achar por id', async () => {
+    await models.categoria.destroy({ where: {} });
+    const res = await categoriaController.addCategoria('Pastel', true);
+    assert.isNotNull(res);
+    const categoria = await categoriaController.findCategoriaById(res.id);
     assert.isNotNull(categoria);
   });
 
-  it('Remover por Id', async()=>{
-    let categoria = await categoriaController.addCategoria('Verduras', true);
+  it('Remover por Id', async () => {
+    const categoria = await categoriaController.addCategoria('Verduras', true);
     assert.isNotNull(categoria);
-    let res = await categoriaController.removeCategoria(categoria.dataValues.id);
+    let res = await categoriaController.deleteCategoria(categoria.id);
     assert.isNotNull(res);
-    res = await categoriaController.findByid(categoria.dataValues.id);
+    res = await categoriaController.findCategoriaById(categoria.id);
     assert.isNull(res);
   });
 
-  it('Atualizar dados', async()=>{
-    let categoria = await categoriaController.addCategoria('Caldo de cana', true);
+  it('Remover por Id (com subcategoria)', async () => {
+    const categoria = await categoriaController.addCategoria('Verduras', true);
     assert.isNotNull(categoria);
-    let res = await categoriaController.updateCategoria(categoria.dataValues.id, {need_cnpj: false});
+
+    let subcategoria = await categoria.createSubCategoria({ nome: 'Alface' });
+    assert.isNotNull(subcategoria);
+
+    subcategoria = await subCategoriaController.findSubcategoriaById(subcategoria.id);
+    assert.isNotNull(subcategoria);
+
+    let res = await categoriaController.deleteCategoria(categoria.id);
     assert.isNotNull(res);
-    let res1 = await categoriaController.updateCategoria(categoria.dataValues.id, {nome: "Artesanato", need_cnpj: false});
-    assert.isNotNull(res1);
-    console.log(categoria.dataValues);
-    let novo = await categoriaController.findByid(categoria.dataValues.id);
-    console.log(novo);
+
+    res = await categoriaController.findCategoriaById(categoria.id);
+    assert.isNull(res);
+
+    subcategoria = await subCategoriaController.findSubcategoriaById(subcategoria.id);
+    assert.isNull(subcategoria);
   });
 
-  it('Listar todas Categorias', async()=>{
+  it('Atualizar dados', async () => {
+    const categoria = await categoriaController.addCategoria('Caldo de cana', true);
+    assert.isNotNull(categoria);
+    const res = await categoriaController.updateCategoria(categoria.id, {
+      need_cnpj: false,
+    });
+    assert.isNotNull(res);
+    const res1 = await categoriaController.updateCategoria(categoria.id, {
+      nome: 'Artesanato',
+      need_cnpj: false,
+    });
+    assert.isNotNull(res1);
+    assert.strictEqual(res1.nome, 'Artesanato');
+  });
+
+  it('Listar todas Categorias', async () => {
     let categoria = await categoriaController.addCategoria('Caldo de cana', true);
     assert.isNotNull(categoria);
     categoria = await categoriaController.addCategoria('Verduras', true);
     assert.isNotNull(categoria);
-    let res = await categoriaController.addCategoria('Pastel', true);
+    const res = await categoriaController.addCategoria('Pastel', true);
     assert.isNotNull(res);
 
-    let categorias = await categoriaController.listCategorias();
-    console.log(categorias);
-  })
-
+    const categorias = await categoriaController.listCategoria();
+    assert.lengthOf(categorias, 3);
+  });
 });

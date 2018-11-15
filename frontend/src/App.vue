@@ -5,14 +5,19 @@
       <a-layout>
         <a-layout-sider id="sider">
           <ul>
-            <li><router-link to="/crud">CRUD</router-link></li>
+            <li>
+              <router-link to="/crud">CRUD</router-link>
+            </li>
+            <li>
+              <router-link to="/categoria">Categoria</router-link>
+            </li>
           </ul>
         </a-layout-sider>
         <a-layout-content>
-          <router-view/>
+          <router-view />
         </a-layout-content>
       </a-layout>
-     
+
     </a-layout>
   </div>
 </template>
@@ -22,6 +27,7 @@
 #app .ant-layout {
   height: 100%;
 }
+
 #header {
   background-color: lightgray;
 }
