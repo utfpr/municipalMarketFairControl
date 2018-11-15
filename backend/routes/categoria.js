@@ -11,7 +11,6 @@ router.post('/', async (req, res) => {
     console.log(need_cnpj)
     if ((nome == null) || (need_cnpj == null) || (need_cnpj !== 0 && need_cnpj !== 1)) {
         res.status(400).send();
-
     } else {
         const categoria = await categoriaController.addCategoria(
             nome, need_cnpj
