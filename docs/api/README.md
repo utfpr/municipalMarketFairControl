@@ -1,15 +1,15 @@
 # Documentação API
 
-## - Autenticação - [`/login`](login.md)
+## - Autenticação - [`/api/login`](login.md)
 
-## - Supervisor - [`/supervisor`](supervisor.md)
+## - Supervisor - [`/api/supervisor`](supervisor.md)
 
-## - Feirante - [`/feirante`](feirante.md)
+## - Feirante - [`/api/feirante`](feirante.md)
 
-## - Feira - [`/feira`](feira.md)
+## - Feira - [`/api/feira`](feira.md)
 
-## - Célula - [`/celula`](celula.md)
+## - Célula - [`/api/celula`](celula.md)
 
-## - Categoria - [`/categoria`](categoria.md)
+## - Categoria - [`/api/categoria`](categoria.md)
 
-## - Subcategoria - [`/subcategoria`](subcategoria.md)
+## - Subcategoria - [`/api/subcategoria`](subcategoria.md)
