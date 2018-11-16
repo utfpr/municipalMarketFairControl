@@ -19,7 +19,9 @@ export default {
                 left: this.left,
                 width: this.width,
                 height: this.height,
-                backgroundColor: this.selected ? 'red' : 'green'
+                backgroundColor: this.selected ?'#91d5ff' :'#d9d9d9' ,
+                border: '1px solid #873800',
+                borderRadius: '3px'
             }
         }
 
@@ -40,7 +42,7 @@ export default {
 
 <style scoped>
 .cell {
-  background-color: lightgreen;
+
   position: absolute;
   cursor: pointer;
 }

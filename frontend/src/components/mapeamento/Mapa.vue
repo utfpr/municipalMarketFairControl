@@ -72,17 +72,17 @@ export default {
             this.celulas = [
                 {
                     id: 1,
-                    top: this.transformPos(0.04, this.bgHeight),
-                    left: this.transformPos(0.12, this.bgWidth),
-                    width: this.transformPos(0.04, this.bgWidth),
-                    height: this.transformPos(0.04, this.bgHeight)
+                    top: this.transformPos(0.035, this.bgHeight),
+                    left: this.transformPos(0.115, this.bgWidth),
+                    width: this.transformPos(0.047, this.bgWidth),
+                    height: this.transformPos(0.045, this.bgHeight)
                 },
                 {
                     id: 2,
-                    top: this.transformPos(0.04, this.bgHeight),
-                    left: this.transformPos(0.84, this.bgWidth),
-                    width: this.transformPos(0.04, this.bgWidth),
-                    height: this.transformPos(0.04, this.bgHeight)
+                    top: this.transformPos(0.1, this.bgHeight),
+                    left: this.transformPos(0.115, this.bgWidth),
+                    width: this.transformPos(0.047, this.bgWidth),
+                    height: this.transformPos(0.045, this.bgHeight)
                 },
             ]
         }
