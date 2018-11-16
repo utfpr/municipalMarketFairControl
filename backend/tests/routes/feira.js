@@ -14,6 +14,8 @@ const { assert } = chai;
 
 chai.use(chaiHttp);
 
+const host = '/api/feira/';
+
 describe('feira.js', () => {
   let tokenFeirante;
   let feirante;
@@ -71,7 +73,7 @@ describe('feira.js', () => {
       await feiraController.addFeira(amanha());
       const res = await chai
         .request(app)
-        .get('/feira/info')
+        .get(`${host}info`)
         .set('token', tokenFeirante);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(
@@ -86,7 +88,7 @@ describe('feira.js', () => {
       await feiraController.addFeira(amanha());
       const res = await chai
         .request(app)
-        .get('/feira/info')
+        .get(`${host}info`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(
@@ -101,7 +103,7 @@ describe('feira.js', () => {
       await feiraController.addFeira(amanha());
       const res = await chai
         .request(app)
-        .get('/feira/info')
+        .get(`${host}info`)
         .set('token', '');
       assert.strictEqual(res.statusCode, 401);
     });
@@ -109,7 +111,7 @@ describe('feira.js', () => {
     it('Retorna "feira_invalida" se não existir feira atual', async () => {
       const res = await chai
         .request(app)
-        .get('/feira/info')
+        .get(`${host}info`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'feira_invalida');
@@ -120,7 +122,7 @@ describe('feira.js', () => {
     it('Feirante não pode adicionar feira', async () => {
       const res = await chai
         .request(app)
-        .post('/feira')
+        .post(host)
         .set('token', tokenFeirante);
 
       assert.strictEqual(res.statusCode, 401);
@@ -129,14 +131,14 @@ describe('feira.js', () => {
     it('Retorna erro se data for inválida/faltar', async () => {
       let res = await chai
         .request(app)
-        .post('/feira')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({});
       assert.strictEqual(res.statusCode, 400);
 
       res = await chai
         .request(app)
-        .post('/feira')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({ data: '01/01//2019' });
       assert.strictEqual(res.statusCode, 400);
@@ -145,7 +147,7 @@ describe('feira.js', () => {
     it('Não permite adicionar feira em data anterior a atual', async () => {
       const res = await chai
         .request(app)
-        .post('/feira')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({ data: '01/01/2018' });
       assert.strictEqual(res.statusCode, 200);
@@ -155,7 +157,7 @@ describe('feira.js', () => {
     it('Adiciona feira', async () => {
       const res = await chai
         .request(app)
-        .post('/feira')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({ data: '31/12/2050' });
       assert.strictEqual(res.statusCode, 200);
@@ -168,7 +170,7 @@ describe('feira.js', () => {
       await feiraController.addFeira(amanha());
       const res = await chai
         .request(app)
-        .post('/feira/cancelar')
+        .post(`${host}cancelar`)
         .set('token', tokenFeirante);
 
       assert.strictEqual(res.statusCode, 401);
@@ -176,7 +178,7 @@ describe('feira.js', () => {
     it('Não pode cancelar se feira não existe', async () => {
       const res = await chai
         .request(app)
-        .post('/feira/cancelar')
+        .post(`${host}cancelar`)
         .set('token', tokenSupervisor);
 
       assert.strictEqual(res.statusCode, 200);
@@ -188,7 +190,7 @@ describe('feira.js', () => {
 
       const res = await chai
         .request(app)
-        .post('/feira/cancelar')
+        .post(`${host}cancelar`)
         .set('token', tokenSupervisor);
 
       assert.strictEqual(res.statusCode, 200);
@@ -199,7 +201,7 @@ describe('feira.js', () => {
 
       const res = await chai
         .request(app)
-        .post('/feira/cancelar')
+        .post(`${host}cancelar`)
         .set('token', tokenSupervisor);
 
       assert.strictEqual(res.statusCode, 200);

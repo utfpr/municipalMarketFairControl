@@ -1,6 +1,6 @@
 // var chai = require('chai');
 // var chaiHttp = require('chai-http');
-// const app = require('../../app'); 
+// const app = require('../../app');
 // const faker = require('faker');
 // const supervisorController = require('../../controllers/supervisor');
 // const feiranteController = require('../../controllers/feirante');
@@ -154,7 +154,7 @@
 //       assert.strictEqual(res.body.id, subcategoria.id);
 //     });
 //   });
-  
+
 //   describe('PUT /subcategoria/:id', () => {
 //     it('Atributos faltando', async () => {
 //       const res = await chai
