@@ -11,9 +11,12 @@
             <li>
               <router-link to="/categoria">Categoria</router-link>
             </li>
+            <li>
+              <router-link to="/mapeamento">Mapeamento</router-link>
+            </li>
           </ul>
         </a-layout-sider>
-        <a-layout-content>
+        <a-layout-content >
           <router-view />
         </a-layout-content>
       </a-layout>
@@ -22,7 +25,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
 #app,
 #app .ant-layout {
   height: 100%;
@@ -34,4 +37,5 @@
 #sider {
   background-color: gainsboro;
 }
+
 </style>

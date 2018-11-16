@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import CrudSupervisor from './views/CrudSupervisor.vue';
+import TelaMapeamento from './views/TelaMapeamento';
 
 Vue.use(Router);
 
@@ -12,6 +13,10 @@ export default new Router({
       path: '/crud',
       name: 'crud',
       component: CrudSupervisor,
+    },    {
+      path: '/mapeamento',
+      name: 'mapeamento',
+      component: TelaMapeamento,
     },
   ],
 });
