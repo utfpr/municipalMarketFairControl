@@ -78,6 +78,7 @@ describe('login.js', () => {
     assert.isNotNull(token);
     const decoded = await jwt.verify(token.token, keys.jwt);
     assert.strictEqual(decoded, supervisor1.cpf);
+    assert.strictEqual(token.tag, 'supervisor');
   });
 
   it('Não faz login com senha incorreta (supervisor)', async () => {
@@ -100,6 +101,7 @@ describe('login.js', () => {
     assert.isNotNull(token);
     const decoded = await jwt.verify(token.token, keys.jwt);
     assert.strictEqual(decoded, feirante1.cpf);
+    assert.strictEqual(token.tag, 'feirante');
   });
 
   it('Não faz login com senha incorreta (feirante)', async () => {

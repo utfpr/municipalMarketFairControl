@@ -1,29 +1,30 @@
-const CPF = require('cpf-check');
+const { body, validationResult } = require('express-validator/check');
 const express = require('express');
+const { isCpf } = require('./utils');
+const loginController = require('../controllers/login');
+
 const router = express.Router();
-const login_controller = require('../controllers/login');
 
-// Realiza login feirante/supervisor 
-router.post('/', async (req, res) => {
+router.post(
+  '/',
+  [
+    body('cpf').custom(isCpf),
+    body('senha')
+      .isString()
+      .isLength({ min: 6, max: 100 }),
+  ],
+  async (req, res) => {
+    if (!validationResult(req).isEmpty()) return res.status(400).send();
 
-    var cpf = req.body.cpf;
-    var senha = req.body.senha;
+    const { cpf, senha } = req.body;
 
-    const cpfValido = CPF.validate(CPF.strip(cpf));
-    if (cpfValido.code === 'INVALID' || cpfValido.code === 'LENGTH' || senha.length < 6) { // verifica se o cpf é valido e a senha é grande o suficiente
-        res.status(400).send();
-    } 
-    else {
-        var token = await login_controller.login(cpf, senha); // coleta token do controller (supervisor ou feirante)
+    const info = await loginController.login(cpf, senha);
 
-        if (token !== null) { // reuniao com o grupo para definir as coisas
-            res.status(200).send({
-                msg: token,
-            });
-        } else {
-            res.status(401).send();
-        }
+    if (info !== null) {
+      return res.json({ token: info.token, tag: info.tag });
     }
-});
+    return res.status(401).send();
+  },
+);
 
 module.exports = router;

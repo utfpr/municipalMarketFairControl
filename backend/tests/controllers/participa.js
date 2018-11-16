@@ -9,7 +9,7 @@ const categoriaController = require('../../controllers/categoria');
 const participaController = require('../../controllers/participa');
 const { amanha, proximaSexta } = require('../../controllers/utils');
 
-describe('participa.js', () => {
+describe.skip('participa.js', () => {
   let feirante;
 
   before(async () => {
@@ -278,14 +278,14 @@ describe('participa.js', () => {
 
   describe('isFeiranteConfirmadoFeiraAtual', () => {
     it('Retorna true se feirante está confirmado na feira atual', async () => {
-      const feira = await feiraController.addFeira(amanha());
+      await feiraController.addFeira(amanha());
       const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
       assert.isNotNull(confirmacao);
       assert.isTrue(await participaController.isFeiranteConfirmadoFeiraAtual(feirante.cpf));
     });
 
     it('Retorna false se feirante não está confirmado na feira atual', async () => {
-      const feira = await feiraController.addFeira(amanha());
+      await feiraController.addFeira(amanha());
       // const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
       // assert.isNotNull(confirmacao);
       assert.isFalse(await participaController.isFeiranteConfirmadoFeiraAtual(feirante.cpf));
