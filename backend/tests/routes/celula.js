@@ -12,6 +12,8 @@ const { assert } = chai;
 
 chai.use(chaiHttp);
 
+const host = '/api/celula/';
+
 describe('celula.js', () => {
   let tokenFeirante;
   let feirante;
@@ -66,7 +68,7 @@ describe('celula.js', () => {
     it('Feirante não pode listar celulas', async () => {
       const res = await chai
         .request(app)
-        .get('/celula')
+        .get(host)
         .set('token', tokenFeirante);
       assert.strictEqual(res.statusCode, 401);
     });
@@ -74,7 +76,7 @@ describe('celula.js', () => {
     it('Supervisor pode listar celulas', async () => {
       const res = await chai
         .request(app)
-        .get('/celula')
+        .get(host)
         .set('token', tokenSupervisor);
 
       assert.strictEqual(res.statusCode, 200);
@@ -86,7 +88,7 @@ describe('celula.js', () => {
     it('Lista celula inexistente', async () => {
       const res = await chai
         .request(app)
-        .get('/celula/100')
+        .get(`${host}100`)
         .set('token', tokenSupervisor);
 
       assert.strictEqual(res.statusCode, 200);
@@ -96,7 +98,7 @@ describe('celula.js', () => {
     it('Lista celula', async () => {
       const res = await chai
         .request(app)
-        .get('/celula/1')
+        .get(`${host}1`)
         .set('token', tokenSupervisor);
 
       assert.strictEqual(res.statusCode, 200);
@@ -107,7 +109,7 @@ describe('celula.js', () => {
     it('Atributo inválido', async () => {
       const res = await chai
         .request(app)
-        .put('/celula/1')
+        .put(`${host}1`)
         .set('token', tokenSupervisor)
         .send({ periodo: 'string' });
 
@@ -117,7 +119,7 @@ describe('celula.js', () => {
     it('CPF inválido', async () => {
       const res = await chai
         .request(app)
-        .put('/celula/1')
+        .put(`${host}1`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: '11111111111' });
 
@@ -127,7 +129,7 @@ describe('celula.js', () => {
     it('CPF não existente', async () => {
       const res = await chai
         .request(app)
-        .put('/celula/1')
+        .put(`${host}1`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: '59517816049' });
 
@@ -137,7 +139,7 @@ describe('celula.js', () => {
     it('ID não existente', async () => {
       const res = await chai
         .request(app)
-        .put('/celula/100')
+        .put(`${host}100`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf });
 
@@ -148,7 +150,7 @@ describe('celula.js', () => {
     it('Atualiza celula', async () => {
       const res = await chai
         .request(app)
-        .put('/celula/1')
+        .put(`${host}1`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf });
 
