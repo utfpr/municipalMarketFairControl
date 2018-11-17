@@ -1,10 +1,15 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import CrudSupervisor from './views/CrudSupervisor.vue';
-import Mapeamento from './views/Mapeamento.vue';
 import Login from './views/Login.vue';
-import Feirante from './views/Feirante.vue';
-import Supervisor from './views/Supervisor.vue';
+
+import MenuSupervisor from './views/supervisor/MenuSupervisor.vue';
+import Feira from './views/supervisor/Feira.vue';
+import Supervisor from './views/supervisor/Supervisor.vue';
+import Feirante from './views/supervisor/Feirante.vue';
+import Categoria from './views/supervisor/Categoria.vue';
+import Mapeamento from './views/supervisor/Mapeamento.vue';
+
+import MenuFeirante from './views/feirante/MenuFeirante.vue';
 
 Vue.use(Router);
 
@@ -20,16 +25,28 @@ export default new Router({
     {
       path: '/feirante',
       name: 'feirante',
-      component: Feirante,
+      component: MenuFeirante,
     },
     {
       path: '/supervisor',
       name: 'supervisor',
-      component: Supervisor,
+      component: MenuSupervisor,
       children: [
         {
+          path: '',
+          component: Feira,
+        },
+        {
           path: 'supervisores',
-          component: CrudSupervisor,
+          component: Supervisor,
+        },
+        {
+          path: 'feirantes',
+          component: Feirante,
+        },
+        {
+          path: 'categorias',
+          component: Categoria,
         },
         {
           path: 'mapeamento',

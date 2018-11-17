@@ -19,14 +19,21 @@
                         </span>
                     </router-link>
                 </a-menu-item>
-
                 <a-menu-item key="3">
-                    <a-icon type="contacts" />
-                    <span>Feirantes</span>
+                    <router-link to="/supervisor/feirantes">
+                        <a-icon type="contacts" />
+                        <span>
+                            Feirantes
+                        </span>
+                    </router-link>
                 </a-menu-item>
                 <a-menu-item key="4">
-                    <a-icon type="tags-o" />
-                    <span>Categorias</span>
+                    <router-link to="/supervisor/categorias">
+                        <a-icon type="tags-o" />
+                        <span>
+                            Categorias
+                        </span>
+                    </router-link>
                 </a-menu-item>
                 <a-menu-item key="5">
                     <router-link to="/supervisor/mapeamento">
