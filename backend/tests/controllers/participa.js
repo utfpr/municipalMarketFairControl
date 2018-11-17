@@ -9,7 +9,7 @@ const categoriaController = require('../../controllers/categoria');
 const participaController = require('../../controllers/participa');
 const { amanha, proximaSexta } = require('../../controllers/utils');
 
-describe.skip('participa.js', () => {
+describe('participa.js', () => {
   let feirante;
 
   before(async () => {
