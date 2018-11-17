@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const models = require('../models');
 
-const addSupervisor = async (cpf, nome, senha, isAdm) => {
+const addSupervisor = async (cpf, nome, senha, isAdm, rootAdm = false) => {
   const supervisor = await models.supervisor.findOne({
     where: { cpf },
   });
@@ -26,6 +26,7 @@ const addSupervisor = async (cpf, nome, senha, isAdm) => {
         nome,
         senha: hashSenha,
         is_adm: isAdm,
+        root_adm: rootAdm,
         status: true,
       });
       return ret;
@@ -72,10 +73,10 @@ const updateSupervisor = async (cpf, dados) => {
     where: { cpf, status: true },
   });
 
-
   if (supervisor === null) return null;
 
   if ('status' in dados) return null;
+  if ('root_adm' in dados) return null;
 
   const { ...obj } = dados;
 
@@ -93,7 +94,7 @@ const deleteSupervisor = async (cpf) => {
   const supervisor = await models.supervisor.findOne({
     where: { cpf, status: true },
   });
-  if (supervisor === null) return null;
+  if (supervisor === null || supervisor.root_adm) return null;
 
   const ret = await supervisor.update({ status: false });
   return ret;

@@ -101,6 +101,7 @@ CREATE TABLE supervisor (
 	nome VARCHAR(100) NOT NULL,
 	senha VARCHAR(500) NOT NULL,
 	is_adm BOOLEAN DEFAULT false,
+	root_adm BOOLEAN DEFAULT false,
 	status BOOLEAN DEFAULT true,
 
 	PRIMARY KEY (cpf)
