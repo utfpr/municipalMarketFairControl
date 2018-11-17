@@ -20,8 +20,7 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
   }
 
   const dataSplitted = [dataA.slice(0, 2), dataA.slice(3, 5), dataA.slice(6, 10)];
-  const date = new Date(dataSplitted[2], dataSplitted[1], dataSplitted[0]);
-
+  const date = new Date(dataSplitted[2], dataSplitted[1] - 1, dataSplitted[0]);
   // if (
   //   date.getDate() > dataSplitted[0].parseInt
   //   || date.getMonth() >= dataSplitted[1].parseInt
