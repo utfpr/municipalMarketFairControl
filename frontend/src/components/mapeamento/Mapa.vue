@@ -1,6 +1,6 @@
 <template>
     <div class="container" v-resize.initial="onResize" v-on:click="this.clearSelection">
-        <img src="@/assets/background.svg" style="position:absolute; top: 0; left: 0;" width="70%" ref="bg">
+        <img src="@/assets/background.svg" style="position:absolute; top: 0; left: 0;" width="72%" ref="bg">
 
         <div v-for="celula in celulas">
             <Celula :id="celula.id" :top="celula.top" :left="celula.left" :width="celula.width" :height="celula.height" v-on:click="cellClick" :selected="celula.id === selectedCell" />

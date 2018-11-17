@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-// import CrudSupervisor from './views/CrudSupervisor.vue';
-// import TelaMapeamento from './views/TelaMapeamento.vue';
+import CrudSupervisor from './views/CrudSupervisor.vue';
+import Mapeamento from './views/Mapeamento.vue';
 import Login from './views/Login.vue';
 import Feirante from './views/Feirante.vue';
 import Supervisor from './views/Supervisor.vue';
@@ -26,6 +26,16 @@ export default new Router({
       path: '/supervisor',
       name: 'supervisor',
       component: Supervisor,
+      children: [
+        {
+          path: 'supervisores',
+          component: CrudSupervisor,
+        },
+        {
+          path: 'mapeamento',
+          component: Mapeamento,
+        },
+      ],
     },
   ],
 });

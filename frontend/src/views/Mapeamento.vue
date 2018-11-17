@@ -27,9 +27,10 @@ export default {
 .content {
     margin: 15px;
     max-height: 94%;
+    background-color: transparent;
 }
 .map {
-  background-color: white;
+  background-color: transparent;
   margin-right: 15px;
 }
 
