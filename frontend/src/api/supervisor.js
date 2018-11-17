@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/supervisor';
+const host = 'http://localhost:3000/api/supervisor';
 
 export async function get() {
   return (await axios.get(host)).data;
