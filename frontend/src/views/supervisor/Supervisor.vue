@@ -6,17 +6,20 @@
     </div>
 
     <a-table :dataSource="data" :columns="columns" :rowSelection="rowSelection" bordered>
+      <span slot="cpf" slot-scope="text, record">
+        {{text}}
+      </span>
       <span slot="permissao" slot-scope="text, record">
-        <a-tag v-if="record.isAdm" color="blue">Administrador</a-tag>
+        <a-tag v-if="record.is_adm" color="blue">Administrador</a-tag>
         <a-tag v-else color="green">Supervisor</a-tag>
       </span>
       <template slot="actions" slot-scope="text, record, index">
         <a-row>
           <a-col :span="12">
-            <a-button type="dashed" icon="profile" @click="showModal(record, 'view')">Visualizar</a-button>
+            <a-button type="dashed" icon="profile" @click="showModal(record.cpf, 'view')">Visualizar</a-button>
           </a-col>
           <a-col>
-            <a-button type="dashed" icon="edit" @click="showModal(record, 'edit')">Atualizar</a-button>
+            <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')">Atualizar</a-button>
           </a-col>
         </a-row>
       </template>
@@ -69,10 +72,10 @@
 
 import * as supervisorAPI from '@/api/supervisor';
 import { mask } from 'vue-the-mask'
-import CPF, { validate, strip } from 'cpf-check';
+import CPF, { validate, strip, format } from 'cpf-check';
 
 const columns = [
-  { title: 'CPF', dataIndex: 'cpf', width: '15%' },
+  { title: 'CPF', dataIndex: 'cpf', width: '15%', scopedSlots: { customRender: 'cpf' } },
   { title: 'Nome', dataIndex: 'nome' },
   { title: 'Permissão', dataIndex: 'permissao', scopedSlots: { customRender: 'permissao' }, width: '15%' },
   { title: 'Ações', scopedSlots: { customRender: 'actions' }, width: '25%' }
@@ -96,6 +99,7 @@ export default {
 
   async created() {
     this.data = await supervisorAPI.get();
+    console.log(this.data)
   },
 
   computed: {
@@ -115,7 +119,7 @@ export default {
 
   methods: {
 
-    showModal(record, action) {
+    showModal(cpf, action) {
       this.visible = true;
       this.action = action;
 
@@ -123,7 +127,11 @@ export default {
         if (action === 'add') {
           this.form.resetFields();
         } else if (action === 'edit' || action === 'view') {
-          this.form.setFieldsValue({ cpf: record.cpf, nome: record.nome, isAdm: record.isAdm });
+          supervisorAPI.getByCpf(strip(cpf)).then(record => {
+            
+            this.form.setFieldsValue({ cpf: record.cpf, nome: record.nome, isAdm: record.is_adm === 1 });
+          })
+
         }
       }, 100);
     },

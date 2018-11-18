@@ -1,6 +1,6 @@
 <template>
     <div class="cell" v-bind:style="style" @click="onClick($event)">
-        {{this.id}}
+        
     </div>
 
 </template>
@@ -19,7 +19,7 @@ export default {
                 left: this.left,
                 width: this.width,
                 height: this.height,
-                backgroundColor: this.selected ?'#91d5ff' :'#d9d9d9' ,
+                backgroundColor: this.selected ?'#91d5ff' :'#d9dce0' ,
                 border: '1px solid #873800',
                 borderRadius: '3px'
             }
