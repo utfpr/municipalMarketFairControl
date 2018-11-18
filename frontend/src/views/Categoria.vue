@@ -4,9 +4,9 @@
       <a-layout-content :style="{ margin: '24px 16px 30px' }">
         <div :style="{ padding: '24px', background: '#fff'}">
           <div :style="{ padding: '5px' }">
-            <a-collapse>
-              <a-collapse-panel header="This is panel header 1" key="1">
-                <p>{{text}}</p>
+            <a-collapse v-if="data">
+              <a-collapse-panel v-for="(obj, index) in data" :header="obj.nome" :key="index">
+                <p>{{}}</p>
               </a-collapse-panel>
             </a-collapse>
             <div style="text-align: right; margin-top:20px ">
@@ -15,7 +15,7 @@
                   <a-col :span='12'>
                     <a-form-item
                       label='Nome'
-                      fieldDecoratorId="username"
+                      fieldDecoratorId="nome"
                       :fieldDecoratorOptions="{rules: [{ required: true,
                       message: 'Por favor, insira o nome' }]}"
                     >
@@ -23,9 +23,8 @@
                     </a-form-item>
                   </a-col>
                   <a-col :span='3'>
-                    <a-form-item>
-                      <a-checkbox
-                        :checked="checkNick"
+                    <a-form-item fieldDecoratorId="needcpnj">
+                      <a-checkbox :checked="checkNeedCnpj"
                         @change="handleChange"
                       >
                         Requer CNPJ
@@ -34,7 +33,7 @@
                   </a-col>
                   <a-col :span='2'>
                     <a-form-item>
-                      <a-button type="primary">Adicionar</a-button>
+                      <a-button @click="this.onOk" type="primary">Adicionar</a-button>
                     </a-form-item>
                   </a-col>
                 </div>
@@ -47,7 +46,8 @@
   </a-layout>
 </template>
 <script>
-import * as categoriaAPI from '@/api/categoria'
+import * as categoriaAPI from '@/api/categoria';
+
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 8 },
@@ -59,15 +59,21 @@ const formTailLayout = {
 export default {
   data() {
     return {
+      data: [],
       visible: false,
       confirmLoading: false,
       ModalText: '',
-      checkNick: false,
+      checkNeedCnpj: false,
       formItemLayout,
       formTailLayout,
       text: '',
     };
   },
+
+  async created() {
+    this.data = await categoriaAPI.get()
+  },
+
   methods: {
     onCollapse(collapsed, type) {
       console.log(collapsed, type);
@@ -75,36 +81,23 @@ export default {
     onBreakpoint(broken) {
       console.log(broken);
     },
-    showModal() {
-      this.visible = true;
-    },
-    handleOk() {
-      this.ModalText = 'Aguarde';
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible = false;
-        this.confirmLoading = false;
-      }, 2000);
-    },
     handleCancel() {
       console.log('Clicked cancel button');
       this.visible = false;
     },
-    check() {
-      this.form.validateFields((err) => {
+    onOk() {
+      this.form.validateFields(async (err, values) => {
         if (!err) {
-          console.info('success');
+          await categoriaAPI.post(values.nome, values.needcpnj);
         }
+        this.data = await categoriaAPI.get();
       });
     },
     handleChange(e) {
-      this.checkNick = e.target.checked;
+      this.checkNeedCnpj = e.target.checked;
       this.$nextTick(() => {
-        this.form.validateFields(['nickname'], { force: true });
+        this.form.validateFields(['nome'], { force: true });
       });
-    },
-    creteCategoria() {
-      this.form.validateFields();
     },
   },
 };
