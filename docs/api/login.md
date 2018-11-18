@@ -4,10 +4,10 @@
 
 - Body
 
-```javascript
+```json
 {
-	"cpf": "111.111.111-11",
-	"senha": "123456"
+  "cpf": "11111111111",
+  "senha": "123456"
 }
 ```
 
@@ -15,8 +15,9 @@
 
 ```javascript
 {
-	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-}	
+	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+	"tag": "feirante" // feirante|supervisor|administrador
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos

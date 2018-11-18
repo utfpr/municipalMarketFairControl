@@ -17,7 +17,9 @@ const { assert } = chai;
 
 chai.use(chaiHttp);
 
-describe.skip('participa.js', () => {
+const host = '/api/participa/';
+
+describe('participa.js', () => {
   let tokenFeirante;
   let feirante;
   let feirante2;
@@ -100,7 +102,7 @@ describe.skip('participa.js', () => {
     it('Retorna "feira_invalida" se não existe feira atual', async () => {
       const res = await chai
         .request(app)
-        .get('/participa/confirmados')
+        .get(`${host}confirmados`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'feira_invalida');
@@ -109,7 +111,7 @@ describe.skip('participa.js', () => {
       await feiraController.addFeira(proximaSexta());
       const res = await chai
         .request(app)
-        .get('/participa/confirmados')
+        .get(`${host}confirmados`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.lengthOf(res.body, 0);
@@ -119,7 +121,7 @@ describe.skip('participa.js', () => {
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       const res = await chai
         .request(app)
-        .get('/participa/confirmados')
+        .get(`${host}confirmados`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.lengthOf(res.body, 1);
@@ -130,7 +132,7 @@ describe.skip('participa.js', () => {
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       const res = await chai
         .request(app)
-        .get('/participa/confirmados')
+        .get(`${host}confirmados`)
         .set('token', tokenFeirante);
       assert.strictEqual(res.statusCode, 401);
     });
@@ -140,7 +142,7 @@ describe.skip('participa.js', () => {
     it('Retorna "feira_invalida" se não existe feira atual', async () => {
       const res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenFeirante)
         .send({ periodo: 1 });
       assert.strictEqual(res.statusCode, 200);
@@ -150,14 +152,14 @@ describe.skip('participa.js', () => {
       await feiraController.addFeira(proximaSexta());
       let res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenFeirante)
         .send({ periodo: 5 });
       assert.strictEqual(res.statusCode, 400);
 
       res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenFeirante)
         .send({ periodoo: 2 });
       assert.strictEqual(res.statusCode, 400);
@@ -171,7 +173,7 @@ describe.skip('participa.js', () => {
       const clock = sinon.useFakeTimers(data);
       const res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenFeirante)
         .send({ periodo: 1 });
       assert.strictEqual(res.statusCode, 200);
@@ -185,7 +187,7 @@ describe.skip('participa.js', () => {
       await celulaController.updateCelula(1, { cpf_feirante: feirante.cpf });
       const res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenFeirante)
         .send({ periodo: 1 });
       assert.strictEqual(res.statusCode, 200);
@@ -197,7 +199,7 @@ describe.skip('participa.js', () => {
       await celulaController.updateCelula(1, { cpf_feirante: feirante.cpf });
       const res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenFeirante)
         .send({ periodo: 2 });
       assert.strictEqual(res.statusCode, 200);
@@ -207,7 +209,7 @@ describe.skip('participa.js', () => {
       await feiraController.addFeira(proximaSexta());
       let res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenFeirante)
         .send({ periodo: 1 });
       assert.strictEqual(res.statusCode, 200);
@@ -215,7 +217,7 @@ describe.skip('participa.js', () => {
 
       res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenFeirante)
         .send({ periodo: 1 });
       assert.strictEqual(res.statusCode, 200);
@@ -225,7 +227,7 @@ describe.skip('participa.js', () => {
       await feiraController.addFeira(proximaSexta());
       const res = await chai
         .request(app)
-        .post('/participa/confirma')
+        .post(`${host}confirma`)
         .set('token', tokenSupervisor)
         .send({ periodo: 1 });
       assert.strictEqual(res.statusCode, 401);
@@ -236,7 +238,7 @@ describe.skip('participa.js', () => {
     it('Retorna "feira_invalida" se não existe feira atual', async () => {
       const res = await chai
         .request(app)
-        .post('/participa/cancela')
+        .post(`${host}cancela`)
         .set('token', tokenFeirante);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'feira_invalida');
@@ -250,7 +252,7 @@ describe.skip('participa.js', () => {
       const clock = sinon.useFakeTimers(data);
       const res = await chai
         .request(app)
-        .post('/participa/cancela')
+        .post(`${host}cancela`)
         .set('token', tokenFeirante);
 
       assert.strictEqual(res.statusCode, 200);
@@ -264,7 +266,7 @@ describe.skip('participa.js', () => {
       // await participaController.confirmaPresencaFeiraAtual(feirante.cpf);
       const res = await chai
         .request(app)
-        .post('/participa/cancela')
+        .post(`${host}cancela`)
         .set('token', tokenFeirante);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'nao_confirmado');
@@ -275,14 +277,14 @@ describe.skip('participa.js', () => {
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       let res = await chai
         .request(app)
-        .post('/participa/cancela')
+        .post(`${host}cancela`)
         .set('token', tokenFeirante);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'ok');
 
       res = await chai
         .request(app)
-        .post('/participa/cancela')
+        .post(`${host}cancela`)
         .set('token', tokenFeirante);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'nao_confirmado');
@@ -293,7 +295,7 @@ describe.skip('participa.js', () => {
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       const res = await chai
         .request(app)
-        .post('/participa/cancela')
+        .post(`${host}cancela`)
         .set('token', tokenFeirante);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'ok');
@@ -304,7 +306,7 @@ describe.skip('participa.js', () => {
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       const res = await chai
         .request(app)
-        .post('/participa/cancela')
+        .post(`${host}cancela`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 401);
     });
@@ -315,7 +317,7 @@ describe.skip('participa.js', () => {
       await models.celula.create({ id: 1, periodo: 1 });
       const res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf, celula_id: 1, force: false });
       assert.strictEqual(res.statusCode, 200);
@@ -326,7 +328,7 @@ describe.skip('participa.js', () => {
       await models.celula.create({ id: 1, periodo: 1 });
       let res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf, celula_id: 1, force: false });
       assert.strictEqual(res.statusCode, 200);
@@ -336,7 +338,7 @@ describe.skip('participa.js', () => {
 
       res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: '61799227057', celula_id: 1, force: false });
       assert.strictEqual(res.statusCode, 200);
@@ -348,7 +350,7 @@ describe.skip('participa.js', () => {
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       const res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf, celula_id: 2, force: false });
       assert.strictEqual(res.statusCode, 200);
@@ -360,7 +362,7 @@ describe.skip('participa.js', () => {
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
       const res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf, celula_id: 1, force: false });
       assert.strictEqual(res.statusCode, 200);
@@ -377,7 +379,7 @@ describe.skip('participa.js', () => {
 
       const res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf, celula_id: null, force: false });
       assert.strictEqual(res.statusCode, 200);
@@ -397,7 +399,7 @@ describe.skip('participa.js', () => {
 
       const res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf, celula_id: 2, force: false });
       assert.strictEqual(res.statusCode, 200);
@@ -422,7 +424,7 @@ describe.skip('participa.js', () => {
 
       const res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf, celula_id: 2, force: false });
       assert.strictEqual(res.statusCode, 200);
@@ -448,7 +450,7 @@ describe.skip('participa.js', () => {
 
       const res = await chai
         .request(app)
-        .post('/participa/posicao')
+        .post(`${host}posicao`)
         .set('token', tokenSupervisor)
         .send({ cpf_feirante: feirante.cpf, celula_id: 2, force: true });
       assert.strictEqual(res.statusCode, 200);

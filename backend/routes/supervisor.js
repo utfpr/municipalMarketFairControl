@@ -4,7 +4,7 @@ const authMiddleware = require('../middlewares/auth');
 const supervisorController = require('../controllers/supervisor');
 
 // get supervisores
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware.isAdmin, async (req, res) => {
   const supervisores = await supervisorController.listSupervisor();
   res.status(200).send(supervisores);
 });
@@ -119,14 +119,19 @@ router.delete('/:cpf', authMiddleware.isAdmin, async (req, res) => {
 
   const supervisorValidate = await supervisorController.findSupervisorByCpf(cpfS);
 
-  if (supervisorValidate != null) {
-    // Possível problema no futuro: E se o ultimo administrador for excluido?
-    const admins = (await supervisorController.listSupervisor()).filter(
-      supervisor => supervisor.is_adm,
-    );
-    if (admins.length <= 1) {
-      return res.send({
-        msg: 'ultimo_admin',
+  if (supervisorValidate !== null) {
+    // // Possível problema no futuro: E se o ultimo administrador for excluido?
+    // const admins = (await supervisorController.listSupervisor()).filter(
+    //   supervisor => supervisor.is_adm,
+    // );
+    // if (admins.length <= 1) {
+    //   return res.send({
+    //     msg: 'ultimo_admin',
+    //   });
+    // }
+    if (supervisorValidate.root_adm) {
+      return res.json({
+        msg: 'admin_root',
       });
     }
 

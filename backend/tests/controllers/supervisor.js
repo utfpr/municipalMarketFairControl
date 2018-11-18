@@ -195,6 +195,49 @@ describe('supervisor.js', () => {
       assert.isNull(supervisor);
     });
 
+    it('Não deixa atualizar root_adm', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+
+      supervisor = await supervisorController.updateSupervisor('58295846035', {
+        root_adm: true,
+      });
+      assert.isNull(supervisor);
+    });
+
+    it('Não deixa atualizar is_adm para o root_adm', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+        true,
+      );
+
+      supervisor = await supervisorController.updateSupervisor('58295846035', {
+        is_adm: false,
+      });
+      assert.isNull(supervisor);
+    });
+
+    it('Atualiza is_adm', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+      );
+
+      supervisor = await supervisorController.updateSupervisor('58295846035', {
+        is_adm: false,
+      });
+      assert.isNotNull(supervisor);
+    });
+
     it('Atualiza somente senha', async () => {
       let supervisor = await supervisorController.addSupervisor(
         '58295846035',
@@ -259,6 +302,19 @@ describe('supervisor.js', () => {
       assert.isNotNull(supervisor);
 
       supervisor = await supervisorController.findSupervisorByCpf(supervisor.cpf);
+      assert.isNull(supervisor);
+    });
+
+    it('Não deleta supervisor root', async () => {
+      let supervisor = await supervisorController.addSupervisor(
+        '58295846035',
+        faker.name.firstName(),
+        faker.name.firstName(),
+        true,
+        true,
+      );
+
+      supervisor = await supervisorController.deleteSupervisor(supervisor.cpf);
       assert.isNull(supervisor);
     });
   });
