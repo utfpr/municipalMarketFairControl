@@ -183,7 +183,14 @@ describe('participa.js', () => {
     });
     it('Retorna "periodo_invalido" se período não condiz com o da celula reservada', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 2 });
+      await models.celula.create({
+        id: 1,
+        periodo: 2,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       await celulaController.updateCelula(1, { cpf_feirante: feirante.cpf });
       const res = await chai
         .request(app)
@@ -195,7 +202,14 @@ describe('participa.js', () => {
     });
     it('Retorna "ok" se confirmar presença', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 2 });
+      await models.celula.create({
+        id: 1,
+        periodo: 2,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       await celulaController.updateCelula(1, { cpf_feirante: feirante.cpf });
       const res = await chai
         .request(app)
@@ -314,7 +328,14 @@ describe('participa.js', () => {
 
   describe('POST /participa/posicao', () => {
     it('Retorna "feira_invalida" se não existe feira atual', async () => {
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       const res = await chai
         .request(app)
         .post(`${host}posicao`)
@@ -325,7 +346,14 @@ describe('participa.js', () => {
     });
     it('Retorna "feirante_invalido" se feirante não existe/não está confirmado', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       let res = await chai
         .request(app)
         .post(`${host}posicao`)
@@ -346,7 +374,14 @@ describe('participa.js', () => {
     });
     it('Retorna "celula_invalida" se celula não existe', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       const res = await chai
         .request(app)
@@ -358,7 +393,14 @@ describe('participa.js', () => {
     });
     it('Retorna "periodo_invalido" se período não condiz com o da celula', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
       const res = await chai
         .request(app)
@@ -370,7 +412,14 @@ describe('participa.js', () => {
     });
     it('Retorna "ok" se limpar posição feirante', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       const ret = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       assert.isNotNull(ret);
 
@@ -390,8 +439,22 @@ describe('participa.js', () => {
     });
     it('Retorna "ok" se atualizar posicao (celula livre)', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 1 });
-      await models.celula.create({ id: 2, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
+      await models.celula.create({
+        id: 2,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       const ret = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       assert.isNotNull(ret);
 
@@ -414,8 +477,22 @@ describe('participa.js', () => {
     });
     it('Retorna "celula_ocupada" se celula estiver ocupada', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 1 });
-      await models.celula.create({ id: 2, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
+      await models.celula.create({
+        id: 2,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       await participaController.confirmaPresencaFeiraAtual(feirante2.cpf, 1);
 
@@ -440,8 +517,22 @@ describe('participa.js', () => {
     });
     it('Retorna "ok" se atualizar posicao com force=true (celula ocupada)', async () => {
       await feiraController.addFeira(proximaSexta());
-      await models.celula.create({ id: 1, periodo: 1 });
-      await models.celula.create({ id: 2, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
+      await models.celula.create({
+        id: 2,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 1);
       await participaController.confirmaPresencaFeiraAtual(feirante2.cpf, 2);
 

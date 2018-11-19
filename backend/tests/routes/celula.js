@@ -49,7 +49,14 @@ describe('celula.js', () => {
       subcategoria.id,
     );
 
-    await models.celula.create({ id: 1, periodo: 1 });
+    await models.celula.create({
+      id: 1,
+      periodo: 1,
+      x: 0,
+      y: 0,
+      comprimento: 0,
+      largura: 0,
+    });
 
     tokenFeirante = (await loginController.login(feirante.cpf, '1234')).token;
     tokenSupervisor = (await loginController.login(supervisor.cpf, '1234')).token;

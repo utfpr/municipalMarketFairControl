@@ -75,6 +75,10 @@ CREATE TABLE celula (
 	id INTEGER,
 	cpf_feirante VARCHAR(15),
 	periodo INTEGER NOT NULL,
+	x REAL NOT NULL,
+	y REAL NOT NULL,
+	comprimento REAL NOT NULL,
+	largura REAL NOT NULL,
 
 	PRIMARY KEY (id),
 	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE

@@ -11,6 +11,10 @@ const findCelulaById = async (id) => {
     id: celula.id,
     cpf_feirante: celula.cpf_feirante,
     periodo: celula.periodo,
+    x: celula.x,
+    y: celula.y,
+    comprimento: celula.comprimento,
+    largura: celula.largura,
   };
 };
 
@@ -25,15 +29,23 @@ const findCelulaByFeirante = async (cpfFeirante) => {
     id: celula.id,
     cpf_feirante: celula.cpf_feirante,
     periodo: celula.periodo,
+    x: celula.x,
+    y: celula.y,
+    comprimento: celula.comprimento,
+    largura: celula.largura,
   };
 };
 
 const listCelula = async () => {
   const celulas = await models.celula.findAll();
-  return celulas.map(el => ({
-    id: el.id,
-    cpf_feirante: el.cpf_feirante,
-    periodo: el.periodo,
+  return celulas.map(celula => ({
+    id: celula.id,
+    cpf_feirante: celula.cpf_feirante,
+    periodo: celula.periodo,
+    x: celula.x,
+    y: celula.y,
+    comprimento: celula.comprimento,
+    largura: celula.largura,
   }));
 };
 

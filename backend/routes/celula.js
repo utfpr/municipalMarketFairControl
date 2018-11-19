@@ -9,9 +9,7 @@ const authMiddleware = require('../middlewares/auth');
 
 router.get('/', authMiddleware.isSupervisor, async (req, res) => {
   const celulas = await celulaController.listCelula();
-  return res.json(
-    celulas.map(celula => ({ cpf_feirante: celula.cpf_feirante, periodo: celula.periodo })),
-  );
+  return res.json(celulas.map(celula => celula));
 });
 
 router.get('/:id', authMiddleware.isSupervisor, [param('id').isInt()], async (req, res) => {
@@ -22,7 +20,7 @@ router.get('/:id', authMiddleware.isSupervisor, [param('id').isInt()], async (re
 
   if (celula === null) return res.json({ msg: 'id_nao_existente' });
 
-  return res.json({ cpf_feirante: celula.cpf_feirante, periodo: celula.periodo });
+  return res.json(celula);
 });
 
 router.put(
