@@ -94,7 +94,7 @@
         <a-row>
           <a-col :span="24" :offset="0">
             <a-form-item label="Razão Social:" fieldDecoratorId="razao_social" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite uma razão social!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view' & this.categoriaValue !== '1'" placeholder="Razão Social">
+              <a-input :disabled="this.action === 'view'" placeholder="Razão Social">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
             </a-form-item>
