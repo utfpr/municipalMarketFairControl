@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import CrudSupervisor from './views/CrudSupervisor.vue';
+import CrudFeirante from './views/CrudFeirante.vue';
 
 Vue.use(Router);
 

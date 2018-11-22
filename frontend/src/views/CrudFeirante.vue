@@ -22,18 +22,18 @@
 
     <a-modal title="Feirante" okText="Adicionar" cancelText="Cancelar" @cancel="this.onCancel" @ok="this.onOk" :visible="this.visible">
       <a-form :autoFormCreate="(form)=>{this.form = form}" layout="vertical" ref="form">
-        <p style="font-size: 15px color: black"><span style="color: red">*</span> Campo Obrigatório</p>
+        <p v-if="this.action === 'add'" style="font-size: 15px color: black"><span style="color: red">*</span> Campo Obrigatório</p>
         <!-- CPF, RG -->
         <a-row>
           <a-col :span="11">
-            <a-form-item label="CPF" fieldDecoratorId="cpf" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite um CPF válido!'}, {validator: this.checkCpf, }]}">
+            <a-form-item label="CPF:" fieldDecoratorId="cpf" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um CPF válido!'}, {validator: this.checkCpf, }]}">
               <a-input placeholder="CPF" v-mask="['###.###.###-##']" :disabled="this.action !== 'add'">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="2">
-            <a-form-item label="RG" fieldDecoratorId="rg" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite um RG válido!'}]}">
+            <a-form-item label="RG:" fieldDecoratorId="rg" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um RG válido!'}]}">
               <a-input placeholder="RG" v-mask="['##.###.###-#']" :disabled="this.action === 'view'">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
@@ -43,7 +43,7 @@
         <!-- Nome -->
         <a-row>
           <a-col :span="24" :offset="0">
-            <a-form-item label="Nome" fieldDecoratorId="nome" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite um nome!', min: 1},]}">
+            <a-form-item label="Nome:" fieldDecoratorId="nome" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um nome!', min: 1},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Pessoa Física">
                 <a-icon slot="prefix" type="user" />
               </a-input>
@@ -53,7 +53,7 @@
         <!-- Categoria, Subcategoria -->
         <a-row>
           <a-col :span="11" :offset="0" v-if="this.action === 'add'">
-            <a-form-item label="Categoria de venda" fieldDecoratorId="categoria" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Escolha um ramo!'},]}">
+            <a-form-item label="Categoria de venda:" fieldDecoratorId="categoria" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
               <a-select
                 showSearch
                 placeholder="Categoria de venda"
@@ -65,14 +65,14 @@
                 @change="handleChange"
                 :filterOption="filterOption"
               >
-                <a-select-option value="Alimentos">Alimentos</a-select-option>
-                <a-select-option value="Artesanato">Artesanato</a-select-option>
-                <a-select-option value="Materiais de Construção">Materiais de Construção</a-select-option>
+                <a-select-option @click="setCategoria('1') " value="Alimentos">Alimentos</a-select-option>
+                <a-select-option @click="setCategoria('0')" value="Artesanato">Artesanato</a-select-option>
+                <a-select-option @click="setCategoria('0')" value="Materiais de Construção">Materiais de Construção</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="2" v-if="this.action === 'add'">
-            <a-form-item label="Subcategoria de venda" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Escolha um ramo!'},]}">
+            <a-form-item label="Subcategoria de venda:" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
               <a-select
                 showSearch
                 placeholder="subcategoria de venda"
@@ -80,13 +80,13 @@
                 optionFilterProp="children"
                 style="width: 200px"
                 @focus="handleFocus"
-                @blur="handleBlur"
+                @-blur="handleBlur"
                 @change="handleChange"
                 :filterOption="filterOption"
               >
-                <a-select-option value="Tijolo">Tijolo</a-select-option>
-                <a-select-option value="Cimento">Cimento</a-select-option>
-                <a-select-option value="Ternite">Ternite</a-select-option>
+                <a-select-option @click="setCategoria('1')" value="Tijolo">Tijolo</a-select-option>
+                <a-select-option @click="setCategoria('0')" value="Cimento">Cimento</a-select-option>
+                <a-select-option @click="setCategoria('0')" value="Ternite">Ternite</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -94,7 +94,7 @@
         <!-- Razão Social -->
         <a-row>
           <a-col :span="24" :offset="0">
-            <a-form-item label="Razão Social" fieldDecoratorId="razao_social" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite uma razão social!', min: 1,},]}">
+            <a-form-item label="Razão Social:" fieldDecoratorId="razao_social" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite uma razão social!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Razão Social">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
@@ -104,7 +104,7 @@
         <!-- Nome Fantasia -->
         <a-row>
           <a-col :span="24" :offset="0">
-            <a-form-item label="Nome Fantasia" fieldDecoratorId="nome_fantasia" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite um nome fantasia!', min: 1},]}">
+            <a-form-item label="Nome Fantasia:" fieldDecoratorId="nome_fantasia" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite um nome fantasia!', min: 1},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Nome Fantasia">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
@@ -114,17 +114,17 @@
         <!-- CNPJ, Senha -->
         <a-row>
           <a-col :span="11" :offset="0">
-            <a-form-item label="CNPJ" fieldDecoratorId="cnpj" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite um CNPJ válido!'}]}">
+            <a-form-item label="CNPJ:" fieldDecoratorId="cnpj" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite um CNPJ válido!'}]}">
               <a-input placeholder="CNPJ" v-mask="['##.###.##/####-##']" :disabled="this.action === 'view'">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
             </a-form-item>
           </a-col>
-          <a-col :span="11" :offset="2" v-if="this.action === 'add'">
-            <a-form-item label="Senha" fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Mínimo 6 caracteres!', min: 6},]}">
-              <a-input placeholder="Senha" :type="this.mostrarSenha ? 'text' : 'password'">
+          <a-col :span="11" :offset="2">
+            <a-form-item label="Senha:" fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Mínimo 6 caracteres!', min: 6},]}">
+              <a-input placeholder="Senha" :disabled="this.action === 'view'" :type="this.mostrarSenha ? 'text' : 'password'">
                 <a-icon slot="prefix" type="lock" />
-                <a-icon slot="suffix" type="eye" @click="clickMostrarSenha" />
+                <a-icon slot="suffix" type="eye" @click="clickMostrarSenha" v-if="this.action !== 'view'"/>
               </a-input>
             </a-form-item>
           </a-col>
@@ -133,14 +133,14 @@
         <!-- CEP, Cidade -->
         <a-row>
           <a-col :span="11" :offset="0">
-            <a-form-item label="CEP" fieldDecoratorId="cep" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite um CEP!', min: 1,},]}">
+            <a-form-item label="CEP:" fieldDecoratorId="cep" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um CEP!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="CEP">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="2">
-            <a-form-item label="Cidade" fieldDecoratorId="cidade" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite uma cidade!', min: 1,},]}">
+            <a-form-item label="Cidade:" fieldDecoratorId="cidade" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite uma cidade!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Cidade">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
@@ -150,14 +150,14 @@
         <!-- UF, Bairro -->
         <a-row>
           <a-col :span="4" :offset="0">
-            <a-form-item label="UF" fieldDecoratorId="uf" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite um numero!', min: 1,},]}">
+            <a-form-item label="UF:" fieldDecoratorId="uf" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite uma UF!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="UF">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="18" :offset="2">
-            <a-form-item label="Bairro" fieldDecoratorId="bairro" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite uma cidade!', min: 1,},]}">
+            <a-form-item label="Bairro:" fieldDecoratorId="bairro" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um bairro!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="bairro">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
@@ -167,14 +167,14 @@
         <!-- Logradouro, Numero -->
         <a-row>
           <a-col :span="18" :offset="0">
-            <a-form-item label="Logradouro" fieldDecoratorId="logradouro" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite uma cidade!', min: 1,},]}">
+            <a-form-item label="Logradouro:" fieldDecoratorId="logradouro" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um logradouro!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Logradouro">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="4" :offset="2">
-            <a-form-item label="Número" fieldDecoratorId="numero" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite um numero!', min: 1,},]}">
+            <a-form-item label="Número:" fieldDecoratorId="numero" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um numero!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="N°">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
@@ -184,15 +184,15 @@
         <!-- Comprimento, Largura barraca -->
         <a-row>
           <a-col :span="11">
-            <a-form-item label="Comprimento da barraca" fieldDecoratorId="comprimento_barraca" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite o comprimento!'},]}">
-              <a-input placeholder="Metros" :disabled="this.action === 'view'">
+            <a-form-item label="Comprimento da barraca:" fieldDecoratorId="comprimento_barraca" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite o comprimento!'},]}">
+              <a-input v-mask="['#']" placeholder="Metros" :disabled="this.action === 'view'">
                 <a-icon slot="prefix" type="shop" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="2">
-            <a-form-item label="Largura da barraca" fieldDecoratorId="largura_barraca" :fieldDecoratorOptions="{rules: [{ required: this.action !== 'view', message: 'Digite a largura!'},]}">
-              <a-input placeholder="Metros" :disabled="this.action === 'view'">
+            <a-form-item label="Largura da barraca:" fieldDecoratorId="largura_barraca" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite a largura!'},]}">
+              <a-input v-mask="['#']" placeholder="Metros" :disabled="this.action === 'view'">
                 <a-icon slot="prefix" type="shop" />
               </a-input>
             </a-form-item>
@@ -201,7 +201,7 @@
         <!-- Energia Elétrica -->
         <a-row>
           <a-col :span="11" :offset="2" v-if="this.action !== 'view'" >
-            <a-form-item label="Usa Energia Elétrica" >
+            <a-form-item label="Usa Energia Elétrica:" >
               <a-radio-group :defaultValue="0" name="radioGroup" fieldDecoratorId="usa_ee" :disabled="this.action === 'view'" >
                 <a-radio :disabled="this.action === 'view'" :value="1" @click="setRadio('1')" >Sim</a-radio>
                 <a-radio :disabled="this.action === 'view'" :value="0" @click="setRadio('0')" >Não</a-radio>
@@ -209,7 +209,7 @@
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="0">
-            <a-form-item label="Voltagem" fieldDecoratorId="voltagem_ee"  :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Digite a voltagem!'},]}">
+            <a-form-item label="Voltagem:" fieldDecoratorId="voltagem_ee"  :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Digite a voltagem!'},]}">
               <a-input :disabled="this.radio_ee == '0' || this.action === 'view'" placeholder="Voltagem" >
                 <a-icon slot="prefix" type="poweroff" />
               </a-input>
@@ -252,8 +252,36 @@ export default {
       action: '',
       selectedRows: [],
       radio_ee: '0',
+      selectCategoria: '0',
+      token: null,
     };
   },
+
+  async created() {
+    if(localStorage.getItem('token') !== null)
+      if(localStorage.getItem('tag') === 'feirante')
+        this.$router.push({name: 'feirante'})
+      else 
+        this.token = localStorage.getItem('token');
+
+    this.data = await feiranteAPI.get();
+  },
+
+  computed: {
+    selecionado() {
+      return this.selectedRows.length > 0;
+    },
+
+    rowSelection() {
+      const { selectedRowKeys } = this;
+      return {
+        onChange: (selectedRowKeys, selectedRows) => {
+          this.selectedRows = selectedRows;
+        },
+      };
+    },
+  },
+
   methods: {
     handleChange (value) {
       console.log(`selected ${value}`);
@@ -271,36 +299,13 @@ export default {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
     },
 
-    async created() {
-      this.data = await supervisorAPI.get();
-    },
-
     setRadio(valor){
       this.radio_ee = valor;
+    }, 
+
+    setCategoria(valor){
+      this.selectCategoria = valor;
     },
-
-    // addressCEP(valor){
-    //   var cep = valor;
-    //   this.setState({ cep });
-
-    //   if(cep.length === 9) {
-    //     axios.get('http://api.postmon.com.br/v1/cep/' + cep).then(res => {
-    //       this.setState({
-    //         error: '',
-    //         endereco: res.data.logradouro,
-    //         bairro: res.data.bairro,
-    //         // uf: record.estado,
-    //         // cidade: record.cidade
-    //       });
-    //     }).catch(ex => {
-    //       this.setState({ error: ex });
-    //       notification['error']({
-    //         message: 'Erro!',
-    //         description: 'CEP Inválido'
-    //       });
-    //     });
-    //   }
-    // },
 
     showModal(record, action) {
       this.visible = true;
@@ -341,9 +346,9 @@ export default {
           if (this.action === 'add') {
             await feiranteAPI.post(
               values.cpf,
-              values.rg, 
+              values.cnpj,
               values.nome, 
-              values.cnpj, 
+              values.rg,
               values.usa_ee,
               values.nome_fantasia,
               values.razao_social,
@@ -357,14 +362,15 @@ export default {
               },
               values.voltagem_ee,
               values.sub_categoria_id,
-              values.senha
+              values.senha,
+              {headers: {token: this.token}}
             );
           } else if (this.action === 'edit') {
-            await supervisorAPI.put(
+            await feiranteAPI.put(
               strip(values.cpf),
-              values.rg, 
+              values.cnpj,
               values.nome,
-              values.cnpj, 
+              values.rg,
               values.usa_ee, 
               values.nome_fantasia,
               values.razao_social,
@@ -377,7 +383,8 @@ export default {
                 CEP: values.cep
               },
               values.voltagem_ee,
-              values.sub_categoria_id
+              values.sub_categoria_id,
+              {headers: {token: this.token}}
             );
           }
           this.data = await feiranteAPI.get();
@@ -411,25 +418,7 @@ export default {
       return (this.action === 'view' || this.form.usa_ee === false);
     },
   },
-
-  computed: {
-    selecionado() {
-      return this.selectedRows.length > 0;
-    },
-
-    rowSelection() {
-      const { selectedRowKeys } = this;
-      return {
-        onChange: (selectedRowKeys, selectedRows) => {
-          this.selectedRows = selectedRows;
-        },
-      };
-    },
-  },
-
-  async created() {
-    this.data = await feiranteAPI.get();
-  },
+  
 };
 </script>
 

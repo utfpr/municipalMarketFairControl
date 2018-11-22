@@ -13,7 +13,7 @@
 ```javascript
 {
     "cpf": "111.111.111-11",
-    "nome:" "João",
+    "nome": "João",
     "senha": "123456",
     "is_adm": false
 }
@@ -107,7 +107,7 @@
 ```javascript
 {
     "is_adm": true,
-    "nome:" "Novo João",
+    "nome": "Novo João",
     "senha": "nova123456",
 }
 ```
