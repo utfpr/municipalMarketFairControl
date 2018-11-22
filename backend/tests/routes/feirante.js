@@ -12,6 +12,8 @@ const { assert } = chai;
 
 chai.use(chaiHttp);
 
+const host = '/api/feirante/';
+
 describe('feirante.js', () => {
   let tokenSupervisor;
   let feirante;
@@ -56,7 +58,9 @@ describe('feirante.js', () => {
       subcategoria.id,
     );
 
-    await models.celula.create({ id: 1, periodo: 1 });
+    await models.celula.create({
+      id: 1, periodo: 1, x: 0, y: 0, comprimento: 0, largura: 0,
+    });
 
     tokenFeirante = (await loginController.login(feirante.cpf, '1234')).token;
     tokenAdmin = (await loginController.login(admin.cpf, '1234')).token;
@@ -75,7 +79,7 @@ describe('feirante.js', () => {
     it('Supervisor pode adicionar feirante', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({
           cpf: '07281509057',
@@ -103,7 +107,7 @@ describe('feirante.js', () => {
     it('Administrador pode adicionar feirante', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenAdmin)
         .send({
           cpf: '44174625000',
@@ -132,7 +136,7 @@ describe('feirante.js', () => {
     it('Feirante não pode adicionar feirante', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenFeirante)
         .send({
           cpf: '16319981024',
@@ -160,7 +164,7 @@ describe('feirante.js', () => {
     it('Sem token não pode adicionar feirante', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', 'aaaa')
         .send({
           cpf: '39616904051',
@@ -188,7 +192,7 @@ describe('feirante.js', () => {
     it('Atributos faltando', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({
           cpf: '07281509057',
@@ -216,7 +220,7 @@ describe('feirante.js', () => {
     it('Atributos faltando #2', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({
           cpf: '07281509057',
@@ -244,7 +248,7 @@ describe('feirante.js', () => {
     it('Atributos incorretos', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({
           cpf: '07281509057',
@@ -272,7 +276,7 @@ describe('feirante.js', () => {
     it('Atributos opcionais', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({
           cpf: '03042659003',
@@ -301,7 +305,7 @@ describe('feirante.js', () => {
     it('Subcategoria não existe', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({
           cpf: '47668203044',
@@ -330,7 +334,7 @@ describe('feirante.js', () => {
     it('CPF existente', async () => {
       const res = await chai
         .request(app)
-        .post('/feirante')
+        .post(host)
         .set('token', tokenSupervisor)
         .send({
           cpf: '07281509057',
@@ -360,7 +364,7 @@ describe('feirante.js', () => {
     it('Lista feirantes', async () => {
       const res = await chai
         .request(app)
-        .get('/feirante')
+        .get(host)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.lengthOf(res.body, 4);
@@ -371,7 +375,7 @@ describe('feirante.js', () => {
     it('CPF inválido', async () => {
       const res = await chai
         .request(app)
-        .get('/feirante/11111111111')
+        .get(`${host}11111111111`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 400);
     });
@@ -379,7 +383,7 @@ describe('feirante.js', () => {
     it('CPF não existente', async () => {
       const res = await chai
         .request(app)
-        .get('/feirante/93146729059')
+        .get(`${host}93146729059`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'cpf_nao_existente');
@@ -388,7 +392,7 @@ describe('feirante.js', () => {
     it('Retorna feirante pelo CPF', async () => {
       const res = await chai
         .request(app)
-        .get(`/feirante/${feirante.cpf}`)
+        .get(`${host}${feirante.cpf}`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.cpf, feirante.cpf);
@@ -398,7 +402,7 @@ describe('feirante.js', () => {
     it('CPF inválido', async () => {
       const res = await chai
         .request(app)
-        .put('/feirante/11111111111')
+        .put(`${host}11111111111`)
         .set('token', tokenSupervisor)
         .send({ senha: '123456' });
       assert.strictEqual(res.statusCode, 400);
@@ -407,7 +411,7 @@ describe('feirante.js', () => {
     it('Atributo incorreto', async () => {
       const res = await chai
         .request(app)
-        .put(`/feirante/${feirante.cpf}`)
+        .put(`${host}${feirante.cpf}`)
         .set('token', tokenSupervisor)
         .send({ senha: '1234' });
       assert.strictEqual(res.statusCode, 400);
@@ -416,7 +420,7 @@ describe('feirante.js', () => {
     it('CPF não existe', async () => {
       const res = await chai
         .request(app)
-        .put('/feirante/91137616091')
+        .put(`${host}91137616091`)
         .set('token', tokenSupervisor)
         .send({ senha: '123456' });
       assert.strictEqual(res.statusCode, 200);
@@ -427,7 +431,7 @@ describe('feirante.js', () => {
       const novoNome = faker.name.firstName();
       let res = await chai
         .request(app)
-        .put(`/feirante/${feirante.cpf}`)
+        .put(`${host}${feirante.cpf}`)
         .set('token', tokenSupervisor)
         .send({ nome: novoNome });
       assert.strictEqual(res.statusCode, 200);
@@ -435,7 +439,7 @@ describe('feirante.js', () => {
 
       res = await chai
         .request(app)
-        .get(`/feirante/${feirante.cpf}`)
+        .get(`${host}${feirante.cpf}`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.nome, novoNome);
@@ -445,14 +449,14 @@ describe('feirante.js', () => {
     it('CPF inválido', async () => {
       const res = await chai
         .request(app)
-        .delete('/feirante/11111111111')
+        .delete(`${host}11111111111`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 400);
     });
     it('CPF não existe', async () => {
       const res = await chai
         .request(app)
-        .delete('/feirante/91137616091')
+        .delete(`${host}91137616091`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'cpf_nao_existente');
@@ -460,19 +464,17 @@ describe('feirante.js', () => {
     it('Remove supervisor', async () => {
       let res = await chai
         .request(app)
-        .delete(`/feirante/${feirante.cpf}`)
+        .delete(`${host}${feirante.cpf}`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'ok');
 
       res = await chai
         .request(app)
-        .get(`/feirante/${feirante.cpf}`)
+        .get(`${host}${feirante.cpf}`)
         .set('token', tokenSupervisor);
       assert.strictEqual(res.statusCode, 200);
       assert.strictEqual(res.body.msg, 'cpf_nao_existente');
     });
   });
-  describe('GET /feirante/:cpf/participacoes', () => {});
-  describe('POST /feirante/confirma', () => {});
 });

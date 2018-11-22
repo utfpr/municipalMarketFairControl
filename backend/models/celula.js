@@ -21,6 +21,22 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER(11),
         allowNull: false,
       },
+      x: {
+        type: 'DOUBLE',
+        allowNull: false,
+      },
+      y: {
+        type: 'DOUBLE',
+        allowNull: false,
+      },
+      comprimento: {
+        type: 'DOUBLE',
+        allowNull: false,
+      },
+      largura: {
+        type: 'DOUBLE',
+        allowNull: false,
+      },
     },
     {
       tableName: 'celula',

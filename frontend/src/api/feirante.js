@@ -43,7 +43,7 @@ export async function post(
     rg, 
     nome, 
     cnpj, 
-    usa_ee,
+    usa_ee, 
     nome_fantasia,
     razao_social,
     comprimento_barraca,

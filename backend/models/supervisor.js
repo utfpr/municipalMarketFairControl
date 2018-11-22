@@ -24,6 +24,11 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: true,
         defaultValue: 0
       },
+      root_adm: {
+        type: DataTypes.INTEGER(1),
+        allowNull: true,
+        defaultValue: 0
+      },
       status: {
         type: DataTypes.INTEGER(1),
         allowNull: true,

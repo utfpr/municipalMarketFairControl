@@ -17,13 +17,17 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/feirante', feirante);
-app.use('/login', login);
-app.use('/supervisor', supervisor);
-app.use('/celula', celula);
-app.use('/feira', feira);
-app.use('/categoria', categoria);
-app.use('/subcategoria', subcategoria);
-app.use('/participa', participa);
+const router = express.Router();
+
+router.use('/feirante', feirante);
+router.use('/login', login);
+router.use('/supervisor', supervisor);
+router.use('/celula', celula);
+router.use('/feira', feira);
+router.use('/categoria', categoria);
+router.use('/subcategoria', subcategoria);
+router.use('/participa', participa);
+
+app.use('/api', router);
 
 module.exports = app;

@@ -32,7 +32,14 @@ describe('celula.js', () => {
     });
 
     it('Retorna celula', async () => {
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       const celula = await celulaController.findCelulaById(1);
       assert.isNotNull(celula);
       assert.strictEqual(celula.periodo, 1);
@@ -46,8 +53,12 @@ describe('celula.js', () => {
     });
 
     it('Retorna um array de celulas', async () => {
-      await models.celula.create({ id: 1, periodo: 1 });
-      await models.celula.create({ id: 2, periodo: 2 });
+      await models.celula.create({
+        id: 1, periodo: 1, x: 0, y: 0, comprimento: 0, largura: 0,
+      });
+      await models.celula.create({
+        id: 2, periodo: 2, x: 0, y: 0, comprimento: 0, largura: 0,
+      });
 
       const celulas = await celulaController.listCelula();
       assert.lengthOf(celulas, 2);
@@ -81,8 +92,18 @@ describe('celula.js', () => {
         subcategoria.id,
       );
 
-      await models.celula.create({ id: 1, periodo: 1, cpf_feirante: feirante.cpf });
-      await models.celula.create({ id: 2, periodo: 2 });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        cpf_feirante: feirante.cpf,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
+      await models.celula.create({
+        id: 2, periodo: 2, x: 0, y: 0, comprimento: 0, largura: 0,
+      });
 
       const celulas = await celulaController.listCelula();
       assert.lengthOf(celulas, 2);
@@ -105,7 +126,9 @@ describe('celula.js', () => {
     });
 
     it('Retorna null se CPF não existe', async () => {
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1, periodo: 1, x: 0, y: 0, comprimento: 0, largura: 0,
+      });
       const ret = await celulaController.updateCelula(1, {
         cpf_feirante: '58295846035',
         periodo: 1,
@@ -114,7 +137,9 @@ describe('celula.js', () => {
     });
 
     it('Retorna null se período é inválido', async () => {
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1, periodo: 1, x: 0, y: 0, comprimento: 0, largura: 0,
+      });
       const feirante = await feiranteController.addFeirante(
         '58295846035',
         '469964807',
@@ -143,7 +168,9 @@ describe('celula.js', () => {
     });
 
     it('Atualiza celula', async () => {
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1, periodo: 1, x: 0, y: 0, comprimento: 0, largura: 0,
+      });
       const feirante = await feiranteController.addFeirante(
         '58295846035',
         '469964807',
@@ -229,7 +256,9 @@ describe('celula.js', () => {
         subcategoria.id,
       );
 
-      await models.celula.create({ id: 1, periodo: 1 });
+      await models.celula.create({
+        id: 1, periodo: 1, x: 0, y: 0, comprimento: 0, largura: 0,
+      });
       const celula = await celulaController.findCelulaByFeirante(feirante.cpf);
       assert.isNull(celula);
     });
@@ -256,7 +285,15 @@ describe('celula.js', () => {
         subcategoria.id,
       );
 
-      await models.celula.create({ id: 1, periodo: 1, cpf_feirante: feirante.cpf });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        cpf_feirante: feirante.cpf,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       const celula = await celulaController.findCelulaByFeirante(feirante.cpf);
       assert.isNotNull(celula);
       assert.strictEqual(celula.cpf_feirante, feirante.cpf);

@@ -6,6 +6,8 @@ import router from './router';
 import './registerServiceWorker';
 
 Vue.use(Antd);
+
+
 Vue.config.productionTip = false;
 
 new Vue({

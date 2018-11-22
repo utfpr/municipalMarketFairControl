@@ -75,6 +75,10 @@ CREATE TABLE celula (
 	id INTEGER,
 	cpf_feirante VARCHAR(15),
 	periodo INTEGER NOT NULL,
+	x REAL NOT NULL,
+	y REAL NOT NULL,
+	comprimento REAL NOT NULL,
+	largura REAL NOT NULL,
 
 	PRIMARY KEY (id),
 	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE
@@ -101,6 +105,7 @@ CREATE TABLE supervisor (
 	nome VARCHAR(100) NOT NULL,
 	senha VARCHAR(500) NOT NULL,
 	is_adm BOOLEAN DEFAULT false,
+	root_adm BOOLEAN DEFAULT false,
 	status BOOLEAN DEFAULT true,
 
 	PRIMARY KEY (cpf)

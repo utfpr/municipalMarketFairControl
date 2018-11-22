@@ -14,7 +14,18 @@ const proximaSexta = () => {
   return tmp;
 };
 
+const proximoDomingo = () => {
+  const tmp = new Date();
+  tmp.setDate(tmp.getDate() + ((((7 - tmp.getDay()) % 7) + 7) % 7));
+  tmp.setUTCHours(18);
+  tmp.setUTCMinutes(0);
+  tmp.setUTCSeconds(0);
+  tmp.setUTCMilliseconds(0);
+  return tmp;
+};
+
 module.exports = {
   amanha,
   proximaSexta,
+  proximoDomingo,
 };

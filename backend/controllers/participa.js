@@ -162,10 +162,9 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
     const celula = await celulaController.findCelulaById(celulaId);
     if (celula.periodo !== confirmacao.periodo) return null;
   }
- 
+
   if (celulaId === null) {
     try {
-     
       return await confirmacao.update({ celula_id: null });
     } catch (error) {
       return null;

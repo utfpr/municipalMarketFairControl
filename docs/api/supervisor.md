@@ -51,16 +51,16 @@
 ```javascript
 [
   {
-    "cpf": "111.111.111-11",
-    "nome": "João",
-    "is_adm": false
+    cpf: "111.111.111-11",
+    nome: "João",
+    is_adm: false
   },
   {
-    "cpf": "111.111.222-22",
-    "nome": "José",
-    "is_adm": true
+    cpf: "111.111.222-22",
+    nome: "José",
+    is_adm: true
   }
-]
+];
 ```
 
 - Resposta _#2_ - **Code 401** - Token inválido
@@ -152,6 +152,14 @@
 ```javascript
 {
     "msg": "cpf_nao_existente"
+}
+```
+
+- Resposta _#1C_ - **Code 200** - ADM root (não pode ser excluido)
+
+```javascript
+{
+    "msg": "admin_root"
 }
 ```
 

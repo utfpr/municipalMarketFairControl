@@ -137,7 +137,15 @@ describe('participa.js', () => {
       const feira = await feiraController.addFeira(amanha());
       assert.isNotNull(feira);
 
-      await models.celula.create({ id: 1, periodo: 1, cpf_feirante: feirante.cpf });
+      await models.celula.create({
+        id: 1,
+        periodo: 1,
+        cpf_feirante: feirante.cpf,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
 
       const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
       assert.isNull(confirmacao);
@@ -172,7 +180,15 @@ describe('participa.js', () => {
       const feira = await feiraController.addFeira(amanha());
       assert.isNotNull(feira);
 
-      await models.celula.create({ id: 1, periodo: 2, cpf_feirante: feirante.cpf });
+      await models.celula.create({
+        id: 1,
+        periodo: 2,
+        cpf_feirante: feirante.cpf,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
 
       const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
       assert.isNotNull(confirmacao);
@@ -238,7 +254,15 @@ describe('participa.js', () => {
 
   describe('getDadosCelulaFeiraAtual', () => {
     it('Retorna null se não existe feira atual', async () => {
-      const celula = await models.celula.create({ id: 1, periodo: 2, cpf_feirante: feirante.cpf });
+      const celula = await models.celula.create({
+        id: 1,
+        periodo: 2,
+        cpf_feirante: feirante.cpf,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       const dadosCelula = await participaController.getDadosCelulaFeiraAtual(celula.id);
       assert.isNull(dadosCelula);
     });
@@ -251,7 +275,15 @@ describe('participa.js', () => {
     });
 
     it('Retorna cpfFeirante === null se celula não foi alocada', async () => {
-      const celula = await models.celula.create({ id: 1, periodo: 2, cpf_feirante: feirante.cpf });
+      const celula = await models.celula.create({
+        id: 1,
+        periodo: 2,
+        cpf_feirante: feirante.cpf,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       const feira = await feiraController.addFeira(amanha());
       assert.isNotNull(feira);
       const dadosCelula = await participaController.getDadosCelulaFeiraAtual(celula.id);
@@ -260,7 +292,15 @@ describe('participa.js', () => {
     });
 
     it('Retorna cpfFeirante !== null se celula foi alocada', async () => {
-      const celula = await models.celula.create({ id: 1, periodo: 2, cpf_feirante: feirante.cpf });
+      const celula = await models.celula.create({
+        id: 1,
+        periodo: 2,
+        cpf_feirante: feirante.cpf,
+        x: 0,
+        y: 0,
+        comprimento: 0,
+        largura: 0,
+      });
       const feira = await feiraController.addFeira(amanha());
       assert.isNotNull(feira);
 
@@ -278,14 +318,14 @@ describe('participa.js', () => {
 
   describe('isFeiranteConfirmadoFeiraAtual', () => {
     it('Retorna true se feirante está confirmado na feira atual', async () => {
-      const feira = await feiraController.addFeira(amanha());
+      await feiraController.addFeira(amanha());
       const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
       assert.isNotNull(confirmacao);
       assert.isTrue(await participaController.isFeiranteConfirmadoFeiraAtual(feirante.cpf));
     });
 
     it('Retorna false se feirante não está confirmado na feira atual', async () => {
-      const feira = await feiraController.addFeira(amanha());
+      await feiraController.addFeira(amanha());
       // const confirmacao = await participaController.confirmaPresencaFeiraAtual(feirante.cpf, 2);
       // assert.isNotNull(confirmacao);
       assert.isFalse(await participaController.isFeiranteConfirmadoFeiraAtual(feirante.cpf));
