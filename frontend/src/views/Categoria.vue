@@ -1,44 +1,48 @@
 <template>
   <a-layout id="components-layout-demo-responsive">
     <a-layout>
-      <a-layout-content :style="{ margin: '24px 16px 30px' }">
+      <div style="text-align: left; margin:20px 0px 0px 20px;">
+        <a-form layout='inline' :autoFormCreate="(form)=>{this.form = form}">
+          <div>
+            <a-form-item
+                label='Nome'
+                fieldDecoratorId="nome"
+                :fieldDecoratorOptions="{rules: [{ required: true,
+                message: 'Por favor, insira o nome' }]}"
+              >
+              <a-input placeholder='Por favor, insira o nome' />
+            </a-form-item>
+            <a-form-item fieldDecoratorId="needcpnj">
+              <a-checkbox :checked="checkNeedCnpj"
+                @change="handleChange"
+              >
+              Requer CNPJ
+              </a-checkbox>
+            </a-form-item>
+            <a-form-item>
+              <a-button @click="this.onOk" type="primary">Adicionar</a-button>
+            </a-form-item>
+          </div>
+        </a-form>
+      </div>
+      <a-layout-content :style="{ margin: '24px 16px 30px', height: '140px', width: '500'}">
         <div :style="{ padding: '24px', background: '#fff'}">
           <div :style="{ padding: '5px' }">
-            <a-collapse v-if="data">
-              <a-collapse-panel v-for="(obj, index) in data" :header="obj.nome" :key="index">
-                <p>{{}}</p>
+            <a-collapse v-if="categorias">
+              <a-collapse-panel v-for="(obj, index) in categorias" :header="obj.nome" :key="index">
+                <p>Sub Categorias</p>
+                <a-form>
+                  <a-form-item
+                    label='Nome'
+                    fieldDecoratorId="nome"
+                    :fieldDecoratorOptions="{rules: [{ required: true,
+                    message: 'Por favor, insira o nome' }]}"
+                  >
+                    <a-input placeholder='Por favor, insira o nome' />
+                  </a-form-item>
+                </a-form>
               </a-collapse-panel>
             </a-collapse>
-            <div style="text-align: right; margin-top:20px ">
-              <a-form layout='inline' :autoFormCreate="(form)=>{this.form = form}">
-                <div>
-                  <a-col :span='12'>
-                    <a-form-item
-                      label='Nome'
-                      fieldDecoratorId="nome"
-                      :fieldDecoratorOptions="{rules: [{ required: true,
-                      message: 'Por favor, insira o nome' }]}"
-                    >
-                      <a-input placeholder='Por favor, insira o nome' />
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span='3'>
-                    <a-form-item fieldDecoratorId="needcpnj">
-                      <a-checkbox :checked="checkNeedCnpj"
-                        @change="handleChange"
-                      >
-                        Requer CNPJ
-                      </a-checkbox>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :span='2'>
-                    <a-form-item>
-                      <a-button @click="this.onOk" type="primary">Adicionar</a-button>
-                    </a-form-item>
-                  </a-col>
-                </div>
-              </a-form>
-            </div>
           </div>
         </div>
       </a-layout-content>
@@ -59,7 +63,7 @@ const formTailLayout = {
 export default {
   data() {
     return {
-      data: [],
+      categorias: [],
       visible: false,
       confirmLoading: false,
       ModalText: '',
@@ -71,7 +75,12 @@ export default {
   },
 
   async created() {
-    this.data = await categoriaAPI.get()
+    this.categorias = await categoriaAPI.get();
+    this.categorias.forEach(cat => {
+      categoriaAPI.getSub(cat.id, (res) => {
+        cat.subcategorias = res;
+      });
+    });
   },
 
   methods: {
@@ -89,8 +98,10 @@ export default {
       this.form.validateFields(async (err, values) => {
         if (!err) {
           await categoriaAPI.post(values.nome, values.needcpnj);
+          this.form.resetFields();
+          this.checkNeedCnpj = false;
         }
-        this.data = await categoriaAPI.get();
+        this.categorias = await categoriaAPI.get();
       });
     },
     handleChange(e) {
