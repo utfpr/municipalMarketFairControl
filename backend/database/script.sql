@@ -10,7 +10,16 @@ DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS celula;
 DROP TABLE IF EXISTS supervisor;
 DROP TABLE IF EXISTS endereco;
+DROP TABLE IF EXISTS aviso;
 
+
+CREATE TABLE aviso (
+	id INTEGER AUTO_INCREMENT,
+	assunto VARCHAR(100),
+	texto VARCHAR(1000),
+	
+	PRIMARY KEY (id)
+);
 
 
 CREATE TABLE categoria (
