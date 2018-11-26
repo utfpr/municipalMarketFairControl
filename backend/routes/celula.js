@@ -1,51 +1,62 @@
 const express = require('express');
+const { body, param, validationResult } = require('express-validator/check');
+const { isCpf } = require('./utils');
+
 const router = express.Router();
-const celula_controller = require('../controllers/celula');
+const celulaController = require('../controllers/celula');
+const feiranteController = require('../controllers/feirante');
 const authMiddleware = require('../middlewares/auth');
-const models = require('../models');
 
-// rota pra listar todas as celulas
-router.get('/list', (req, res) => {
-    var lista = celula_controller.listCelulas();
-    res.json({
-        message: "Listar celulas"
-    });
+router.get('/', authMiddleware.isSupervisor, async (req, res) => {
+  const celulas = await celulaController.listCelula();
+  return res.json(celulas.map(celula => celula));
 });
 
-// rota pra listar informações de uma celula
-router.get('/list/info', (req, res) => {
-    var id = req.body.id;
-    var celula = celula_controller.findCelula(id);
+router.get('/:id', authMiddleware.isSupervisor, [param('id').isInt()], async (req, res) => {
+  if (!validationResult(req).isEmpty()) return res.json({ msg: 'id_nao_existente' });
 
-    var resposta;
-    if(celula != null){
-        resposta = 'Informações da celula';
-    } else{
-        resposta = 'Celula nao existe'
+  const { id } = req.params;
+  const celula = await celulaController.findCelulaById(id);
+
+  if (celula === null) return res.json({ msg: 'id_nao_existente' });
+
+  return res.json(celula);
+});
+
+router.put(
+  '/:id',
+  authMiddleware.isSupervisor,
+  [
+    param('id').isInt(),
+    body('cpf_feirante')
+      .custom(isCpf)
+      .optional(),
+    body('periodo')
+      .isInt({ min: 1, max: 3 })
+      .optional(),
+  ],
+  async (req, res) => {
+    if (!validationResult(req).isEmpty()) return res.status(400).send();
+
+    const cpfFeirante = req.body.cpf_feirante;
+    const { periodo } = req.body;
+    const { id } = req.params;
+
+    const celula = await celulaController.findCelulaById(id);
+    if (celula === null) return res.json({ msg: 'id_nao_existente' });
+
+    if (cpfFeirante !== undefined) {
+      const feirante = await feiranteController.findFeiranteByCpf(cpfFeirante);
+      if (feirante === null) return res.json({ msg: 'cpf_nao_existente' });
     }
 
-    res.json({
-        message: resposta
+    const atualizado = await celulaController.updateCelula(id, {
+      ...(cpfFeirante !== undefined ? { cpf_feirante: cpfFeirante } : {}),
+      ...(periodo !== undefined ? { periodo } : {}),
     });
-});
+    if (atualizado === null) return res.json({ msg: 'erro' });
 
-// rota pra setar feirante
-router.post('/setFeirante', authMiddleware.isSupervisor, (req, res) => {
-    var id_celula = req.body.id;
-    var cpf_feirante = req.body.cpf_feirante;
-    
-    var set = celula_controller.setFeirante(id_celula, cpf_feirante);
-
-    var resposta;
-    if(set != null){
-        resposta = "Setou";
-    } else{
-        resposta = "Deu ruim";
-    }
-
-    res.json({
-        message: resposta
-    });
-});
-
+    return res.json({ msg: 'ok' });
+  },
+);
 module.exports = router;

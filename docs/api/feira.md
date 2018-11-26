@@ -17,8 +17,10 @@
 ```
 
 - Resposta _#1B_ - **Code 200** - Sem feira atual (não foi criada no sistema)
-```
-feira_invalida
+```javascript
+{
+    "msg": "feira_invalida"
+}
 ```
 
 - Resposta _#2_ - **Code 401** - Token inválido
@@ -41,14 +43,18 @@ feira_invalida
 
 - Resposta _#1A_ - **Code 200** - Feira cadastrada
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - Data não permitida (data anterior)
 
-```
-data_nao_permitida
+```javascript
+{
+    "msg": "data_nao_permitida"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/faltando
@@ -64,14 +70,18 @@ data_nao_permitida
 
 - Resposta _#1A_ - **Code 200** - Feira cancelada
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - Feira não cancelada (feira ja foi cancelada/sem feira atual)
 
-```
-feira_nao_cancelada
+```javascript
+{
+    "msg": "feira_nao_cancelada"
+}
 ```
 
 - Resposta _#2_ - **Code 401** - Token inválido

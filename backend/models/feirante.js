@@ -1,7 +1,5 @@
 /* jshint indent: 2 */
-/* eslint-disable */
-
-module.exports = function(sequelize, DataTypes) {
+module.exports = (sequelize, DataTypes) => {
   const Feirante = sequelize.define(
     "feirante",
     {
@@ -43,10 +41,6 @@ module.exports = function(sequelize, DataTypes) {
         type: "DOUBLE",
         allowNull: false
       },
-      endereco: {
-        type: DataTypes.STRING(200),
-        allowNull: false
-      },
       voltagem_ee: {
         type: DataTypes.INTEGER(11),
         allowNull: true
@@ -78,8 +72,13 @@ module.exports = function(sequelize, DataTypes) {
 
   Feirante.associate = models => {
     models.feirante.belongsTo(models.subcategoria, {
+      as: "sub_categoria",
       foreignKey: "sub_categoria_id",
       targetKey: "id"
+    });
+    models.feirante.hasOne(models.endereco, {
+      as: "endereco",
+      foreignKey: "cpf_feirante"
     });
     models.feirante.hasOne(models.celula, {
       as: "id",

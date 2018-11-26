@@ -1,6 +1,15 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
+import Login from './views/Login.vue';
+
+import MenuSupervisor from './views/supervisor/MenuSupervisor.vue';
+import Feira from './views/supervisor/Feira.vue';
+import Supervisor from './views/supervisor/Supervisor.vue';
+import Feirante from './views/supervisor/Feirante.vue';
+import Categoria from './views/supervisor/Categoria.vue';
+import Mapeamento from './views/supervisor/Mapeamento.vue';
+
+import MenuFeirante from './views/feirante/MenuFeirante.vue';
 
 Vue.use(Router);
 
@@ -10,24 +19,40 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
-    },
-    {
-      path: '/login',
       name: 'login',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/Login.vue'),
+      component: Login,
+    },
+    {
+      path: '/feirante',
+      name: 'feirante',
+      component: MenuFeirante,
+    },
+    {
+      path: '/supervisor',
+      name: 'supervisor',
+      component: MenuSupervisor,
+      children: [
+        {
+          path: '',
+          component: Feira,
+        },
+        {
+          path: 'supervisores',
+          component: Supervisor,
+        },
+        {
+          path: 'feirantes',
+          component: Feirante,
+        },
+        {
+          path: 'categorias',
+          component: Categoria,
+        },
+        {
+          path: 'mapeamento',
+          component: Mapeamento,
+        },
+      ],
     },
   ],
 });

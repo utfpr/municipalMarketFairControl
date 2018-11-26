@@ -1,73 +1,105 @@
 # Célula
 
-## ```GET /celula``` - Lista células
+## `GET /celula` - Lista células
 
-- Headers: 
+- Headers:
+
 ```
     token: <jwt supervisor>
 ```
 
-- Resposta *#1* - **Code 200** - Sucesso
-```javascript
+- Resposta _#1_ - **Code 200** - Sucesso
+
+```json
 [
-    {
-        "cpf_feirante": "111.111.111-11",
-        "periodo": "1"
-    },
-    {
-        "cpf_feirante": "111.111.333-22",
-        "periodo": "2"
-    }
+  {
+    "cpf_feirante": "58295846035",
+    "periodo": 1
+  },
+  {
+    "cpf_feirante": "40515695009",
+    "periodo": 2
+  }
 ]
 ```
-- Resposta *#2* - **Code 401** - Token inválido
 
-## ```GET /celula/1``` - Retorna informações da célula pelo ID
- - Headers: 
+- Resposta _#2_ - **Code 401** - Token inválido
+
+## `GET /celula/1` - Retorna informações da célula pelo ID
+
+- Headers:
+
 ```
     token: <jwt supervisor>
 ```
 
-- Resposta *#1A* - **Code 200** - Sucesso
-```javascript
+- Resposta _#1A_ - **Code 200** - Sucesso
+
+```json
 {
-    "cpf_feirante": "111.111.111-11",
-    "periodo": "1"
+  "cpf_feirante": "58295846035",
+  "periodo": 1
 }
 ```
-- Resposta *#1B* - **Code 200** - ID não existente
-```
-id_nao_existente
-```
-- Resposta *#2* - **Code 401** - Token inválido
 
-## ```PUT /celula/1``` - Atualiza célula
+- Resposta _#1B_ - **Code 200** - ID não existente
+
+```json
+{
+  "msg": "id_nao_existente"
+}
+```
+
+- Resposta _#2_ - **Code 401** - Token inválido
+
+## `PUT /celula/1` - Atualiza célula
+
 - Headers
 
- ```
-    Token: <jwt supervisor>
- ```
+```
+   Token: <jwt supervisor>
+```
 
 - Body
 
-```javascript
+```json
 {
-    "cpf_feirante": "111.111.111-11",
-    "periodo": "1"
+  "cpf_feirante": "58295846035",
+  "periodo": 1
 }
 ```
 
-- Resposta *#1A* - **Code 200** - Célula atualizada
+- Resposta _#1A_ - **Code 200** - Célula atualizada
+
+```json
+{
+  "msg": "ok"
+}
 ```
-ok
+
+- Resposta _#1B_ - **Code 200** - Erro no banco de dados
+
+```json
+{
+  "msg": "erro"
+}
 ```
-- Resposta *#1B* - **Code 200** - ID não existente
+
+- Resposta _#1C_ - **Code 200** - ID não existente
+
+```json
+{
+  "msg": "id_nao_existente"
+}
 ```
-id_nao_existente
+
+- Resposta _#1D_ - **Code 200** - CPF não existente
+
+```json
+{
+  "msg": "cpf_nao_existente"
+}
 ```
-- Resposta *#1C* - **Code 200** - CPF não existente
-```
-cpf_nao_existente
-```
-- Resposta *#2* - **Code 400** - Atributos incorretos/CPF inválido
-- Resposta *#3* - **Code 401** - Token inválido
+
+- Resposta _#2_ - **Code 400** - Atributos incorretos/CPF inválido
+- Resposta _#3_ - **Code 401** - Token inválido

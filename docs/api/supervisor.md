@@ -21,14 +21,18 @@
 
 - Resposta _#1A_ - **Code 200** - Supervisor cadastrado
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF existente
 
-```
-cpf_existente
+```javascript
+{
+    "msg": "cpf_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/faltando
@@ -47,16 +51,16 @@ cpf_existente
 ```javascript
 [
   {
-    "cpf": "111.111.111-11",
-    "nome": "João",
-    "is_adm": false
+    cpf: "111.111.111-11",
+    nome: "João",
+    is_adm: false
   },
   {
-    "cpf": "111.111.222-22",
-    "nome": "José",
-    "is_adm": true
+    cpf: "111.111.222-22",
+    nome: "José",
+    is_adm: true
   }
-]
+];
 ```
 
 - Resposta _#2_ - **Code 401** - Token inválido
@@ -79,10 +83,12 @@ cpf_existente
 }
 ```
 
-- Resposta _#1B_ - **Code 200** - CPF não existe
+- Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existe
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
@@ -100,20 +106,26 @@ cpf_nao_existe
 
 ```javascript
 {
-    "is_adm": true
+    "is_adm": true,
+    "nome:" "Novo João",
+    "senha": "nova123456",
 }
 ```
 
 - Resposta _#1A_ - **Code 200** - Supervisor atualizado
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existente
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/CPF inválido
@@ -129,14 +141,26 @@ cpf_nao_existente
 
 - Resposta _#1A_ - **Code 200** - Sucesso
 
-```
-ok
+```javascript
+{
+    "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF não existente
 
+```javascript
+{
+    "msg": "cpf_nao_existente"
+}
 ```
-cpf_nao_existente
+
+- Resposta _#1C_ - **Code 200** - ADM root (não pode ser excluido)
+
+```javascript
+{
+    "msg": "admin_root"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido

@@ -10,40 +10,51 @@
 
 - Body
 
-```javascript
+```json
 {
-    "cpf": "111.111.111-11",
-    "cnpj": "19.014.667/0001-71",
-    "nome": "João Paulo",
-    "rg": "11.111.111-1",
-    "usa_ee": true,
-    "nome_fantasia": "Barraca do Jão",
-    "razao_social": "João LTDA",
-    "comprimento_barraca": 4,
-    "largura_barraca": 4,
-    "endereco": "Rua São Paulo, 123",
-    "voltagem_ee": 220,
-    "sub_categoria_id": 2,
-    "senha": "123456"
+  "cpf": "54440467091",
+  "cnpj": "87087101000120",
+  "nome": "João Paulo",
+  "rg": "11.111.111-1",
+  "usa_ee": true,
+  "nome_fantasia": "Barraca do Jão",
+  "razao_social": "João LTDA",
+  "comprimento_barraca": 4,
+  "largura_barraca": 4,
+  "endereco": {
+    "logradouro": "Rua Brasil",
+    "bairro": "Centro",
+    "numero": 100,
+    "cep": "87.303-000"
+  },
+  "voltagem_ee": 220,
+  "sub_categoria_id": 2,
+  "senha": "123456"
 }
 ```
 
 - Resposta _#1A_ - **Code 200** - Feirante cadastrado
 
-```
-ok
+```json
+{
+  "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF existente
 
-```
-cpf_existente
+```json
+{
+  "msg": "cpf_existente"
+}
 ```
 
 - Resposta _#1C_ - **Code 200** - Subcategoria não existe
 
-```
-subcategoria_nao_existe
+```json
+{
+  "msg": "subcategoria_nao_existe"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/faltando
@@ -59,33 +70,43 @@ subcategoria_nao_existe
 
 - Resposta _#1_ - **Code 200** - Sucesso
 
-```javascript
+```json
 [
   {
-    "cpf": "111.111.111-11",
-    "cnpj": "19.014.667/0001-71",
+    "cpf": "54440467091",
+    "cnpj": "87087101000120",
     "nome": "João Paulo",
-    "rg": "11.111.111-1",
+    "rg": "378507333",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão",
     "razao_social": "João LTDA",
     "comprimento_barraca": 4,
     "largura_barraca": 4,
-    "endereco": "Rua São Paulo, 123",
+  "endereco": {
+    "logradouro": "Rua Brasil",
+    "bairro": "Centro",
+    "numero": 100,
+    "cep": "87.303-000"
+  },
     "voltagem_ee": 220,
     "sub_categoria_id": 2
   },
   {
-    "cpf": "111.111.111-22",
-    "cnpj": "19.014.667/0001-72",
+    "cpf": "22822806012",
+    "cnpj": "87087101000120",
     "nome": "João Paulo",
-    "rg": "11.111.111-1",
+    "rg": "378507333",
     "usa_ee": true,
     "nome_fantasia": "Barraca do Jão 2",
     "razao_social": "João LTDA 2",
     "comprimento_barraca": 4,
     "largura_barraca": 4,
-    "endereco": "Rua São Paulo, 123",
+  "endereco": {
+    "logradouro": "Rua Brasil",
+    "bairro": "Centro",
+    "numero": 100,
+    "cep": "87.303-000"
+  },
     "voltagem_ee": 220,
     "sub_categoria_id": 2
   }
@@ -104,27 +125,34 @@ subcategoria_nao_existe
 
 - Resposta _#1A_ - **Code 200** - Sucesso
 
-```javascript
+```json
 {
-    "cpf": "111.111.111-11",
-    "cnpj": "19.014.667/0001-71",
-    "nome": "João Paulo",
-    "rg": "11.111.111-1",
-    "usa_ee": true,
-    "nome_fantasia": "Barraca do Jão",
-    "razao_social": "João LTDA",
-    "comprimento_barraca": 4,
-    "largura_barraca": 4,
-    "endereco": "Rua São Paulo, 123",
-    "voltagem_ee": 220,
-    "sub_categoria_id": 2
+  "cpf": "54440467091",
+  "cnpj": "87087101000120",
+  "nome": "João Paulo",
+  "rg": "378507333",
+  "usa_ee": true,
+  "nome_fantasia": "Barraca do Jão",
+  "razao_social": "João LTDA",
+  "comprimento_barraca": 4,
+  "largura_barraca": 4,
+  "endereco": {
+    "logradouro": "Rua Brasil",
+    "bairro": "Centro",
+    "numero": 100,
+    "cep": "87.303-000"
+  },
+  "voltagem_ee": 220,
+  "sub_categoria_id": 2
 }
 ```
 
-- Resposta _#1B_ - **Code 200** - CPF não existe
+- Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existe
+```json
+{
+  "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
@@ -140,22 +168,26 @@ cpf_nao_existe
 
 - Body
 
-```javascript
+```json
 {
-    "voltagem_ee": 110
+  "voltagem_ee": 110
 }
 ```
 
 - Resposta _#1A_ - **Code 200** - Feirante atualizado
 
-```
-ok
+```json
+{
+  "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existente
+```json
+{
+  "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/CPF inválido
@@ -171,14 +203,18 @@ cpf_nao_existente
 
 - Resposta _#1A_ - **Code 200** - Sucesso
 
-```
-ok
+```json
+{
+  "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existente
+```json
+{
+  "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
@@ -194,7 +230,7 @@ cpf_nao_existente
 
 - Resposta _#1A_ - **Code 200** - Sucesso
 
-```javascript
+```json
 [
   {
     "data_feira": "01/01/2018",
@@ -213,10 +249,12 @@ cpf_nao_existente
 ];
 ```
 
-- Resposta _#1B_ - **Code 200** - CPF não existe
+- Resposta _#1B_ - **Code 200** - CPF não existente
 
-```
-cpf_nao_existe
+```json
+{
+  "msg": "cpf_nao_existente"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - CPF inválido
@@ -232,28 +270,34 @@ cpf_nao_existe
 
 - Body
 
-```javascript
+```json
 {
-    "periodo": 1
+  "periodo": 1
 }
 ```
 
 - Resposta _#1A_ - **Code 200** - Feirante confirmado
 
-```
-ok
+```json
+{
+  "msg": "ok"
+}
 ```
 
 - Resposta _#1B_ - **Code 200** - Periodo inválido (diferente de 1,2,3)
 
-```
-periodo_invalido
+```json
+{
+  "msg": "periodo_invalido"
+}
 ```
 
 - Resposta _#1C_ - **Code 200** - Feirante não confirmado (feira não existe/cancelada)
 
-```
-feirante_nao_confirmado
+```json
+{
+  "msg": "feirante_nao_confirmado"
+}
 ```
 
 - Resposta _#2_ - **Code 400** - Atributos incorretos/faltando

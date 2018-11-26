@@ -1,7 +1,6 @@
 /* jshint indent: 2 */
-/* eslint-disable */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = (sequelize, DataTypes) => {
   const Feira = sequelize.define(
     'feira',
     {
@@ -10,6 +9,10 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false,
         defaultValue: '0000-00-00',
         primaryKey: true,
+      },
+      data_limite: {
+        type: DataTypes.DATE,
+        allowNull: false,
       },
       status: {
         type: DataTypes.INTEGER(1),
@@ -23,5 +26,6 @@ module.exports = function(sequelize, DataTypes) {
       createdAt: false,
     },
   );
+
   return Feira;
 };

@@ -21,7 +21,6 @@
             <a-col :span="21" :offset="2">
               <a-form
                 layout='vertical'
-                @submit="handleSubmit"
                 :autoFormCreate="(form)=>{this.form = form}"
               >
                 <template v-if="form">
@@ -30,12 +29,13 @@
                     :help="userNameError() || ''"
                     fieldDecoratorId="cpf"
                     :fieldDecoratorOptions="{
-                      rules: [{ required: true, message: 'Por favor, insira seu CPF!' }]
+                      rules: [
+                        { required: true, validator: this.checkCpf, message: 'Por favor, insira um CPF valido!'} 
+                      ]
                     }"
-                    @change="onChangeText"
                   >
                     <a-input placeholder='CPF' size="large" v-mask="['###.###.###-##']">
-                      <a-icon slot="prefix" type='user' style="color:rgba(0,0,0,.25)"/>
+                      <a-icon slot="prefix" type='idcard' style="color:rgba(0,0,0,.25)"/>
                     </a-input>
                   </a-form-item>
                   <a-form-item
@@ -43,20 +43,23 @@
                     :help="passwordError() || ''"
                     fieldDecoratorId="senha"
                     :fieldDecoratorOptions="{
-                      rules: [{ required: true, message: 'Por favor, insira sua Senha!', min:6 }]
+                      rules: [{ required: true, message: 'Senha curta, minimo de 6 dígitos!', min:6 }]
                     }"
-                    @change="onChangeText"
                   >
-                    <a-input type='password' placeholder='Senha' size="large" >
+                    <a-input :type = "visible ? 'text' : 'password'" placeholder='Senha' size="large" >
                       <a-icon slot="prefix" type='lock' style="color:rgba(0,0,0,.25)"/>
+
+                      <a-icon v-if = "visible" slot = "suffix" type = "eye-o" style = "color: 'rgba(0,0,0,.25)'; cursor: pointer;" @click = "toggleVisible" />
+                      <a-icon v-else slot = "suffix" type = "eye" style = "color: 'rgba(0,0,0,.25)';  cursor: pointer;" @click = "toggleVisible" />
                     </a-input>
                   </a-form-item>
                   <a-form-item>
                     <a-button
                       type='primary'
                       block htmlType='submit'
-                      class='login-form-button'
                       :disabled="hasErrors(form.getFieldsError())"
+                      class='login-form-button'
+                      @click="onLogin"
                     >
                       Entrar
                     </a-button>
@@ -71,22 +74,22 @@
   </div>
 </template>
 <script>
-import axios from 'axios';
-import { mask } from 'vue-the-mask';
+import { mask } from 'vue-the-mask'
+import CPF, { validate, strip } from 'cpf-check';
+import login from '@/api/login';
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
+
 export default {
-  name: 'login',
   directives: { mask },
   data() {
     return {
       hasErrors,
       show: true,
-      cpf: '',
-      senha: '',
       form: null,
+      visible: false
     };
   },
   mounted() {
@@ -94,41 +97,64 @@ export default {
       this.form.validateFields();
     });
   },
+  created() {
+    if (localStorage.getItem('token') !== null){
+      if (localStorage.getItem('tag') === 'feirante')
+        this.$router.push({ name: 'feirante' })
+      else
+        this.$router.push({ name: 'supervisor' })
+    }
+  },
   methods: {
     userNameError() {
       const { getFieldError, isFieldTouched } = this.form;
-      return isFieldTouched('userName') && getFieldError('userName');
+      return isFieldTouched('cpf') && getFieldError('cpf');
+    },
+    checkCpf(rule, value, callback) {
+      let errors = [];
+      if (value === undefined || !validate(strip(value)).valid) {
+        errors.push('')
+      }
+      return callback(errors);
     },
     passwordError() {
       const { getFieldError, isFieldTouched } = this.form;
-      return isFieldTouched('password') && getFieldError('password');
+      return isFieldTouched('senha') && getFieldError('senha');
     },
-    onChangeText(e) {
-      const newState = { ...this.state };
-      newState[e.target.name] = e.target.value;
-      this.setState(newState);
+    openNotificationWithIcon(type) {
+      if (type === 'success'){
+        this.$notification[type]({
+          message: 'Bem vindo! ',
+        })
+      }
+      else {
+        this.$notification[type]({
+          message: 'Falha ao efetuar o Login!',
+          description: 'Dados incorretos! Por favor verifique o CPF e a Senha.'
+        })
+      }
     },
-    handleSubmit(e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
+    onLogin() {
+      this.form.validateFields(async (err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          const info = await login(values.cpf, values.senha);
+          if (info === null) {
+            this.openNotificationWithIcon('error');
+          } else {
+            this.openNotificationWithIcon('success');
+            localStorage.setItem('token', info.token);
+            localStorage.setItem('tag', info.tag);
+            if (info.tag === 'feirante')
+              this.$router.push({ name: 'feirante' })
+            else
+              this.$router.push({ name: 'supervisor' })
+          }
         }
-      });
-      /*axios.post('https://www.feira.com/api/login', { 
-        cpf, senha
-      }).then(res => {
-        $notification['success']({
-          message: 'Bem Vindo! ',
-          description: 'Login efetuado com sucesso!',
-        });
-      }).catch(ex => {
-        $notification['error']({
-          message: 'Erro',
-          description: 'Erro: ' + ex,
-        });
-      });*/
+      })
     },
+    toggleVisible () {
+        this.visible = !this.visible
+      }
   },
 };
 </script>

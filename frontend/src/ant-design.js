@@ -1,10 +1,6 @@
 import Vue from 'vue';
 import 'ant-design-vue/dist/antd.css';
 
-import { notification } from 'ant-design-vue';
-
-Vue.prototype.$notification = notification;
-
 const Ant = require('ant-design-vue');
 
 // alguns exemplos

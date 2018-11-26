@@ -9,6 +9,7 @@ const login = async (cpf, senha) => {
   if (user !== null) {
     if (await bcrypt.compare(senha, user.senha)) {
       return {
+        tag: user.is_adm ? 'administrador' : 'supervisor',
         token: jwt.sign(cpf, keys.jwt),
       };
     }
@@ -21,6 +22,7 @@ const login = async (cpf, senha) => {
   if (user !== null) {
     if (await bcrypt.compare(senha, user.senha)) {
       return {
+        tag: 'feirante',
         token: jwt.sign(cpf, keys.jwt),
       };
     }

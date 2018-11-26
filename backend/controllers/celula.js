@@ -1,47 +1,72 @@
 const models = require('../models');
 
-const findCelula = async (id) => {
-    const celula = await models.celula.findOne({
-      where: { id }
-    });
-  
-    if (celula === null) return null;
-  
-    return {
-      id: celula.id,
-      cpf_feirante: celula.cpf_feirante,
-      periodo: celula.periodo
-    };
+const findCelulaById = async (id) => {
+  const celula = await models.celula.findOne({
+    where: { id },
+  });
+
+  if (celula === null) return null;
+
+  return {
+    id: celula.id,
+    cpf_feirante: celula.cpf_feirante,
+    periodo: celula.periodo,
+    x: celula.x,
+    y: celula.y,
+    comprimento: celula.comprimento,
+    largura: celula.largura,
+  };
 };
 
-const listCelulas = async () => {
+// Retorna celula reservada para um feirante
+const findCelulaByFeirante = async (cpfFeirante) => {
+  const celula = await models.celula.findOne({
+    where: { cpf_feirante: cpfFeirante },
+  });
+  if (celula === null) return null;
+
+  return {
+    id: celula.id,
+    cpf_feirante: celula.cpf_feirante,
+    periodo: celula.periodo,
+    x: celula.x,
+    y: celula.y,
+    comprimento: celula.comprimento,
+    largura: celula.largura,
+  };
+};
+
+const listCelula = async () => {
   const celulas = await models.celula.findAll();
-  return celulas.map(el => ({
-    id: el.id,
-    cpf_feirante: el.cpf_feirante,
-    periodo: el.periodo,
+  return celulas.map(celula => ({
+    id: celula.id,
+    cpf_feirante: celula.cpf_feirante,
+    periodo: celula.periodo,
+    x: celula.x,
+    y: celula.y,
+    comprimento: celula.comprimento,
+    largura: celula.largura,
   }));
 };
 
-const getFeirante = async (id) => {
-  const celula = await models.celula.findOne({ where: { id } });
-  if (celula === null) return null;
-  return celula.cpf_feirante;
-};
-
-const setFeirante = async (id, cpfFeirante) => {
+const updateCelula = async (id, dados) => {
   const celula = await models.celula.findOne({ where: { id } });
   if (celula === null) return null;
 
-  //   const feirante = await models.feirante.findOne({ where: { cpf: cpfFeirante, status: true } });
-  //   if (feirante === null) return null;
+  const { periodo } = dados;
+
+  if (periodo !== undefined && (periodo < 1 || periodo > 3)) return null;
 
   try {
-    const res = await celula.update({ cpf_feirante: cpfFeirante });
-    return res;
+    return await celula.update(dados);
   } catch (error) {
     return null;
   }
 };
 
-module.exports = { findCelula, listCelulas, getFeirante, setFeirante };
+module.exports = {
+  findCelulaById,
+  findCelulaByFeirante,
+  listCelula,
+  updateCelula,
+};
