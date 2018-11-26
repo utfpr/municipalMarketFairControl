@@ -208,8 +208,8 @@
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="0">
-            <a-form-item label="Voltagem:" fieldDecoratorId="voltagem_ee"  :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Digite a voltagem!'},]}">
-              <a-input :disabled="this.radio_ee == '0' || this.action === 'view'" placeholder="Voltagem" >
+            <a-form-item label="Tensão:" fieldDecoratorId="voltagem_ee"  :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Digite a voltagem!'},]}">
+              <a-input :disabled="this.radio_ee == '0' || this.action === 'view'" placeholder="Tensão" >
                 <a-icon slot="prefix" type="poweroff" />
               </a-input>
             </a-form-item>
