@@ -13,11 +13,7 @@ const addAviso = async (assunto, texto) => {
 
 const removeAviso = async (id) => {
   try {
-    return await models.aviso.remove({
-      where: {
-        id,
-      },
-    });
+    return await models.aviso.destroy({ where: { id } });
   } catch (error) {
     return null;
   }
@@ -30,23 +26,42 @@ const updateAviso = async (id, assunto, texto) => {
     },
   });
   if (aviso !== null) {
-    return aviso.update({
-      id,
-      assunto,
-      texto,
-    });
+    try {
+      return await aviso.update({
+        assunto,
+        texto,
+      });
+    } catch (error) {
+      return null;
+    }
   }
 
   return null;
 };
 
-const getAvisos = () => {
-  models.aviso.findAll();
-};
+const getAvisos = () => models.aviso.findAll();
+
+const getById = async (id) => {
+  try {
+    const one = await models.aviso.findOne({
+      where: {
+        id,
+      },
+    });
+    return {
+      id,
+      assunto: one.assunto,
+      texto: one.texto,
+    }
+  } catch (error) {
+    return null;
+  }
+}
 
 module.exports = {
   addAviso,
   removeAviso,
   updateAviso,
   getAvisos,
+  getById,
 };

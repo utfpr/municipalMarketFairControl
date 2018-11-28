@@ -22,7 +22,6 @@ export async function getByCpf(cpf) {
 }
 
 export async function post(cpf, nome, senha, isAdm) {
-  console.log(isAdm)
   await axios.post(
     host,
     {

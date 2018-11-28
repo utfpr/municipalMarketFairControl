@@ -8,6 +8,7 @@ import Supervisor from './views/supervisor/Supervisor.vue';
 import Feirante from './views/supervisor/Feirante.vue';
 import Categoria from './views/supervisor/Categoria.vue';
 import Mapeamento from './views/supervisor/Mapeamento.vue';
+import Aviso from './views/supervisor/Aviso.vue';
 
 import MenuFeirante from './views/feirante/MenuFeirante.vue';
 
@@ -51,6 +52,10 @@ export default new Router({
         {
           path: 'mapeamento',
           component: Mapeamento,
+        },
+        {
+          path: 'aviso',
+          component: Aviso,
         },
       ],
     },

@@ -22,9 +22,11 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
   }
 });
 
-router.put('/', authMiddleware.isSupervisor, async (req, res) => {
-  const { id, assunto, texto } = req.body;
-  const update = await avisoController.removeAviso(id, assunto, texto);
+router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
+  const { id } = req.params;
+  const { assunto, texto } = req.body;
+
+  const update = await avisoController.updateAviso(id, assunto, texto);
 
   if (update !== null) {
     res.status(200).send({
@@ -37,8 +39,21 @@ router.put('/', authMiddleware.isSupervisor, async (req, res) => {
   }
 });
 
-router.delete('/', authMiddleware.isSupervisor, async (req, res) => {
-  const { id } = req.body;
+router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
+  const { id } = req.params;
+
+  const byId = await avisoController.getById(id);
+  if (byId !== null) {
+    res.status(200).send(byId);
+  } else {
+    res.status(200).send({
+      msg: 'erro',
+    });
+  }
+});
+
+router.delete('/:id', authMiddleware.isSupervisor, async (req, res) => {
+  const { id } = req.params;
 
   const remove = await avisoController.removeAviso(id);
   if (remove !== null) {
