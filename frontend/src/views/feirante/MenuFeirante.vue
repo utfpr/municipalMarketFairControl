@@ -34,6 +34,15 @@
       <a-button
         :size="size"
         v-if="current == 2"
+        type="primary"
+        block
+        @click="next"
+      >
+        INFORMAR FATURAMENTO
+      </a-button>
+      <a-button
+        :size="size"
+        v-if="current == 2"
         type="danger"
         block
         @click="showModal1"
@@ -45,6 +54,22 @@
         <a-radio-button @click="showModal2b" value="b">Tarde: 13:00 - 18:00</a-radio-button>
         <a-radio-button @click="showModal2c" value="c">Integral: 8:00 - 18:00</a-radio-button>
       </a-radio-group>
+
+
+        <div v-if="current ==3">
+          <div class="renda">
+          <span class="label-renda">ESCREVA SEU FATURAMENTO</span>
+          <a-input-number :min="1" v-model="value" @change="onChange" :precision="2" size="large" class="input-renda"/>
+          </div>
+            <a-button
+              :size="size"
+              type="primary"
+              block
+              @click="next"
+      >
+        INFORMAR FATURAMENTO
+      </a-button>
+        </div>
     </div>
     <a-modal
       title="Cancelar presença na FEIRA ?"
@@ -74,6 +99,11 @@
         em perido Integral: 8:00 - 18:00 ?
       </p>
     </a-modal>
+
+    <a-modal
+      title="Informar faturamento">
+    </a-modal>
+
   </div>
 </template>
 <script>
@@ -81,18 +111,25 @@
 export default {
   data() {
     return {
+      value: 0,
       size: 'large',
       current: 0,
       valor: 2,
       visible1: false,
       visible2: false,
       dia: '25/11/2018',
-      steps: [{
+      steps: [
+        {
         title: 'CONFIRMAR',
-      }, {
+      },
+      {
         title: 'PERIODO',
-      }, {
+      },
+      {
         title: 'CANCELAR',
+      },
+      {
+        title: 'FATURAMENTO'
       }],
     };
   },
@@ -135,6 +172,9 @@ export default {
       console.log(e);
       this.visible2 = false;
     },
+    onChange(value) {
+        console.log('changed', value);
+      },
   },
   // handleSubmit(e) {
   //   e.preventDefault();
@@ -236,6 +276,15 @@ export default {
     padding-right: 30px;
     font-size: 14px;
   }
+  .renda{
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+.label-renda{
+  font-size: 14px;
+  margin-right: 7px;
+}
   @media only screen and (max-device-width: 480px) {
   .ant-steps-horizontal.ant-steps-label-horizontal {
     padding-left: 50px;
