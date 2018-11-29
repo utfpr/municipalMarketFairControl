@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Login from './views/Login.vue';
+import Login2 from './views/About.vue';
 
 import MenuSupervisor from './views/supervisor/MenuSupervisor.vue';
 import Feira from './views/supervisor/Feira.vue';
@@ -21,6 +22,11 @@ export default new Router({
       path: '/',
       name: 'login',
       component: Login,
+    },
+    {
+      path: '/login2',
+      name: 'login2',
+      component: Login2,
     },
     {
       path: '/feirante',
