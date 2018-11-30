@@ -51,6 +51,14 @@
                         </span>
                     </router-link>
                 </a-menu-item>
+                <a-menu-item key="7">
+                    <router-link to="/supervisor/relatorio">
+                        <a-icon type="bar-chart"> </a-icon>
+                        <span>
+                            Relatorios
+                        </span>
+                    </router-link>
+                </a-menu-item>
             </a-menu>
         </a-layout-sider>
         <a-layout>

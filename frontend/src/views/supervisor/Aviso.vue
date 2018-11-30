@@ -82,6 +82,7 @@ export default {
       viewer: {},
       mostrarSenha: false,
       form: null,
+      action: '',
       selectedRows: [],
       avisoId: 0,
     }
@@ -110,6 +111,7 @@ export default {
 
     showModal(id, action) {
       this.avisoId = id;
+      this.action = action;
       setTimeout(() => {
         if (action === 'add') {
           this.edit = true;
