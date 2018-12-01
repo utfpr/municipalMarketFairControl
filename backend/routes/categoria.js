@@ -4,18 +4,18 @@ const categoriaController = require('../controllers/categoria');
 const subcategoriaController = require('../controllers/subcategoria');
 
 // Adiciona categoria
-router.post('/', authMiddleware.isSupervisor, async (req, res) => {
+router.post('/', async (req, res) => {
     const nome = req.body.nome;
     const need_cnpj = req.body.need_cnpj;
-
-    if ( (nome == null) || (need_cnpj == null) || (need_cnpj !== '0' && need_cnpj !== '1') ) {
+    console.log(nome)
+    console.log(need_cnpj)
+    if ((nome == null) || (need_cnpj == null) || (need_cnpj !== 0 && need_cnpj !== 1)) {
         res.status(400).send();
-
-    } else{
+    } else {
         const categoria = await categoriaController.addCategoria(
             nome, need_cnpj
         );
-        if (categoria != null){
+        if (categoria != null) {
             resposta = 'ok';
         } else {
             resposta = 'erro';
@@ -37,7 +37,7 @@ router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
     const categoria = await categoriaController.findCategoriaById(id_cat);
-    if(categoria != null){
+    if (categoria != null) {
         res.status(200).send(categoria);
 
     } else {
@@ -52,7 +52,7 @@ router.get('/:id/subcategorias', authMiddleware.isSupervisor, async (req, res) =
     const id_cat = req.params.id;
 
     const categoria = await categoriaController.findCategoriaById(id_cat);
-    if(categoria == null){
+    if (categoria == null) {
         res.status(200).send({
             msg: 'id_nao_existente',
         });
@@ -67,28 +67,27 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const { nome, need_cnpj } = req.body;
     const id_cat = req.params.id;
 
-    if ( (nome == null) || (need_cnpj == null) || 
-         (need_cnpj != '0' && need_cnpj != '1') )
-    {
+    if ((nome == null) || (need_cnpj == null) ||
+        (need_cnpj != '0' && need_cnpj != '1')) {
         res.status(400).send();
     }
-    else{
+    else {
         let resposta = '';
         const categoriaValidate = await categoriaController.findCategoriaById(id_cat);
-        if(categoriaValidate != null){
-            const categoria = await categoriaController.updateCategoria(id_cat, {nome, need_cnpj});
+        if (categoriaValidate != null) {
+            const categoria = await categoriaController.updateCategoria(id_cat, { nome, need_cnpj });
 
-            if(categoria != null){
+            if (categoria != null) {
                 resposta = 'ok';
             } else {
                 resposta = 'erro';
-            }  
+            }
         } else {
-            resposta = 'id_nao_existente';  
+            resposta = 'id_nao_existente';
         }
         res.status(200).send({
             msg: resposta,
-        }); 
+        });
     }
 });
 
@@ -98,10 +97,10 @@ router.delete('/:id', authMiddleware.isSupervisor, async (req, res) => {
 
     let resposta = '';
     const categoriaValidate = await categoriaController.findCategoriaById(id_cat);
-    if(categoriaValidate != null){
+    if (categoriaValidate != null) {
 
         const categoria = await categoriaController.deleteCategoria(id_cat);
-        if(categoria != null){
+        if (categoria != null) {
             resposta = 'ok';
         } else {
             resposta = 'erro';

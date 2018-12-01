@@ -161,7 +161,7 @@ export default {
     margin-left: 40px;
   }
   .cabStep {
-    margin-bottom: 15px;
+    margin-bottom: 35px;
     margin-top: 25px;
     border: 1px dashed #e9e9e9;
     border-radius: 6px;
@@ -193,20 +193,31 @@ export default {
     color: #fff;
     background-color: #52c41a;
     border-color: #52c41a;
+    margin-bottom: 30px;
   }
+  .ant-btn-danger {
+    color: #f5222d;
+    background-color: #f5f5f5;
+    border-color: #d9d9d9;
+    margin-bottom: 30px;
+}
   .steps-action {
     margin-top: 24px;
+  }
+  .ant-radio-group{
+    margin-bottom: 15px;
   }
   .ant-radio-group-large .ant-radio-button-wrapper {
     height: 40px;
     line-height: 38px;
     font-size: 16px;
-    width: 362px;
+    width: 423px;
     text-align: center;
+    margin-bottom: 10px;
   }
   .cald {
     margin-bottom: 15px;
-    margin-top: 25px;
+    margin-top: 35px;
     border: 1px dashed #e9e9e9;
     border-radius: 6px;
     background-color: #fafafa;
@@ -224,5 +235,32 @@ export default {
     padding-left: 40px;
     padding-right: 30px;
     font-size: 14px;
+  }
+  @media only screen and (max-device-width: 480px) {
+  .ant-steps-horizontal.ant-steps-label-horizontal {
+    padding-left: 50px;
+    display: block;
+  }
+  /* .ant-steps-item.ant-steps-item-process, .ant-steps-item.ant-steps-item-wait {
+    padding-bottom: 28px;
+  } */
+  .cald {
+    margin-top: 15px;
+  }
+  .ant-radio-group-large .ant-radio-button-wrapper {
+    height: 40px;
+    width: 100%;
+  }
+  }
+  @media only screen and (min-device-width: 480px) {
+    .ant-radio-group-large .ant-radio-button-wrapper {
+      height: 40px;
+      width: 100%;
+    }
+  }
+  @media only screen and (min-device-width: 607px) {
+    .ant-radio-group-large {
+      width: 100%;
+    }
   }
 </style>

@@ -55,5 +55,10 @@ export default new Router({
         },
       ],
     },
+    {
+      path: '/categoria',
+      name: 'categoria',
+      component: Categoria,
+    },
   ],
 });

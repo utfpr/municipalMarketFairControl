@@ -22,6 +22,7 @@ export async function getByCpf(cpf) {
 }
 
 export async function post(cpf, nome, senha, isAdm) {
+  console.log(isAdm)
   await axios.post(
     host,
     {
@@ -46,5 +47,5 @@ export async function put(cpf, nome, isAdm) {
 }
 
 export async function del(cpf) {
-  axios.delete(`${host}${cpf}`);
+  axios.delete(`${host}${cpf}`, { headers: { token: localStorage.getItem('token') } });
 }
