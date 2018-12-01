@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 
 <template>
   <div class="container">
@@ -51,7 +52,7 @@
         </a-row>
         <!-- Categoria, Subcategoria -->
         <a-row>
-          <a-col :span="11" :offset="0" v-if="this.action === 'add'">
+          <a-col :span="11" :offset="0">
             <a-form-item label="Categoria de venda:" fieldDecoratorId="categoria" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
               <a-select
                 showSearch
@@ -70,7 +71,7 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :span="11" :offset="2" v-if="this.action === 'add'">
+          <!-- <a-col :span="11" :offset="2" v-if="this.action === 'add'">
             <a-form-item label="Subcategoria de venda:" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
               <a-select
                 showSearch
@@ -87,6 +88,13 @@
                 <a-select-option @click="setCategoria('0')" value="Cimento">Cimento</a-select-option>
                 <a-select-option @click="setCategoria('0')" value="Ternite">Ternite</a-select-option>
               </a-select>
+            </a-form-item>
+          </a-col> -->
+          <a-col :span="11" :offset="2">
+            <a-form-item label="Subcategoria ID:" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um ID!', min: 1,},]}">
+              <a-input :disabled="this.action === 'view'" placeholder="subcategoria de venda">
+                <a-icon slot="prefix" type="environment" />
+              </a-input>
             </a-form-item>
           </a-col>
         </a-row>
@@ -114,7 +122,7 @@
         <a-row>
           <a-col :span="11" :offset="0">
             <a-form-item label="CNPJ:" fieldDecoratorId="cnpj" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite um CNPJ válido!'}]}">
-              <a-input placeholder="CNPJ" v-mask="['##.###.##/####-##']" :disabled="this.action === 'view'">
+              <a-input placeholder="CNPJ" v-mask="['##.###.###/####-##']" :disabled="this.action === 'view'">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
             </a-form-item>
@@ -207,11 +215,22 @@
               </a-radio-group>
             </a-form-item>
           </a-col>
-          <a-col :span="11" :offset="0">
-            <a-form-item label="Voltagem:" fieldDecoratorId="voltagem_ee"  :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Digite a voltagem!'},]}">
-              <a-input :disabled="this.radio_ee == '0' || this.action === 'view'" placeholder="Voltagem" >
-                <a-icon slot="prefix" type="poweroff" />
-              </a-input>
+          <a-col>
+            <a-form-item label="Tensão:" fieldDecoratorId="voltagem_ee" :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Digite a Tensão!'},]}">
+              <a-select
+                showSearch
+                placeholder="Tensão"
+                :disabled="this.radio_ee == '0' || this.action === 'view'"
+                optionFilterProp="children"
+                style="width: 200px"
+                @focus="handleFocus"
+                @blur="handleBlur"
+                @change="handleChange"
+                :filterOption="filterOption"
+              >
+                <a-select-option @click="setTensao('110')" value="110v">110v</a-select-option>
+                <a-select-option @click="setTensao('220')" value="220v">220v</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
         </a-row>
@@ -252,10 +271,18 @@ export default {
       selectedRows: [],
       radio_ee: '0',
       selectCategoria: '0',
+      selectTensao: '',
+      token: null,
     };
   },
 
   async created() {
+    if(localStorage.getItem('token') !== null)
+      if(localStorage.getItem('tag') === 'feirante')
+        this.$router.push({name: 'feirante'})
+      else 
+        this.token = localStorage.getItem('token');
+
     this.data = await feiranteAPI.get();
   },
 
@@ -292,6 +319,9 @@ export default {
     },
 
     setRadio(valor){
+      if(valor == '0')
+        setTimeout(() => {this.form.setFieldsValue({voltagem_ee: ''})});
+
       this.radio_ee = valor;
     }, 
 
@@ -299,7 +329,16 @@ export default {
       this.selectCategoria = valor;
     },
 
-    showModal(record, action) {
+    setTensao(valor){
+      this.selectTensao = valor;
+    },
+
+    cleanMask(value) {
+      return value.replace(/[^\d.-]/g, '');
+    },
+
+    async showModal(record, action) {
+      const valores = await feiranteAPI.getByCpf(strip(record.cpf));
       this.visible = true;
       this.action = action;
       setTimeout(() => {
@@ -307,22 +346,22 @@ export default {
           this.form.resetFields();
         } else if (action === 'edit' || action === 'view') {
           this.form.setFieldsValue({ 
-            cpf: record.cpf,
-            rg: record.rg, 
-            nome: record.nome, 
-            cnpj: record.cnpj, 
-            usa_ee: record.usa_ee, 
-            nome_fantasia: record.nome_fantasia,
-            razao_social: record.razao_social,
-            comprimento_barraca: record.comprimento_barraca,
-            largura_barraca: record.largura_barraca,
-            logradouro: record.endereco.logradouro,
-            bairro: record.endereco.bairro,
-            numero: record.endereco.numero,
-            CEP: record.endereco.cep,
-            voltagem_ee: record.voltagem_ee,
-            sub_categoria_id: record.sub_categoria_id,
-            senha: record.senha
+            cpf: valores.cpf,
+            rg: valores.rg, 
+            nome: valores.nome, 
+            cnpj: valores.cnpj, 
+            usa_ee: valores.usa_ee, 
+            nome_fantasia: valores.nome_fantasia,
+            razao_social: valores.razao_social,
+            comprimento_barraca: valores.comprimento_barraca,
+            largura_barraca: valores.largura_barraca,
+            logradouro: valores.logradouro,
+            bairro: valores.bairro,
+            numero: valores.numero,
+            cep: valores.cep,
+            voltagem_ee: valores.voltagem_ee,
+            sub_categoria_id: valores.sub_categoria_id,
+            senha: valores.senha
           });
         }
       }, 100);
@@ -335,46 +374,48 @@ export default {
     onOk() {
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          if (this.action === 'add') {
+          const cnpj = values.cnpj.replace(/[.\/\-]/g, "");
+          const rg = values.rg.replace(/[.\/\-]/g, "");
+          if (this.action === 'add') {  
             await feiranteAPI.post(
-              values.cpf,
-              values.rg, 
+              strip(values.cpf),
+              cnpj,
               values.nome, 
-              values.cnpj, 
-              values.usa_ee,
+              rg,
+              parseInt(this.radio_ee),
               values.nome_fantasia,
               values.razao_social,
-              values.comprimento_barraca,
-              values.largura_barraca,
+              parseFloat(values.comprimento_barraca),
+              parseFloat(values.largura_barraca),
               {
                 logradouro: values.logradouro,
                 bairro: values.bairro,
-                numero: values.numero,
+                numero: parseInt(values.numero),
                 CEP: values.cep
               },
-              values.voltagem_ee,
-              values.sub_categoria_id,
-              values.senha
+              parseInt(values.voltagem_ee),
+              parseInt(values.sub_categoria_id),
+              values.senha,
             );
           } else if (this.action === 'edit') {
             await feiranteAPI.put(
               strip(values.cpf),
-              values.rg, 
+              cnpj,
               values.nome,
-              values.cnpj, 
-              values.usa_ee, 
+              rg,
+              parseInt(values.usa_ee), 
               values.nome_fantasia,
               values.razao_social,
-              values.comprimento_barraca,
-              values.largura_barraca,
+              parseFloat(values.comprimento_barraca),
+              parseFloat(values.largura_barraca),
               {
                 logradouro: values.logradouro,
                 bairro: values.bairro,
-                numero: values.numero,
+                numero: parseInt(values.numero),
                 CEP: values.cep
               },
-              values.voltagem_ee,
-              values.sub_categoria_id
+              parseInt(values.voltagem_ee),
+              parseInt(values.sub_categoria_id),
             );
           }
           this.data = await feiranteAPI.get();
