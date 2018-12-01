@@ -2,22 +2,6 @@ import axios from 'axios';
 
 const host = 'http://localhost:3000/api/feirante';
 
-// export async function testLogin() {
-//   const req = await axios.post('http://localhost:3000/login', {
-//     cpf: '56662192007',
-//     senha: '123456',
-//   });
-
-//   const { token } = req.data.msg;
-//   localStorage.setItem('token', token);
-// }
-
-// export async function get() {
-//   return (await axios.get(host, {
-//     headers: { token: localStorage.getItem('token') },
-//   })).data;
-// }
-
 export async function get() {
   const data = await axios
     .get(host, { headers: { token: localStorage.getItem('token') } })
@@ -31,12 +15,10 @@ export async function get() {
 }
 
 export async function getByCpf(cpf) {
-  const data = await axios
-    .get(`${host}/${cpf}`, { headers: { token: localStorage.getItem('token') } })
-    .catch(() => null)
-    .then(record => record.data);
-
-  return data;
+  const record = (await axios.get(`${host}/${cpf}`, {
+    headers: { token: localStorage.getItem('token') },
+  })).data;
+  return { ...record, cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4') };
 }
 
 export async function post(
@@ -87,7 +69,6 @@ export async function put(
   endereco,
   voltagem_ee,
   sub_categoria_id,
-  headers,
 ) {
   await axios.put(`${host}/${cpf}`, {
     cnpj,
@@ -101,9 +82,9 @@ export async function put(
     endereco,
     voltagem_ee,
     sub_categoria_id,
-  }, headers);
+  }, { headers: { token: localStorage.getItem('token') } });
 }
 
 export async function del(cpf) {
-  axios.delete(`${host}/${cpf}`);
+  axios.delete(`${host}/${cpf}`, { headers: { token: localStorage.getItem('token') } });
 }

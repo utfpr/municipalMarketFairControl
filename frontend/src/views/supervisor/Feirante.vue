@@ -4,17 +4,22 @@
   <div class="container">
     <div class="btn-container">
       <a-button type="primary" icon ="plus" size ="large" @click="showModal('', 'add')">Adicionar</a-button>
-      <a-button type="danger" icon ="close" size ="large" :disabled="!selecionado" @click="this.onDelete">Remover</a-button>
     </div>
     
-    <a-table :rowSelection="rowSelection" :columns="columns" :dataSource="data" bordered>
+    <a-table :dataSource="data" :columns="columns" bordered>
+      <span slot="cpf" slot-scope="text, record">
+        {{text}}
+      </span>
       <template slot="actions" slot-scope="text, record, index">
         <a-row>
           <a-col :span="12">
-            <a-button type="dashed" icon="profile" @click="showModal(record, 'view')">Visualizar</a-button>
+            <a-button type="dashed" icon="profile" @click="showModal(record.cpf, 'view')"></a-button>
           </a-col>
-          <a-col>
-            <a-button type="dashed" icon="edit" @click="showModal(record, 'edit')">Atualizar</a-button>
+          <a-col >
+            <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')"></a-button>
+          </a-col>
+          <a-col >
+            <a-button type="danger" icon="delete" @click="onDelete(record.cpf)"></a-button>
           </a-col>
         </a-row>
       </template>
@@ -65,9 +70,8 @@
                 @change="handleChange"
                 :filterOption="filterOption"
               >
-                <a-select-option @click="setCategoria('1') " value="Alimentos">Alimentos</a-select-option>
-                <a-select-option @click="setCategoria('0')" value="Artesanato">Artesanato</a-select-option>
-                <a-select-option @click="setCategoria('0')" value="Materiais de Construção">Materiais de Construção</a-select-option>
+                <a-select-option value=" ">Escolha</a-select-option>
+                <a-select-option v-for="categoria in categorias" :key="categoria" :value="categoria">{{categoria.nome}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -248,14 +252,16 @@
 /* eslint-disable */
 
 import * as feiranteAPI from '@/api/feirante';
+import * as categoriaAPI from '@/api/categoria';
+
 import { mask } from 'vue-the-mask';
-import CPF, { validate, strip } from 'cpf-check';
+import CPF, { validate, strip, format } from 'cpf-check';
 
 const columns = [
-  { title: 'CPF', dataIndex: 'cpf', width: '15%' },
+  { title: 'CPF', dataIndex: 'cpf', width: '15%', scopedSlots: { customRender: 'cpf' } },
   { title: 'Nome', dataIndex: 'nome' },
-  { title: 'Ramo', dataIndex: 'ramo' },
-  { title: 'Ações', scopedSlots: { customRender: 'actions' }, width: '25%' }
+  { title: 'Ramo', dataIndex: '' },
+  { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '12%'}
 ];
 
 export default {
@@ -273,16 +279,12 @@ export default {
       selectCategoria: '0',
       selectTensao: '',
       token: null,
+      categorias: [],
     };
   },
 
   async created() {
-    if(localStorage.getItem('token') !== null)
-      if(localStorage.getItem('tag') === 'feirante')
-        this.$router.push({name: 'feirante'})
-      else 
-        this.token = localStorage.getItem('token');
-
+    this.getCategorias();
     this.data = await feiranteAPI.get();
   },
 
@@ -337,32 +339,37 @@ export default {
       return value.replace(/[^\d.-]/g, '');
     },
 
-    async showModal(record, action) {
-      const valores = await feiranteAPI.getByCpf(strip(record.cpf));
+    async getCategorias () {
+      this.categorias = await categoriaAPI.get();
+    },
+
+    async showModal(cpf, action) {
       this.visible = true;
       this.action = action;
       setTimeout(() => {
         if (action === 'add') {
           this.form.resetFields();
         } else if (action === 'edit' || action === 'view') {
-          this.form.setFieldsValue({ 
-            cpf: valores.cpf,
-            rg: valores.rg, 
-            nome: valores.nome, 
-            cnpj: valores.cnpj, 
-            usa_ee: valores.usa_ee, 
-            nome_fantasia: valores.nome_fantasia,
-            razao_social: valores.razao_social,
-            comprimento_barraca: valores.comprimento_barraca,
-            largura_barraca: valores.largura_barraca,
-            logradouro: valores.logradouro,
-            bairro: valores.bairro,
-            numero: valores.numero,
-            cep: valores.cep,
-            voltagem_ee: valores.voltagem_ee,
-            sub_categoria_id: valores.sub_categoria_id,
-            senha: valores.senha
-          });
+          feiranteAPI.getByCpf(strip(cpf)).then(record => {
+            this.form.setFieldsValue({ 
+              cpf: record.cpf,
+              cnpj: record.cnpj, 
+              nome: record.nome, 
+              rg: record.rg, 
+              usa_ee: record.usa_ee, 
+              nome_fantasia: record.nome_fantasia,
+              razao_social: record.razao_social,
+              comprimento_barraca: record.comprimento_barraca,
+              largura_barraca: record.largura_barraca,
+              logradouro: record.logradouro,
+              bairro: record.bairro,
+              numero: record.numero,
+              cep: record.cep,
+              voltagem_ee: record.voltagem_ee,
+              sub_categoria_id: record.sub_categoria_id,
+              senha: record.senha
+            });
+          })
         }
       }, 100);
     },
@@ -424,11 +431,11 @@ export default {
       });
     },
 
-    async onDelete() {
-      for (let row of this.selectedRows) {
-        console.log('removendo')
-        await feiranteAPI.del(strip(row.cpf));
-      }
+    async onDelete(cpf) {
+
+      console.log('removendo')
+      await feiranteAPI.del(strip(cpf));
+
       console.log('atualizando')
       this.data = await feiranteAPI.get();
     },
@@ -438,9 +445,9 @@ export default {
     },
 
     checkCpf(rule, value, callback) {
-      const errors = [];
+      let errors = [];
       if (value === undefined || !validate(strip(value)).valid) {
-        errors.push('');
+        errors.push('')
       }
       return callback(errors);
     },
