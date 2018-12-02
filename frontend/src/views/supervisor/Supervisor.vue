@@ -124,7 +124,7 @@ export default {
       this.visible = true;
       this.action = action;
 
-      setTimeout(async () => {
+      setTimeout(() => {
         if (action === 'add') {
           this.form.resetFields();
           this.passChange = true;
@@ -136,7 +136,7 @@ export default {
           })
 
         }
-      }, 1000);
+      }, 100);
     },
 
     onCancel() {
