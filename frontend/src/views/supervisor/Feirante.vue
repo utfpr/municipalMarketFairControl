@@ -133,7 +133,7 @@
           </a-col>
           <a-col :span="11" :offset="2">
             <a-form-item label="Senha:" fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: this.action === 'add', message: 'Mínimo 6 caracteres!', min: 6},]}">
-              <a-input placeholder="Senha" :disabled="this.action !== 'add'" :type="this.mostrarSenha ? 'text' : 'password'">
+              <a-input placeholder="Senha" :disabled="!passChange" :type="this.mostrarSenha ? 'text' : 'password'">
                 <a-icon slot="prefix" type="lock" />
                 <a-icon slot="suffix" type="eye" @click="clickMostrarSenha" v-if="this.action !== 'view'"/>
               </a-input>
@@ -263,6 +263,7 @@ export default {
       token: null,
       categorias: [],
       usa_energia: '',
+      passChange: true,
     };
   },
 
@@ -329,7 +330,9 @@ export default {
       setTimeout(() => {
         if (action === 'add') {
           this.form.resetFields();
+          this.passChange = true;
         } else if (action === 'edit' || action === 'view') {
+          this.passChange = strip(cpf) === localStorage.getItem('userID')? true: false;
           feiranteAPI.getByCpf(strip(cpf)).then(record => {
             this.form.setFieldsValue({ 
               cpf: record.cpf,

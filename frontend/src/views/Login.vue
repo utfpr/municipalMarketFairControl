@@ -71,6 +71,7 @@ export default {
                         this.credenciaisIncorretas = true;
                     } else {
                         this.credenciaisIncorretas = false;
+                        localStorage.setItem('userID', info.userID);
                         localStorage.setItem('token', info.token);
                         localStorage.setItem('tag', info.tag);
 

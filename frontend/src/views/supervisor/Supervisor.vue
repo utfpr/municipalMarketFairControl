@@ -48,9 +48,10 @@
               </a-input>
             </a-form-item>
           </a-col>
-          <a-col :span="11" :offset="1" v-if="this.action === 'add'">
+          <!-- <a-col :span="11" :offset="1" v-if="this.action === 'add'"> -->
+          <a-col :span="11" :offset="1">
             <a-form-item fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Mínimo 6 caracteres!', min: 6},]}">
-              <a-input placeholder="Senha" :type="this.mostrarSenha ? 'text' : 'password'">
+              <a-input placeholder="Senha" :disabled="!passChange" :type="this.mostrarSenha ? 'text' : 'password'">
                 <a-icon slot="prefix" type="lock" />
                 <a-icon slot="suffix" type="eye" @click="clickMostrarSenha" />
               </a-input>
@@ -93,6 +94,7 @@ export default {
       action: '',
       selectedRows: [],
       checkAdm: false,
+      passChange: true,
     }
   },
 
@@ -122,17 +124,19 @@ export default {
       this.visible = true;
       this.action = action;
 
-      setTimeout(() => {
+      setTimeout(async () => {
         if (action === 'add') {
           this.form.resetFields();
+          this.passChange = true;
         } else if (action === 'edit' || action === 'view') {
+          this.passChange = strip(cpf) === localStorage.getItem('userID')? true: false;
           supervisorAPI.getByCpf(strip(cpf)).then(record => {
             
             this.form.setFieldsValue({ cpf: record.cpf, nome: record.nome, isAdm: record.is_adm === 1 });
           })
 
         }
-      }, 100);
+      }, 1000);
     },
 
     onCancel() {
