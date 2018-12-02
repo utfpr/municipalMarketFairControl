@@ -29,7 +29,23 @@
         <div :style="{ padding: '24px', background: '#fff'}">
           <div :style="{ padding: '5px' }">
             <a-collapse v-if="categorias">
-              <a-collapse-panel v-for="(obj, index) in categorias" :header="obj.nome" :key="index">
+              <a-collapse-panel v-for="(obj, index) in categorias" :key="index">
+                <template slot="header">
+                  {{obj.nome}}
+                  <a-button
+                    v-on:click="onDelete(obj.id)"
+                    <a v-on:click.stop="doThis"></a>
+                    style="float: right"
+                    type="danger"
+                    icon="delete">
+                  </a-button>
+                  <a-button
+                    v-on:click="showModal()"
+                    style="float: right"
+                    type="dashed"
+                    icon="edit">
+                  </a-button>
+                </template>
                 <p>Sub Categorias</p>
                 <a-form>
                   <a-form-item
@@ -42,6 +58,15 @@
                   </a-form-item>
                 </a-form>
               </a-collapse-panel>
+              <a-modal
+                title="Title"
+                :visible="visible"
+                @ok="handleOk"
+                :confirmLoading="confirmLoading"
+                @cancel="handleCancel"
+              >
+                <p>{{EditarCategoria}}</p>
+              </a-modal>
             </a-collapse>
           </div>
         </div>
@@ -51,7 +76,7 @@
 </template>
 <script>
 import * as categoriaAPI from '@/api/categoria';
-
+/* eslint-disable */
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 8 },
@@ -76,23 +101,20 @@ export default {
 
   async created() {
     this.categorias = await categoriaAPI.get();
-    this.categorias.forEach(cat => {
-      categoriaAPI.getSub(cat.id, (res) => {
-        cat.subcategorias = res;
-      });
-    });
+    // this.categorias.forEach(cat => {
+    //   categoriaAPI.getSub(cat.id, (res) => {
+    //     cat.subcategorias = res;
+    //   });
+    // });
   },
 
   methods: {
-    onCollapse(collapsed, type) {
-      console.log(collapsed, type);
-    },
-    onBreakpoint(broken) {
-      console.log(broken);
-    },
     handleCancel() {
       console.log('Clicked cancel button');
       this.visible = false;
+    },
+    showModal() {
+      this.visible = true;
     },
     onOk() {
       this.form.validateFields(async (err, values) => {
@@ -104,6 +126,17 @@ export default {
         this.categorias = await categoriaAPI.get();
       });
     },
+
+    async onEdit(id, nome, need_cnpj) {
+      await categoriaAPI.put(id, nome, need_cnpj);
+      this.categorias = await categoriaAPI.get();
+    },
+
+    async onDelete(id) {
+      await categoriaAPI.del(id);
+      this.categorias = await categoriaAPI.get();
+    },
+
     handleChange(e) {
       this.checkNeedCnpj = e.target.checked;
       this.$nextTick(() => {
