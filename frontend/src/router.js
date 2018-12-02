@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import CrudFeirante from './views/CrudFeirante.vue';
 import Login from './views/Login.vue';
 
 import MenuSupervisor from './views/supervisor/MenuSupervisor.vue';

@@ -27,11 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       nome_fantasia: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
       },
       razao_social: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
       },
       comprimento_barraca: {
         type: "DOUBLE",
