@@ -105,7 +105,7 @@
         <!-- Razão Social -->
         <a-row>
           <a-col :span="24" :offset="0">
-            <a-form-item label="Razão Social:" fieldDecoratorId="razao_social" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite uma razão social!', min: 1,},]}">
+            <a-form-item label="Razão Social:" fieldDecoratorId="razao_social" :fieldDecoratorOptions="{rules: [{ required: false, message: 'Digite uma razão social!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Razão Social">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
@@ -115,7 +115,7 @@
         <!-- Nome Fantasia -->
         <a-row>
           <a-col :span="24" :offset="0">
-            <a-form-item label="Nome Fantasia:" fieldDecoratorId="nome_fantasia" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite um nome fantasia!', min: 1},]}">
+            <a-form-item label="Nome Fantasia:" fieldDecoratorId="nome_fantasia" :fieldDecoratorOptions="{rules: [{ required: false, message: 'Digite um nome fantasia!', min: 1},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Nome Fantasia">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
@@ -125,51 +125,33 @@
         <!-- CNPJ, Senha -->
         <a-row>
           <a-col :span="11" :offset="0">
-            <a-form-item label="CNPJ:" fieldDecoratorId="cnpj" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite um CNPJ válido!'}]}">
+            <a-form-item label="CNPJ:" fieldDecoratorId="cnpj" :fieldDecoratorOptions="{rules: [{ required: false, message: 'Digite um CNPJ válido!'}]}">
               <a-input placeholder="CNPJ" v-mask="['##.###.###/####-##']" :disabled="this.action === 'view'">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="2">
-            <a-form-item label="Senha:" fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Mínimo 6 caracteres!', min: 6},]}">
-              <a-input placeholder="Senha" :disabled="this.action === 'view'" :type="this.mostrarSenha ? 'text' : 'password'">
+            <a-form-item label="Senha:" fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: this.action === 'add', message: 'Mínimo 6 caracteres!', min: 6},]}">
+              <a-input placeholder="Senha" :disabled="this.action !== 'add'" :type="this.mostrarSenha ? 'text' : 'password'">
                 <a-icon slot="prefix" type="lock" />
                 <a-icon slot="suffix" type="eye" @click="clickMostrarSenha" v-if="this.action !== 'view'"/>
               </a-input>
             </a-form-item>
           </a-col>
         </a-row>
-
-        <!-- CEP, Cidade -->
+        <!-- CEP, Bairro -->
         <a-row>
           <a-col :span="11" :offset="0">
             <a-form-item label="CEP:" fieldDecoratorId="cep" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um CEP!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="CEP">
+              <a-input :disabled="this.action === 'view'" placeholder="CEP" v-mask="['#####-###']">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="2">
-            <a-form-item label="Cidade:" fieldDecoratorId="cidade" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite uma cidade!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="Cidade">
-                <a-icon slot="prefix" type="environment" />
-              </a-input>
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <!-- UF, Bairro -->
-        <a-row>
-          <a-col :span="4" :offset="0">
-            <a-form-item label="UF:" fieldDecoratorId="uf" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite uma UF!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="UF">
-                <a-icon slot="prefix" type="environment" />
-              </a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :span="18" :offset="2">
             <a-form-item label="Bairro:" fieldDecoratorId="bairro" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um bairro!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="bairro">
+              <a-input :disabled="this.action === 'view'" placeholder="Bairro">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
             </a-form-item>
@@ -220,7 +202,7 @@
             </a-form-item>
           </a-col>
           <a-col>
-            <a-form-item label="Tensão:" fieldDecoratorId="voltagem_ee" :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Digite a Tensão!'},]}">
+            <a-form-item label="Tensão:" fieldDecoratorId="voltagem_ee">
               <a-select
                 showSearch
                 placeholder="Tensão"
@@ -280,11 +262,11 @@ export default {
       selectTensao: '',
       token: null,
       categorias: [],
+      usa_energia: '',
     };
   },
 
   async created() {
-    this.getCategorias();
     this.data = await feiranteAPI.get();
   },
 
@@ -325,7 +307,7 @@ export default {
         setTimeout(() => {this.form.setFieldsValue({voltagem_ee: ''})});
 
       this.radio_ee = valor;
-    }, 
+    },
 
     setCategoria(valor){
       this.selectCategoria = valor;
@@ -339,11 +321,9 @@ export default {
       return value.replace(/[^\d.-]/g, '');
     },
 
-    async getCategorias () {
-      this.categorias = await categoriaAPI.get();
-    },
-
     async showModal(cpf, action) {
+      //this.categorias = categoriaAPI.get();
+      //this.usa_energia = usa_ee;
       this.visible = true;
       this.action = action;
       setTimeout(() => {
@@ -356,18 +336,18 @@ export default {
               cnpj: record.cnpj, 
               nome: record.nome, 
               rg: record.rg, 
-              usa_ee: record.usa_ee, 
+              usa_ee: String(record.usa_ee), 
               nome_fantasia: record.nome_fantasia,
               razao_social: record.razao_social,
               comprimento_barraca: record.comprimento_barraca,
               largura_barraca: record.largura_barraca,
-              logradouro: record.logradouro,
-              bairro: record.bairro,
-              numero: record.numero,
+              logradouro: record.endereco.logradouro,
+              bairro: record.endereco.bairro,
+              numero: String(record.endereco.numero),
               cep: record.cep,
               voltagem_ee: record.voltagem_ee,
-              sub_categoria_id: record.sub_categoria_id,
-              senha: record.senha
+              sub_categoria_id: String(record.sub_categoria_id),
+              //sub_categoria_id: categoriaAPI.getNameSubcategoria(record.sub_categoria_id),
             });
           })
         }
@@ -381,8 +361,12 @@ export default {
     onOk() {
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          const cnpj = values.cnpj.replace(/[.\/\-]/g, "");
+          let cnpj = "";
+          if(values.cnpj != null){
+            cnpj = values.cnpj.replace(/[.\/\-]/g, "");
+          }
           const rg = values.rg.replace(/[.\/\-]/g, "");
+          const cep = values.cep.replace(/[-]/g, "");
           if (this.action === 'add') {  
             await feiranteAPI.post(
               strip(values.cpf),
@@ -398,7 +382,7 @@ export default {
                 logradouro: values.logradouro,
                 bairro: values.bairro,
                 numero: parseInt(values.numero),
-                CEP: values.cep
+                CEP: cep
               },
               parseInt(values.voltagem_ee),
               parseInt(values.sub_categoria_id),
@@ -408,9 +392,9 @@ export default {
             await feiranteAPI.put(
               strip(values.cpf),
               cnpj,
-              values.nome,
+              values.nome, 
               rg,
-              parseInt(values.usa_ee), 
+              parseInt(this.radio_ee),
               values.nome_fantasia,
               values.razao_social,
               parseFloat(values.comprimento_barraca),
@@ -419,7 +403,7 @@ export default {
                 logradouro: values.logradouro,
                 bairro: values.bairro,
                 numero: parseInt(values.numero),
-                CEP: values.cep
+                CEP: cep
               },
               parseInt(values.voltagem_ee),
               parseInt(values.sub_categoria_id),

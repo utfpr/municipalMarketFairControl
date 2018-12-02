@@ -16,9 +16,12 @@ export async function get() {
 
 export async function getByCpf(cpf) {
   const record = (await axios.get(`${host}/${cpf}`, {
-    headers: { token: localStorage.getItem('token') },
+    headers: { token: localStorage.getItem('token') },  
   })).data;
-  return { ...record, cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4') };
+  return { ...record, cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4'), 
+                      rg: record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4'), 
+                      cnpj: record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5'), 
+                      cep: record.endereco.cep.replace(/(\d{5})(\d{3})/g, '$1-$2')};
 }
 
 export async function post(
