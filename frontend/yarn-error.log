@@ -1,0 +1,65 @@
+Arguments: 
+  /usr/bin/node /usr/share/yarn/bin/yarn.js
+
+PATH: 
+  /home/lucas/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin
+
+Yarn version: 
+  1.10.1
+
+Node version: 
+  8.12.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/ant-design-vue: ETIMEDOUT
+      at Timeout._onTimeout (/usr/share/yarn/lib/cli.js:120826:19)
+      at ontimeout (timers.js:498:11)
+      at tryOnTimeout (timers.js:323:5)
+      at Timer.listOnTimeout (timers.js:290:5)
+
+npm manifest: 
+  {
+    "name": "frontend",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+      "serve": "vue-cli-service serve",
+      "build": "vue-cli-service build",
+      "lint": "vue-cli-service lint"
+    },
+    "dependencies": {
+      "ant-design-vue": "^1.1.6",
+      "axios": "^0.18.0",
+      "babel-eslint": "^10.0.1",
+      "cpf-check": "^2.0.4",
+      "eslint": "^5.7.0",
+      "eslint-plugin-vue": "^4.7.1",
+      "panzoom": "^7.0.2",
+      "register-service-worker": "^1.0.0",
+      "string-mask": "^0.3.0",
+      "vue": "^2.5.17",
+      "vue-drag-drop": "^1.1.4",
+      "vue-resize-directive": "^1.1.4",
+      "vue-router": "^3.0.1",
+      "vue-svg-pan-zoom": "^0.1.0",
+      "vue-the-mask": "^0.11.1",
+      "vuedraggable": "^2.16.0"
+    },
+    "devDependencies": {
+      "@vue/cli-plugin-babel": "^3.0.5",
+      "@vue/cli-plugin-eslint": "^3.0.5",
+      "@vue/cli-plugin-pwa": "^3.0.5",
+      "@vue/cli-service": "^3.0.5",
+      "@vue/eslint-config-airbnb": "^3.0.5",
+      "vue-template-compiler": "^2.5.17"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
