@@ -34,13 +34,14 @@
                   {{obj.nome}}
                   <a-button
                     v-on:click="onDelete(obj.id)"
-                    <a v-on:click.stop="doThis"></a>
                     style="float: right"
                     type="danger"
-                    icon="delete">
+                    icon="delete"
+                    v-on:click.stop="doThis">
                   </a-button>
                   <a-button
                     v-on:click="showModal()"
+                    v-on:click.stop="doThis"
                     style="float: right"
                     type="dashed"
                     icon="edit">
