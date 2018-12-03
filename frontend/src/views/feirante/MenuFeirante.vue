@@ -118,7 +118,7 @@
 <script>
 // import axios from 'axios';
 let moment = require('moment');
-require('moment-recur');
+//require('moment-recur');
 export default {
   data() {
     return {
@@ -146,12 +146,12 @@ export default {
     };
   },
   created(){
-    let cal = moment.recur().every(7).daysOfWeek();
+    //let cal = moment.recur().every(7).daysOfWeek();
     let n = moment();
     if(n.weekday() >= 5 ){
       this.btnAct = 0
     }
-    if(cal.matches(n.format('MM/DD/YYYY'))){
+    if(n.weekday() == 0){
       this.dia = "A feira é hoje!";
       this.btnAct = 0
     }
