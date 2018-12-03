@@ -30,7 +30,6 @@
         disabled = true
         :size="size"
         block
-        @click="next"
       >
         CONFIRMAR PRESENÇA
       </a-button>
@@ -147,7 +146,7 @@ export default {
   },
   created(){
     //let cal = moment.recur().every(7).daysOfWeek();
-    let n = moment();
+    let n = moment('12/07/2018');
     if(n.weekday() >= 5 ){
       this.btnAct = 0
     }
