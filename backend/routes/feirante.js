@@ -97,8 +97,8 @@ router.get('/', authMiddleware.isSupervisor, async (req, res) => {
       nome: feirante.nome,
       rg: feirante.rg,
       usa_ee: feirante.usa_ee,
-      nome_fantasia: feirante.nome_fantasia,
-      razao_social: feirante.razao_social,
+      nome_fantasia: feirante.nomeFantasia,
+      razao_social: feirante.razaoSocial,
       comprimento_barraca: feirante.comprimento_barraca,
       largura_barraca: feirante.largura_barraca,
       endereco: {
@@ -108,7 +108,7 @@ router.get('/', authMiddleware.isSupervisor, async (req, res) => {
         cep: feirante.endereco.cep,
       },
       voltagem_ee: feirante.voltagem_ee,
-      sub_categoria_id: feirante.sub_categoria_id,
+      sub_categoria_id: feirante.subCategoriaId,
     })),
   );
 });

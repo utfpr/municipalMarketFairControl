@@ -42,7 +42,7 @@ export async function del(id) {
   );
 }
 
-export async function getSubByCat(id) {
+export async function getSub(id) {
   const data = await axios
   .get(`${host}/${id}/subcategorias`, { headers: { token: localStorage.getItem('token') } })
   .catch(() => null)
