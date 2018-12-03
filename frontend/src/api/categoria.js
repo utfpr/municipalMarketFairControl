@@ -1,9 +1,16 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/categoria';
+const host = 'http://localhost:3000/api/categoria';
 
 export async function get() {
-  return (await axios.get(host), { token: localStorage.getItem('token') }).data;
+  const data = await axios
+  .get(host, { headers: { token: localStorage.getItem('token') } })
+  .catch(() => null)
+  .then(record => record.data);
+
+  return data.map(record => ({
+    ...record,
+  }));
 }
 
 export async function post(nome, need_cnpj) {
@@ -13,7 +20,7 @@ export async function post(nome, need_cnpj) {
       nome,
       need_cnpj,
     },
-    { token: localStorage.getItem('token') },
+    { headers: { token: localStorage.getItem('token') } },
   );
 }
 
@@ -24,20 +31,24 @@ export async function put(id, nome, need_cnpj) {
       nome,
       need_cnpj,
     },
-    { token: localStorage.getItem('token') },
+    { headers: { token: localStorage.getItem('token') } },
   );
 }
 
 export async function del(id) {
   axios.delete(
     `${host}/${id}`,
-    { token: localStorage.getItem('token') },
+    { headers: { token: localStorage.getItem('token') } },
   );
 }
 
-export async function getSub(id, callback) {
-  callback((await axios.get(
-    `${host}/${id}/subcategorias`,
-    { token: localStorage.getItem('token') },
-  )).data);
+export async function getSub(id) {
+  const data = await axios
+  .get(`${host}/${id}/subcategorias`, { headers: { token: localStorage.getItem('token') } })
+  .catch(() => null)
+  .then(record => record.data);
+
+  return data.map(record => ({
+    ...record,
+  }));
 }

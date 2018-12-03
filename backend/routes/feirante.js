@@ -13,7 +13,9 @@ router.post(
   authMiddleware.isSupervisor,
   [
     body('cpf').custom(isCpf),
-    body('cnpj').custom(isCnpj),
+    body('cnpj')
+    .custom(isCnpj)
+    .optional(),
     body('nome')
       .isString()
       .isLength({ min: 1, max: 100 }),
@@ -22,15 +24,18 @@ router.post(
       .isLength({ min: 9, max: 9 }),
     body('usa_ee').isBoolean(),
     body('nome_fantasia')
+      .optional()
       .isString()
-      .isLength({ min: 1, max: 100 }),
+      .isLength({ min: 0, max: 100 }),
     body('razao_social')
+      .optional()
       .isString()
-      .isLength({ min: 1, max: 100 }),
+      .isLength({ min: 0, max: 100 }),
     body('comprimento_barraca').isDecimal(),
     body('largura_barraca').isDecimal(),
     body('endereco').custom(isEndereco),
-    body('voltagem_ee').isInt(),
+    body('voltagem_ee')
+      .optional(),
     body('sub_categoria_id').isInt(),
     body('senha')
       .isString()
@@ -92,8 +97,8 @@ router.get('/', authMiddleware.isSupervisor, async (req, res) => {
       nome: feirante.nome,
       rg: feirante.rg,
       usa_ee: feirante.usa_ee,
-      nome_fantasia: feirante.nome_fantasia,
-      razao_social: feirante.razao_social,
+      nome_fantasia: feirante.nomeFantasia,
+      razao_social: feirante.razaoSocial,
       comprimento_barraca: feirante.comprimento_barraca,
       largura_barraca: feirante.largura_barraca,
       endereco: {
@@ -103,7 +108,7 @@ router.get('/', authMiddleware.isSupervisor, async (req, res) => {
         cep: feirante.endereco.cep,
       },
       voltagem_ee: feirante.voltagem_ee,
-      sub_categoria_id: feirante.sub_categoria_id,
+      sub_categoria_id: feirante.subCategoriaId,
     })),
   );
 });
@@ -121,19 +126,19 @@ router.get('/:cpf', [param('cpf').custom(isCpf)], authMiddleware.isSupervisor, a
     cnpj: feirante.cnpj,
     nome: feirante.nome,
     rg: feirante.rg,
-    usa_ee: feirante.usa_ee,
-    nome_fantasia: feirante.nome_fantasia,
-    razao_social: feirante.razao_social,
-    comprimento_barraca: feirante.comprimento_barraca,
-    largura_barraca: feirante.largura_barraca,
+    usa_ee: feirante.usaEe,
+    nome_fantasia: feirante.nomeFantasia,
+    razao_social: feirante.razaoSocial,
+    comprimento_barraca: feirante.comprimentoBarraca,
+    largura_barraca: feirante.larguraBarraca,
     endereco: {
       logradouro: feirante.endereco.logradouro,
       bairro: feirante.endereco.bairro,
       numero: feirante.endereco.numero,
-      cep: feirante.endereco.cep,
+      cep: feirante.endereco.CEP,
     },
-    voltagem_ee: feirante.voltagem_ee,
-    sub_categoria_id: feirante.sub_categoria_id,
+    voltagem_ee: feirante.voltagemEe,
+    sub_categoria_id: feirante.subCategoriaId,
   });
 });
 
@@ -157,13 +162,9 @@ router.put(
       .optional()
       .isBoolean(),
     body('nome_fantasia')
-      .optional()
-      .isString()
-      .isLength({ min: 1, max: 100 }),
+      .optional(),
     body('razao_social')
-      .optional()
-      .isString()
-      .isLength({ min: 1, max: 100 }),
+      .optional(),
     body('comprimento_barraca')
       .optional()
       .isDecimal(),
@@ -174,8 +175,7 @@ router.put(
       .optional()
       .custom(isEndereco),
     body('voltagem_ee')
-      .optional()
-      .isInt(),
+      .optional(),
     body('sub_categoria_id')
       .optional()
       .isInt(),

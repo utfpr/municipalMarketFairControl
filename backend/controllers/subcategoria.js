@@ -7,6 +7,18 @@ const findSubcategoriaById = async (subcategoriaId) => {
   return res;
 };
 
+const findCategoriaBySubcategoria = async (subcategoriaId) => {
+  const sub = await models.subcategoria.findOne({
+    where: { id: subcategoriaId },
+  });
+
+  const cat = await models.categoria.findOne({
+    where: { id: sub.categoria_id },
+  });
+
+  return cat;
+};
+
 const addSubcategoria = async (nome, categoriaId) => {
   try {
     return models.subcategoria.create({
@@ -57,4 +69,5 @@ module.exports = {
   updateSubcategoria,
   deleteSubcategoria,
   listSubcategoriasByCategoria,
+  findCategoriaBySubcategoria,
 };

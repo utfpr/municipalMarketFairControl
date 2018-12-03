@@ -1,5 +1,6 @@
 const { body, validationResult } = require('express-validator/check');
 const express = require('express');
+const bcrypt = require('bcrypt');
 const { isCpf } = require('./utils');
 const loginController = require('../controllers/login');
 
@@ -21,7 +22,7 @@ router.post(
     const info = await loginController.login(cpf, senha);
 
     if (info !== null) {
-      return res.json({ token: info.token, tag: info.tag });
+      return res.json({ userID: cpf, token: info.token, tag: info.tag });
     }
     return res.status(401).send();
   },

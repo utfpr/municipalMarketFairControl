@@ -12,6 +12,7 @@ const celula = require('./routes/celula');
 const categoria = require('./routes/categoria');
 const subcategoria = require('./routes/subcategoria');
 const participa = require('./routes/participa');
+const aviso = require('./routes/aviso');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,6 +28,7 @@ router.use('/feira', feira);
 router.use('/categoria', categoria);
 router.use('/subcategoria', subcategoria);
 router.use('/participa', participa);
+router.use('/aviso', aviso);
 
 app.use('/api', router);
 

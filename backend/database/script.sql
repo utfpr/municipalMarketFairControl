@@ -10,7 +10,16 @@ DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS celula;
 DROP TABLE IF EXISTS supervisor;
 DROP TABLE IF EXISTS endereco;
+DROP TABLE IF EXISTS aviso;
 
+
+CREATE TABLE aviso (
+	id INTEGER AUTO_INCREMENT,
+	assunto VARCHAR(100),
+	texto VARCHAR(1000),
+	
+	PRIMARY KEY (id)
+);
 
 
 CREATE TABLE categoria (
@@ -44,8 +53,8 @@ CREATE TABLE feirante (
 	nome VARCHAR(100) NOT NULL,
 	cnpj VARCHAR(15),
 	usa_ee BOOLEAN NOT NULL,
-	nome_fantasia VARCHAR(100) NOT NULL,
-	razao_social VARCHAR(100) NOT NULL,
+	nome_fantasia VARCHAR(100),
+	razao_social VARCHAR(100),
 	comprimento_barraca REAL NOT NULL,
 	largura_barraca REAL NOT NULL,
 	voltagem_ee INTEGER,
