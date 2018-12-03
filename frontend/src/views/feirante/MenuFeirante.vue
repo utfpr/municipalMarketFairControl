@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="cabStep">
-      <p>Proxima Feira - Dia: {{ dia }}</p>
+      <p>{{ dia }}</p>
     </div>
     <a-steps :current="current">
       <a-step v-for="item in steps" :key="item.title" :title="item.title" />
@@ -23,14 +23,30 @@
       </div>
     </div>
     <div class="steps-action">
+      <template v-if="current == 0">
+        <template v-if="btnAct == 0">
       <a-button
+        type = 'danger'
+        disabled = true
         :size="size"
         block
-        v-if="current == 0"
-        type="primary" @click="next"
+        @click="next"
       >
         CONFIRMAR PRESENÇA
       </a-button>
+      <p style="text-align: center">PERIODO DE CONFIRMAÇÃO EXPIRADO</p>
+      </template>
+       <template v-else>
+         <a-button
+        type = 'primary'
+        :size="size"
+        block
+        @click="next"
+      >
+        CONFIRMAR PRESENÇA
+        </a-button>
+       </template>
+      </template>
       <a-button
         :size="size"
         v-if="current == 2"
@@ -59,13 +75,13 @@
         <div v-if="current ==3">
           <div class="renda">
           <span class="label-renda">ESCREVA SEU FATURAMENTO</span>
-          <a-input-number :min="1" v-model="value" @change="onChange" :precision="2" size="large" class="input-renda"/>
+          <a-input-number :min="1" v-model="value" @change="onChange" :precision="2" size="large" class="input-renda" ref="renda"/>
           </div>
             <a-button
               :size="size"
-              type="primary"
+              type="submit"
               block
-              @click="next"
+              @click.prevent="fixData"
       >
         INFORMAR FATURAMENTO
       </a-button>
@@ -89,35 +105,31 @@
       okType= "success"
       cancelText="Cancelar"
     >
-      <p v-if="valor == 0">Você deseja confirmar sua participação na FEIRA do dia: {{ dia }},
-        no perido da Manhã: 8:00 - 13:00 ?
+      <p v-if="valor == 0">{{ dia }}, você deseja confirmar sua participação, no perido da Manhã: 8:00 - 13:00 ?
       </p>
-      <p v-if="valor == 1">Você deseja confirmar sua participação na FEIRA do dia: {{ dia }},
-        no perido da Tarde: 13:00 - 18:00 ?
+      <p v-if="valor == 1">{{ dia }}, você deseja confirmar sua participação, no perido da Manhã: 13:00 - 18:00 ?
       </p>
-      <p v-if="valor == 2">Você deseja confirmar sua participação na FEIRA do dia: {{ dia }},
-        em perido Integral: 8:00 - 18:00 ?
+      <p v-if="valor == 2">{{ dia }}, você deseja confirmar sua participação, no perido da Manhã: 8:00 - 18:00 ?
       </p>
-    </a-modal>
-
-    <a-modal
-      title="Informar faturamento">
     </a-modal>
 
   </div>
 </template>
 <script>
 // import axios from 'axios';
+let moment = require('moment');
+require('moment-recur');
 export default {
   data() {
     return {
       value: 0,
+      btnAct: 1,
       size: 'large',
       current: 0,
       valor: 2,
       visible1: false,
       visible2: false,
-      dia: '25/11/2018',
+      dia: '',
       steps: [
         {
         title: 'CONFIRMAR',
@@ -133,6 +145,22 @@ export default {
       }],
     };
   },
+  created(){
+    let cal = moment.recur().every(7).daysOfWeek();
+    let n = moment();
+    if(n.weekday() >= 5 ){
+      this.btnAct = 0
+    }
+    if(cal.matches(n.format('MM/DD/YYYY'))){
+      this.dia = "A feira é hoje!";
+      this.btnAct = 0
+    }
+    else{
+      let prox = moment().weekday(7);
+      this.dia = `A proxima feira será dia - ${prox.format("DD/MM/YYYY")}`;
+    }
+    //this.dia = n.format('DD/MM/YYYY');
+    },
   methods: {
     next() {
       this.current++;
@@ -175,6 +203,10 @@ export default {
     onChange(value) {
         console.log('changed', value);
       },
+    fixData() {
+      let valor = (this.$refs.renda.value);
+    
+    },
   },
   // handleSubmit(e) {
   //   e.preventDefault();
