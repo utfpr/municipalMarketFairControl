@@ -13,6 +13,13 @@ export async function get() {
   }));
 }
 
+export async function getById(id) {
+  const record = (await axios.get(`${host}/${id}`, {
+    headers: { token: localStorage.getItem('token') },
+  })).data
+  return { ...record };
+}
+
 export async function post(nome, need_cnpj) {
   need_cnpj = need_cnpj ? 1 : 0;
   await axios.post(
