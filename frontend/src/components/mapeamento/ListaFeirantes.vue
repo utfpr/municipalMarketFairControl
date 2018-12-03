@@ -1,7 +1,7 @@
 <template >
     <a-collapse :activeKey="['1', '2']">
         <a-collapse-panel header="Não posicionados" key="1">
-            <a-tag v-for="participa in naoPosicionados" :key="participa.feirante.cpf" class="tag-feirante" draggable="true" @dragstart="dragStart"> {{participa.feirante.nome}}</a-tag>
+            <a-tag v-for="participa in naoPosicionados" :key="participa.feirante.cpf" class="tag-feirante" draggable="true" @click="selectFeirante(participa.feirante)" @dragstart="dragStart"> {{participa.feirante.nome}}</a-tag>
         </a-collapse-panel>
         <a-collapse-panel header="Posicionados" key="2">
             <a-tag v-for="participa in posicionados" :key="participa.feirante.cpf" class="tag-feirante" draggable="true" @dragstart="dragStart"> {{participa.feirante.nome}}</a-tag>

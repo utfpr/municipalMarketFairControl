@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/feirante';
+const host = 'http://localhost:3000/api/feirante';
 
 // export async function testLogin() {
 //   const req = await axios.post('http://localhost:3000/login', {
@@ -19,15 +19,15 @@ const host = 'http://localhost:3000/feirante';
 // }
 
 export async function get() {
-  return (await axios.get(host)).data;
+  return (await axios.get(host), { headers: { token: localStorage.getItem('token') } }).data;
 }
 
 export async function post(
   cpf,
-  rg, 
-  nome, 
-  cnpj, 
-  usa_ee, 
+  rg,
+  nome,
+  cnpj,
+  usa_ee,
   nome_fantasia,
   razao_social,
   comprimento_barraca,
@@ -39,10 +39,10 @@ export async function post(
 ) {
   await axios.post(host, {
     cpf,
-    rg, 
-    nome, 
-    cnpj, 
-    usa_ee, 
+    rg,
+    nome,
+    cnpj,
+    usa_ee,
     nome_fantasia,
     razao_social,
     comprimento_barraca,
@@ -56,10 +56,10 @@ export async function post(
 
 export async function put(
   cpf,
-  rg, 
-  nome, 
-  cnpj, 
-  usa_ee, 
+  rg,
+  nome,
+  cnpj,
+  usa_ee,
   nome_fantasia,
   razao_social,
   comprimento_barraca,
@@ -69,10 +69,10 @@ export async function put(
   sub_categoria_id,
 ) {
   await axios.put(`${host}/${cpf}`, {
-    rg, 
-    nome, 
-    cnpj, 
-    usa_ee, 
+    rg,
+    nome,
+    cnpj,
+    usa_ee,
     nome_fantasia,
     razao_social,
     comprimento_barraca,
