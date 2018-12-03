@@ -35,6 +35,7 @@ router.post('/', authMiddleware.isAdmin, async (req, res) => {
   const nomeS = req.body.nome;
   const senhaS = req.body.senha;
   const isAdm = req.body.is_adm;
+  // console.log(req.body);
 
   const cpfValido = CPF.validate(CPF.strip(cpfS));
   if (cpfValido.code === 'INVALID' || cpfValido.code === 'LENGTH' || senhaS.lenght < 6) {

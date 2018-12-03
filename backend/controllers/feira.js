@@ -4,9 +4,19 @@ const { proximaSexta } = require('./utils');
 
 const op = Sequelize.Op;
 
+const listFeiras = async () => {
+  const feiras = await models.feira.findAll();
+
+  return feiras.map(el => ({
+    data: el.data,
+    data_limite: el.data_limite,
+    status: el.status,
+  }));
+};
+
 const findFeira = async (dataFeira) => {
   const feira = await models.feira.findOne({
-    where: { data: dataFeira.toISOString().split('T')[0] },
+    where: { data: dataFeira },
   });
   if (feira === null) return null;
   return feira;
@@ -122,4 +132,5 @@ module.exports = {
   setDataLimiteFeiraAtual,
   addFeira,
   cancelaFeiraAtual,
+  listFeiras,
 };

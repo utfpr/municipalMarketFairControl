@@ -46,5 +46,5 @@ export async function put(cpf, nome, isAdm) {
 }
 
 export async function del(cpf) {
-  axios.delete(`${host}${cpf}`);
+  axios.delete(`${host}${cpf}`, { headers: { token: localStorage.getItem('token') } });
 }

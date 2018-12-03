@@ -1,11 +1,10 @@
 <template>
   <div class="container">
-    <div class="btn-container">
-      <a-button type="primary" icon="plus" size="large" @click="showModal('', 'add')">Adicionar</a-button>
-      <a-button type="danger" icon="close" size="large" :disabled="!selecionado" @click="this.onDelete">Remover</a-button>
+    <div class="btn-container" style="text-align: right">
+      <a-button type="primary" icon="plus" size="medium" @click="showModal('', 'add')">Adicionar</a-button>
     </div>
 
-    <a-table :dataSource="data" :columns="columns" :rowSelection="rowSelection" bordered>
+    <a-table :dataSource="data" :columns="columns" bordered>
       <span slot="cpf" slot-scope="text, record">
         {{text}}
       </span>
@@ -16,10 +15,10 @@
       <template slot="actions" slot-scope="text, record, index">
         <a-row>
           <a-col :span="12">
-            <a-button type="dashed" icon="profile" @click="showModal(record.cpf, 'view')">Visualizar</a-button>
+            <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')"></a-button>
           </a-col>
           <a-col>
-            <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')">Atualizar</a-button>
+            <a-button :disabled="record.root_adm !== 0" type="danger" icon="delete" @click="onDelete(record.cpf)"></a-button>
           </a-col>
         </a-row>
       </template>
@@ -36,7 +35,7 @@
             </a-form-item>
           </a-col>
           <a-col :span="8" :offset="2">
-            <a-form-item fieldDecoratorId="isAdm" :fieldDecoratorOptions="{valuePropName: 'checked'}">
+            <a-form-item fieldDecoratorId="isAdm" :checked="checkAdm" :fieldDecoratorOptions="{valuePropName: 'checked'}">
               <a-checkbox :disabled="this.action === 'view'">Administrador</a-checkbox>
             </a-form-item>
           </a-col>
@@ -49,9 +48,10 @@
               </a-input>
             </a-form-item>
           </a-col>
-          <a-col :span="11" :offset="1" v-if="this.action === 'add'">
+          <!-- <a-col :span="11" :offset="1" v-if="this.action === 'add'"> -->
+          <a-col :span="11" :offset="1">
             <a-form-item fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Mínimo 6 caracteres!', min: 6},]}">
-              <a-input placeholder="Senha" :type="this.mostrarSenha ? 'text' : 'password'">
+              <a-input placeholder="Senha" :disabled="!passChange" :type="this.mostrarSenha ? 'text' : 'password'">
                 <a-icon slot="prefix" type="lock" />
                 <a-icon slot="suffix" type="eye" @click="clickMostrarSenha" />
               </a-input>
@@ -78,7 +78,7 @@ const columns = [
   { title: 'CPF', dataIndex: 'cpf', width: '15%', scopedSlots: { customRender: 'cpf' } },
   { title: 'Nome', dataIndex: 'nome' },
   { title: 'Permissão', dataIndex: 'permissao', scopedSlots: { customRender: 'permissao' }, width: '15%' },
-  { title: 'Ações', scopedSlots: { customRender: 'actions' }, width: '25%' }
+  { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '12%'}
 ];
 
 export default {
@@ -92,8 +92,9 @@ export default {
       mostrarSenha: false,
       form: null,
       action: '',
-      selectedRows: []
-
+      selectedRows: [],
+      checkAdm: false,
+      passChange: true,
     }
   },
 
@@ -126,7 +127,9 @@ export default {
       setTimeout(() => {
         if (action === 'add') {
           this.form.resetFields();
+          this.passChange = true;
         } else if (action === 'edit' || action === 'view') {
+          this.passChange = strip(cpf) === localStorage.getItem('userID')? true: false;
           supervisorAPI.getByCpf(strip(cpf)).then(record => {
             
             this.form.setFieldsValue({ cpf: record.cpf, nome: record.nome, isAdm: record.is_adm === 1 });
@@ -157,11 +160,10 @@ export default {
 
     },
 
-    async onDelete() {
-      for (let row of this.selectedRows) {
-        console.log('removendo')
-        await supervisorAPI.del(strip(row.cpf));
-      }
+    async onDelete(cpf) {
+
+      console.log('removendo')
+      await supervisorAPI.del(strip(cpf));
 
       console.log('atualizando')
       this.data = await supervisorAPI.get();
