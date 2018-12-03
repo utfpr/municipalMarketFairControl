@@ -58,7 +58,7 @@
         <!-- Categoria, Subcategoria -->
         <a-row>
           <a-col :span="11" :offset="0">
-            <a-form-item label="Categoria de venda:" fieldDecoratorId="categoria" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
+            <a-form-item label="Categoria de venda:" fieldDecoratorId="categoria_venda" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
               <a-select
                 showSearch
                 placeholder="Categoria de venda"
@@ -67,11 +67,27 @@
                 style="width: 200px"
                 @focus="handleFocus"
                 @blur="handleBlur"
+                @change="handleCategoriaChange"
+                :filterOption="filterOption"
+              >
+                <a-select-option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">{{categoria.nome}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="11" :offset="2">
+            <a-form-item label="Subcategoria de venda:" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
+              <a-select
+                showSearch
+                placeholder="Subcategoria de venda"
+                :disabled="this.action === 'view'"
+                optionFilterProp="children"
+                style="width: 200px"
+                @focus="handleFocus"
+                @blur="handleBlur"
                 @change="handleChange"
                 :filterOption="filterOption"
               >
-                <a-select-option value=" ">Escolha</a-select-option>
-                <a-select-option v-for="categoria in categorias" :key="categoria" :value="categoria">{{categoria.nome}}</a-select-option>
+                <a-select-option v-for="subcategoria in this.subcategorias" :key="subcategoria" :value="subcategoria.id">{{subcategoria.nome}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -94,13 +110,6 @@
               </a-select>
             </a-form-item>
           </a-col> -->
-          <a-col :span="11" :offset="2">
-            <a-form-item label="Subcategoria ID:" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um ID!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="subcategoria de venda">
-                <a-icon slot="prefix" type="environment" />
-              </a-input>
-            </a-form-item>
-          </a-col>
         </a-row>
         <!-- Razão Social -->
         <a-row>
@@ -202,7 +211,7 @@
             </a-form-item>
           </a-col>
           <a-col>
-            <a-form-item label="Tensão:" fieldDecoratorId="voltagem_ee">
+            <a-form-item label="Tensão:" fieldDecoratorId="voltagem_ee" :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Escolha a tensão!'},]}">
               <a-select
                 showSearch
                 placeholder="Tensão"
@@ -214,8 +223,8 @@
                 @change="handleChange"
                 :filterOption="filterOption"
               >
-                <a-select-option @click="setTensao('110')" value="110v">110v</a-select-option>
-                <a-select-option @click="setTensao('220')" value="220v">220v</a-select-option>
+                <a-select-option value="110v">110v</a-select-option>
+                <a-select-option value="220v">220v</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -235,6 +244,8 @@
 
 import * as feiranteAPI from '@/api/feirante';
 import * as categoriaAPI from '@/api/categoria';
+import * as subcategoriaAPI from '@/api/subcategoria';
+
 
 import { mask } from 'vue-the-mask';
 import CPF, { validate, strip, format } from 'cpf-check';
@@ -242,7 +253,7 @@ import CPF, { validate, strip, format } from 'cpf-check';
 const columns = [
   { title: 'CPF', dataIndex: 'cpf', width: '15%', scopedSlots: { customRender: 'cpf' } },
   { title: 'Nome', dataIndex: 'nome' },
-  { title: 'Ramo', dataIndex: '' },
+  { title: 'Nome Fantasia', dataIndex: `nome_fantasia` },
   { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '12%'}
 ];
 
@@ -258,16 +269,15 @@ export default {
       action: '',
       selectedRows: [],
       radio_ee: '0',
-      selectCategoria: '0',
-      selectTensao: '',
       token: null,
-      categorias: [],
-      usa_energia: '',
       passChange: true,
+      categorias: [],
+      subcategorias: [],
     };
   },
 
   async created() {
+    this.categorias = await categoriaAPI.get();
     this.data = await feiranteAPI.get();
   },
 
@@ -291,6 +301,10 @@ export default {
       console.log(`selected ${value}`);
     },
 
+    async handleCategoriaChange(key){
+      this.subcategorias = await categoriaAPI.getSubByCat(key);
+    },
+
     handleBlur() {
       console.log('blur');
     },
@@ -310,21 +324,11 @@ export default {
       this.radio_ee = valor;
     },
 
-    setCategoria(valor){
-      this.selectCategoria = valor;
-    },
-
-    setTensao(valor){
-      this.selectTensao = valor;
-    },
-
     cleanMask(value) {
       return value.replace(/[^\d.-]/g, '');
     },
 
     async showModal(cpf, action) {
-      //this.categorias = categoriaAPI.get();
-      //this.usa_energia = usa_ee;
       this.visible = true;
       this.action = action;
       setTimeout(() => {
@@ -334,6 +338,12 @@ export default {
         } else if (action === 'edit' || action === 'view') {
           this.passChange = strip(cpf) === localStorage.getItem('userID')? true: false;
           feiranteAPI.getByCpf(strip(cpf)).then(record => {
+            subcategoriaAPI.getSubById(record.sub_categoria_id).then(record => {
+              this.form.setFieldsValue({sub_categoria_id: String(record.nome)});
+            });
+            subcategoriaAPI.getCatBySub(record.sub_categoria_id).then(record => {
+              this.form.setFieldsValue({categoria_venda: String(record.nome)});
+            });
             this.form.setFieldsValue({ 
               cpf: record.cpf,
               cnpj: record.cnpj, 
@@ -349,8 +359,6 @@ export default {
               numero: String(record.endereco.numero),
               cep: record.cep,
               voltagem_ee: record.voltagem_ee,
-              sub_categoria_id: String(record.sub_categoria_id),
-              //sub_categoria_id: categoriaAPI.getNameSubcategoria(record.sub_categoria_id),
             });
           })
         }
@@ -358,6 +366,7 @@ export default {
     },
 
     onCancel() {
+      this.form.resetFields();
       this.visible = false;
     },
 
