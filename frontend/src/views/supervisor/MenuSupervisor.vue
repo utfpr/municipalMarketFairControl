@@ -43,6 +43,22 @@
                         </span>
                     </router-link>
                 </a-menu-item>
+                <a-menu-item key="6">
+                    <router-link to="/supervisor/aviso">
+                        <a-icon type="message"> </a-icon>
+                        <span>
+                            Avisos
+                        </span>
+                    </router-link>
+                </a-menu-item>
+                <a-menu-item key="7">
+                    <router-link to="/supervisor/relatorio">
+                        <a-icon type="bar-chart"> </a-icon>
+                        <span>
+                            Relatorios
+                        </span>
+                    </router-link>
+                </a-menu-item>
             </a-menu>
         </a-layout-sider>
         <a-layout>

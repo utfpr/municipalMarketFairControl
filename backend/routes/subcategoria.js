@@ -48,6 +48,20 @@ router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
     }
 });
 
+// Retorna categoria pelo ID da subcategoria
+router.get('/:id/categoria', authMiddleware.isSupervisor, async (req, res) => {
+    const id_sub = req.params.id;
+
+    const categoria = await subcategoriaController.findCategoriaBySubcategoria(id_sub);
+    if(categoria != null){
+        res.status(200).send(categoria);
+    } else {
+        res.status(200).send({
+            msg: 'id_nao_existente',
+        });
+    }
+});
+
 // Atualiza subcategoria
 router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
     const id_sub = req.params.id;

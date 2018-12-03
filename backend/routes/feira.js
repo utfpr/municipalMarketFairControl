@@ -2,6 +2,17 @@ const router = require('express').Router();
 const authMiddleware = require('../middlewares/auth');
 const constrollerFeira = require('../controllers/feira');
 
+router.get('/', authMiddleware.isSupervisor, async (req, res) => {
+  const feiras = await constrollerFeira.listFeiras();
+  if (feiras !== null) {
+    res.status(200).send(feiras);
+  } else {
+    res.status(200).send({
+      msg: 'nenhuma feira',
+    });
+  }
+});
+
 router.get('/info', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
   const feira = await constrollerFeira.feiraAtualInfo();
   if (feira !== null) {

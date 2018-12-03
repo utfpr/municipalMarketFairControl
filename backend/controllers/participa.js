@@ -4,6 +4,64 @@ const feiraController = require('./feira');
 const feiranteController = require('./feirante');
 const celulaController = require('./celula');
 
+
+const getFaturamento = async (cpfFeirante, dataFeira) => {
+  const faturamento = await models.participa.findOne({
+    where: {
+      data_feira: dataFeira,
+      cpf_feirante: cpfFeirante,
+    },
+  });
+
+  return faturamento.faturamento;
+}
+
+const getFeirantesParticipantes = async (dataFeira) => {
+  const feira  = await feiraController.findFeira(dataFeira);
+
+  if (feira === null) return null;
+
+  const participaram = await feira.getFeirantes({
+    order: [[Sequelize.literal('participa.cpf_feirante'), 'ASC']],
+  });
+
+  const result = participaram.map(participa => ({
+    cpf: participa.cpf,
+    nome: participa.nome,
+    nomeFantasia: participa.nome_fantasia,
+  }));
+
+  result.forEach(async (element) => {
+    element.faturamento = await getFaturamento(element.cpf, dataFeira);
+  });
+
+  return result;
+};
+
+const getFeirantesNaoParticipantes = async (dataFeira) => {
+  const feira = await feiraController.findFeira(dataFeira);
+
+  if (feira === null) return null;
+  const participacao = await models.participa.findAll({
+    where: {
+      data_feira: feira.data,
+    },
+  });
+
+  const a = participacao.map(as => as.cpf_feirante);
+  const naoParticiparam = await models.feirante.findAll({
+    where: {
+      cpf: {
+        [Sequelize.Op.notIn]: a,
+      },
+    },
+  });
+  return naoParticiparam.map(np => ({
+    cpf: np.cpf,
+    nome: np.nome,
+    nomeFantasia: np.nome_fantasia,
+  }));
+}
 // Feirantes confirmados em determinada feira
 const listFeirantesConfirmados = async (dataFeira) => {
   const feira = await feiraController.findFeira(dataFeira);
@@ -195,6 +253,8 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
 };
 
 module.exports = {
+  getFeirantesParticipantes,
+  getFeirantesNaoParticipantes,
   listFeirantesConfirmados,
   listFeirantesConfirmadosFeiraAtual,
   confirmaPresencaFeiraAtual,

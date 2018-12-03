@@ -1,19 +1,25 @@
+<!-- eslint-disable -->
 
 <template>
   <div class="container">
     <div class="btn-container">
       <a-button type="primary" icon ="plus" size ="large" @click="showModal('', 'add')">Adicionar</a-button>
-      <a-button type="danger" icon ="close" size ="large" :disabled="!selecionado" @click="this.onDelete">Remover</a-button>
     </div>
     
-    <a-table :rowSelection="rowSelection" :columns="columns" :dataSource="data" bordered>
+    <a-table :dataSource="data" :columns="columns" bordered>
+      <span slot="cpf" slot-scope="text, record">
+        {{text}}
+      </span>
       <template slot="actions" slot-scope="text, record, index">
         <a-row>
           <a-col :span="12">
-            <a-button type="dashed" icon="profile" @click="showModal(record, 'view')">Visualizar</a-button>
+            <a-button type="dashed" icon="profile" @click="showModal(record.cpf, 'view')"></a-button>
           </a-col>
-          <a-col>
-            <a-button type="dashed" icon="edit" @click="showModal(record, 'edit')">Atualizar</a-button>
+          <a-col >
+            <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')"></a-button>
+          </a-col>
+          <a-col >
+            <a-button type="danger" icon="delete" @click="onDelete(record.cpf)"></a-button>
           </a-col>
         </a-row>
       </template>
@@ -51,8 +57,8 @@
         </a-row>
         <!-- Categoria, Subcategoria -->
         <a-row>
-          <a-col :span="11" :offset="0" v-if="this.action === 'add'">
-            <a-form-item label="Categoria de venda:" fieldDecoratorId="categoria" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
+          <a-col :span="11" :offset="0">
+            <a-form-item label="Categoria de venda:" fieldDecoratorId="categoria_venda" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
               <a-select
                 showSearch
                 placeholder="Categoria de venda"
@@ -61,16 +67,31 @@
                 style="width: 200px"
                 @focus="handleFocus"
                 @blur="handleBlur"
-                @change="handleChange"
+                @change="handleCategoriaChange"
                 :filterOption="filterOption"
               >
-                <a-select-option @click="setCategoria('1') " value="Alimentos">Alimentos</a-select-option>
-                <a-select-option @click="setCategoria('0')" value="Artesanato">Artesanato</a-select-option>
-                <a-select-option @click="setCategoria('0')" value="Materiais de Construção">Materiais de Construção</a-select-option>
+                <a-select-option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">{{categoria.nome}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :span="11" :offset="2" v-if="this.action === 'add'">
+          <a-col :span="11" :offset="2">
+            <a-form-item label="Subcategoria de venda:" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
+              <a-select
+                showSearch
+                placeholder="Subcategoria de venda"
+                :disabled="this.action === 'view'"
+                optionFilterProp="children"
+                style="width: 200px"
+                @focus="handleFocus"
+                @blur="handleBlur"
+                @change="handleChange"
+                :filterOption="filterOption"
+              >
+                <a-select-option v-for="subcategoria in this.subcategorias" :key="subcategoria" :value="subcategoria.id">{{subcategoria.nome}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <!-- <a-col :span="11" :offset="2" v-if="this.action === 'add'">
             <a-form-item label="Subcategoria de venda:" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
               <a-select
                 showSearch
@@ -88,12 +109,12 @@
                 <a-select-option @click="setCategoria('0')" value="Ternite">Ternite</a-select-option>
               </a-select>
             </a-form-item>
-          </a-col>
+          </a-col> -->
         </a-row>
         <!-- Razão Social -->
         <a-row>
           <a-col :span="24" :offset="0">
-            <a-form-item label="Razão Social:" fieldDecoratorId="razao_social" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite uma razão social!', min: 1,},]}">
+            <a-form-item label="Razão Social:" fieldDecoratorId="razao_social" :fieldDecoratorOptions="{rules: [{ required: false, message: 'Digite uma razão social!', min: 1,},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Razão Social">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
@@ -103,7 +124,7 @@
         <!-- Nome Fantasia -->
         <a-row>
           <a-col :span="24" :offset="0">
-            <a-form-item label="Nome Fantasia:" fieldDecoratorId="nome_fantasia" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite um nome fantasia!', min: 1},]}">
+            <a-form-item label="Nome Fantasia:" fieldDecoratorId="nome_fantasia" :fieldDecoratorOptions="{rules: [{ required: false, message: 'Digite um nome fantasia!', min: 1},]}">
               <a-input :disabled="this.action === 'view'" placeholder="Nome Fantasia">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
@@ -113,51 +134,33 @@
         <!-- CNPJ, Senha -->
         <a-row>
           <a-col :span="11" :offset="0">
-            <a-form-item label="CNPJ:" fieldDecoratorId="cnpj" :fieldDecoratorOptions="{rules: [{ required: this.selectCategoria === '1', message: 'Digite um CNPJ válido!'}]}">
-              <a-input placeholder="CNPJ" v-mask="['##.###.##/####-##']" :disabled="this.action === 'view'">
+            <a-form-item label="CNPJ:" fieldDecoratorId="cnpj" :fieldDecoratorOptions="{rules: [{ required: false, message: 'Digite um CNPJ válido!'}]}">
+              <a-input placeholder="CNPJ" v-mask="['##.###.###/####-##']" :disabled="this.action === 'view'">
                 <a-icon slot="prefix" type="idcard" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="2">
-            <a-form-item label="Senha:" fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Mínimo 6 caracteres!', min: 6},]}">
-              <a-input placeholder="Senha" :disabled="this.action === 'view'" :type="this.mostrarSenha ? 'text' : 'password'">
+            <a-form-item label="Senha:" fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: this.action === 'add', message: 'Mínimo 6 caracteres!', min: 6},]}">
+              <a-input placeholder="Senha" :disabled="!passChange" :type="this.mostrarSenha ? 'text' : 'password'">
                 <a-icon slot="prefix" type="lock" />
                 <a-icon slot="suffix" type="eye" @click="clickMostrarSenha" v-if="this.action !== 'view'"/>
               </a-input>
             </a-form-item>
           </a-col>
         </a-row>
-
-        <!-- CEP, Cidade -->
+        <!-- CEP, Bairro -->
         <a-row>
           <a-col :span="11" :offset="0">
             <a-form-item label="CEP:" fieldDecoratorId="cep" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um CEP!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="CEP">
+              <a-input :disabled="this.action === 'view'" placeholder="CEP" v-mask="['#####-###']">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
             </a-form-item>
           </a-col>
           <a-col :span="11" :offset="2">
-            <a-form-item label="Cidade:" fieldDecoratorId="cidade" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite uma cidade!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="Cidade">
-                <a-icon slot="prefix" type="environment" />
-              </a-input>
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <!-- UF, Bairro -->
-        <a-row>
-          <a-col :span="4" :offset="0">
-            <a-form-item label="UF:" fieldDecoratorId="uf" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite uma UF!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="UF">
-                <a-icon slot="prefix" type="environment" />
-              </a-input>
-            </a-form-item>
-          </a-col>
-          <a-col :span="18" :offset="2">
             <a-form-item label="Bairro:" fieldDecoratorId="bairro" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Digite um bairro!', min: 1,},]}">
-              <a-input :disabled="this.action === 'view'" placeholder="bairro">
+              <a-input :disabled="this.action === 'view'" placeholder="Bairro">
                 <a-icon slot="prefix" type="environment" />
               </a-input>
             </a-form-item>
@@ -207,11 +210,22 @@
               </a-radio-group>
             </a-form-item>
           </a-col>
-          <a-col :span="11" :offset="0">
-            <a-form-item label="Tensão:" fieldDecoratorId="voltagem_ee"  :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Digite a voltagem!'},]}">
-              <a-input :disabled="this.radio_ee == '0' || this.action === 'view'" placeholder="Tensão" >
-                <a-icon slot="prefix" type="poweroff" />
-              </a-input>
+          <a-col>
+            <a-form-item label="Tensão:" fieldDecoratorId="voltagem_ee" :fieldDecoratorOptions="{rules: [{ required: this.radio_ee === '1', message: 'Escolha a tensão!'},]}">
+              <a-select
+                showSearch
+                placeholder="Tensão"
+                :disabled="this.radio_ee == '0' || this.action === 'view'"
+                optionFilterProp="children"
+                style="width: 200px"
+                @focus="handleFocus"
+                @blur="handleBlur"
+                @change="handleChange"
+                :filterOption="filterOption"
+              >
+                <a-select-option value="110v">110v</a-select-option>
+                <a-select-option value="220v">220v</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
         </a-row>
@@ -229,14 +243,18 @@
 /* eslint-disable */
 
 import * as feiranteAPI from '@/api/feirante';
+import * as categoriaAPI from '@/api/categoria';
+import * as subcategoriaAPI from '@/api/subcategoria';
+
+
 import { mask } from 'vue-the-mask';
-import CPF, { validate, strip } from 'cpf-check';
+import CPF, { validate, strip, format } from 'cpf-check';
 
 const columns = [
-  { title: 'CPF', dataIndex: 'cpf', width: '15%' },
+  { title: 'CPF', dataIndex: 'cpf', width: '15%', scopedSlots: { customRender: 'cpf' } },
   { title: 'Nome', dataIndex: 'nome' },
-  { title: 'Ramo', dataIndex: 'ramo' },
-  { title: 'Ações', scopedSlots: { customRender: 'actions' }, width: '25%' }
+  { title: 'Nome Fantasia', dataIndex: `nome_fantasia` },
+  { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '12%'}
 ];
 
 export default {
@@ -251,11 +269,15 @@ export default {
       action: '',
       selectedRows: [],
       radio_ee: '0',
-      selectCategoria: '0',
+      token: null,
+      passChange: true,
+      categorias: [],
+      subcategorias: [],
     };
   },
 
   async created() {
+    this.categorias = await categoriaAPI.get();
     this.data = await feiranteAPI.get();
   },
 
@@ -279,6 +301,10 @@ export default {
       console.log(`selected ${value}`);
     },
 
+    async handleCategoriaChange(key){
+      this.subcategorias = await categoriaAPI.getSubByCat(key);
+    },
+
     handleBlur() {
       console.log('blur');
     },
@@ -292,89 +318,107 @@ export default {
     },
 
     setRadio(valor){
-      this.radio_ee = valor;
-    }, 
+      if(valor == '0')
+        setTimeout(() => {this.form.setFieldsValue({voltagem_ee: ''})});
 
-    setCategoria(valor){
-      this.selectCategoria = valor;
+      this.radio_ee = valor;
     },
 
-    showModal(record, action) {
+    cleanMask(value) {
+      return value.replace(/[^\d.-]/g, '');
+    },
+
+    async showModal(cpf, action) {
       this.visible = true;
       this.action = action;
       setTimeout(() => {
         if (action === 'add') {
           this.form.resetFields();
+          this.passChange = true;
         } else if (action === 'edit' || action === 'view') {
-          this.form.setFieldsValue({ 
-            cpf: record.cpf,
-            rg: record.rg, 
-            nome: record.nome, 
-            cnpj: record.cnpj, 
-            usa_ee: record.usa_ee, 
-            nome_fantasia: record.nome_fantasia,
-            razao_social: record.razao_social,
-            comprimento_barraca: record.comprimento_barraca,
-            largura_barraca: record.largura_barraca,
-            logradouro: record.endereco.logradouro,
-            bairro: record.endereco.bairro,
-            numero: record.endereco.numero,
-            CEP: record.endereco.cep,
-            voltagem_ee: record.voltagem_ee,
-            sub_categoria_id: record.sub_categoria_id,
-            senha: record.senha
-          });
+          this.passChange = strip(cpf) === localStorage.getItem('userID')? true: false;
+          feiranteAPI.getByCpf(strip(cpf)).then(record => {
+            subcategoriaAPI.getSubById(record.sub_categoria_id).then(record => {
+              this.form.setFieldsValue({sub_categoria_id: String(record.nome)});
+            });
+            subcategoriaAPI.getCatBySub(record.sub_categoria_id).then(record => {
+              this.form.setFieldsValue({categoria_venda: String(record.nome)});
+            });
+            this.form.setFieldsValue({ 
+              cpf: record.cpf,
+              cnpj: record.cnpj, 
+              nome: record.nome, 
+              rg: record.rg, 
+              usa_ee: String(record.usa_ee), 
+              nome_fantasia: record.nome_fantasia,
+              razao_social: record.razao_social,
+              comprimento_barraca: record.comprimento_barraca,
+              largura_barraca: record.largura_barraca,
+              logradouro: record.endereco.logradouro,
+              bairro: record.endereco.bairro,
+              numero: String(record.endereco.numero),
+              cep: record.cep,
+              voltagem_ee: record.voltagem_ee,
+            });
+          })
         }
       }, 100);
     },
 
     onCancel() {
+      this.form.resetFields();
       this.visible = false;
     },
 
     onOk() {
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          if (this.action === 'add') {
+          let cnpj = "";
+          if(values.cnpj != null){
+            cnpj = values.cnpj.replace(/[.\/\-]/g, "");
+          }
+          const rg = values.rg.replace(/[.\/\-]/g, "");
+          const cep = values.cep.replace(/[-]/g, "");
+          if (this.action === 'add') {  
             await feiranteAPI.post(
-              values.cpf,
-              values.rg, 
+              strip(values.cpf),
+              cnpj,
               values.nome, 
-              values.cnpj, 
-              values.usa_ee,
+              rg,
+              parseInt(this.radio_ee),
               values.nome_fantasia,
               values.razao_social,
-              values.comprimento_barraca,
-              values.largura_barraca,
+              parseFloat(values.comprimento_barraca),
+              parseFloat(values.largura_barraca),
               {
                 logradouro: values.logradouro,
                 bairro: values.bairro,
-                numero: values.numero,
-                CEP: values.cep
+                numero: parseInt(values.numero),
+                CEP: cep
               },
-              values.voltagem_ee,
-              values.sub_categoria_id,
-              values.senha
+              parseInt(values.voltagem_ee),
+              parseInt(values.sub_categoria_id),
+              values.senha,
             );
           } else if (this.action === 'edit') {
             await feiranteAPI.put(
               strip(values.cpf),
-              values.rg, 
-              values.nome,
-              values.cnpj, 
-              values.usa_ee, 
+              cnpj,
+              values.nome, 
+              rg,
+              parseInt(this.radio_ee),
               values.nome_fantasia,
               values.razao_social,
-              values.comprimento_barraca,
-              values.largura_barraca,
+              parseFloat(values.comprimento_barraca),
+              parseFloat(values.largura_barraca),
               {
                 logradouro: values.logradouro,
                 bairro: values.bairro,
-                numero: values.numero,
-                CEP: values.cep
+                numero: parseInt(values.numero),
+                CEP: cep
               },
-              values.voltagem_ee,
-              values.sub_categoria_id
+              parseInt(values.voltagem_ee),
+              parseInt(values.sub_categoria_id),
             );
           }
           this.data = await feiranteAPI.get();
@@ -383,11 +427,11 @@ export default {
       });
     },
 
-    async onDelete() {
-      for (let row of this.selectedRows) {
-        console.log('removendo')
-        await feiranteAPI.del(strip(row.cpf));
-      }
+    async onDelete(cpf) {
+
+      console.log('removendo')
+      await feiranteAPI.del(strip(cpf));
+
       console.log('atualizando')
       this.data = await feiranteAPI.get();
     },
@@ -397,9 +441,9 @@ export default {
     },
 
     checkCpf(rule, value, callback) {
-      const errors = [];
+      let errors = [];
       if (value === undefined || !validate(strip(value)).valid) {
-        errors.push('');
+        errors.push('')
       }
       return callback(errors);
     },
