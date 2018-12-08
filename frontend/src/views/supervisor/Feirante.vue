@@ -2,23 +2,26 @@
 
 <template>
   <div class="container">
-    <div class="btn-container">
-      <a-button type="primary" icon ="plus" size ="large" @click="showModal('', 'add')">Adicionar</a-button>
+    <div class="btn-container" style="text-align: right">
+      <a-button type="primary" icon="plus" size="medium" @click="showModal('', 'add')">Adicionar</a-button>
     </div>
     
     <a-table :dataSource="data" :columns="columns" bordered>
       <span slot="cpf" slot-scope="text, record">
         {{text}}
       </span>
+      <span slot="ramo" slot-scope="text, record">
+        {{showRamo(record.sub_categoria_id)}}
+      </span>
       <template slot="actions" slot-scope="text, record, index">
-        <a-row>
-          <a-col :span="12">
+        <a-row  type="flex" justify="space-between">
+          <a-col>
             <a-button type="dashed" icon="profile" @click="showModal(record.cpf, 'view')"></a-button>
           </a-col>
-          <a-col >
+          <a-col>
             <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')"></a-button>
           </a-col>
-          <a-col >
+          <a-col>
             <a-button type="danger" icon="delete" @click="onDelete(record.cpf)"></a-button>
           </a-col>
         </a-row>
@@ -87,29 +90,10 @@
                 @change="handleChange"
                 :filterOption="filterOption"
               >
-                <a-select-option v-for="subcategoria in this.subcategorias" :key="subcategoria" :value="subcategoria.id">{{subcategoria.nome}}</a-select-option>
+                <a-select-option @click="setCategoria(subcategoria.id)" v-for="subcategoria in this.subcategorias" :key="subcategoria" :value="subcategoria.id">{{subcategoria.nome}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <!-- <a-col :span="11" :offset="2" v-if="this.action === 'add'">
-            <a-form-item label="Subcategoria de venda:" fieldDecoratorId="sub_categoria_id" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Escolha um ramo!'},]}">
-              <a-select
-                showSearch
-                placeholder="subcategoria de venda"
-                :disabled="this.action === 'view'"
-                optionFilterProp="children"
-                style="width: 200px"
-                @focus="handleFocus"
-                @-blur="handleBlur"
-                @change="handleChange"
-                :filterOption="filterOption"
-              >
-                <a-select-option @click="setCategoria('1')" value="Tijolo">Tijolo</a-select-option>
-                <a-select-option @click="setCategoria('0')" value="Cimento">Cimento</a-select-option>
-                <a-select-option @click="setCategoria('0')" value="Ternite">Ternite</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col> -->
         </a-row>
         <!-- Razão Social -->
         <a-row>
@@ -253,8 +237,8 @@ import CPF, { validate, strip, format } from 'cpf-check';
 const columns = [
   { title: 'CPF', dataIndex: 'cpf', width: '15%', scopedSlots: { customRender: 'cpf' } },
   { title: 'Nome', dataIndex: 'nome' },
-  { title: 'Nome Fantasia', dataIndex: `nome_fantasia` },
-  { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '12%'}
+  { title: 'Nome Fantasia', dataIndex:'nome_fantasia', scopedSlots: { customRender: 'nome_fantasia' } },
+  { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '18%'}
 ];
 
 export default {
@@ -268,11 +252,12 @@ export default {
       form: null,
       action: '',
       selectedRows: [],
-      radio_ee: '0',
       token: null,
       passChange: true,
       categorias: [],
+      radio_ee: '0',
       subcategorias: [],
+      insertCategoria: 1,
     };
   },
 
@@ -302,7 +287,11 @@ export default {
     },
 
     async handleCategoriaChange(key){
-      this.subcategorias = await categoriaAPI.getSubByCat(key);
+      this.subcategorias = await categoriaAPI.getSub(key);
+    },
+
+    async setCategoria(id){
+      this.insertCategoria = id;
     },
 
     handleBlur() {
@@ -324,6 +313,13 @@ export default {
       this.radio_ee = valor;
     },
 
+    async showRamo(value){
+      subcategoriaAPI.getSubById(value).then(record =>{
+        console.log(record.nome);
+        return record.nome;
+      });
+    },
+
     cleanMask(value) {
       return value.replace(/[^\d.-]/g, '');
     },
@@ -340,9 +336,13 @@ export default {
           feiranteAPI.getByCpf(strip(cpf)).then(record => {
             subcategoriaAPI.getSubById(record.sub_categoria_id).then(record => {
               this.form.setFieldsValue({sub_categoria_id: String(record.nome)});
+              this.isertCategoria = record.id;
             });
             subcategoriaAPI.getCatBySub(record.sub_categoria_id).then(record => {
               this.form.setFieldsValue({categoria_venda: String(record.nome)});
+              categoriaAPI.getSubByCat(record.id).then(record => {
+                this.subcategorias = record;action
+              });
             });
             this.form.setFieldsValue({ 
               cpf: record.cpf,
@@ -418,7 +418,7 @@ export default {
                 CEP: cep
               },
               parseInt(values.voltagem_ee),
-              parseInt(values.sub_categoria_id),
+              this.insertCategoria,
             );
           }
           this.data = await feiranteAPI.get();

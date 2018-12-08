@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const host = 'http://localhost:3000/api/categoria';
 
 export async function get() {
@@ -42,7 +41,7 @@ export async function del(id) {
   );
 }
 
-export async function getSubByCat(id) {
+export async function getSub(id) {
   const data = await axios
   .get(`${host}/${id}/subcategorias`, { headers: { token: localStorage.getItem('token') } })
   .catch(() => null)
