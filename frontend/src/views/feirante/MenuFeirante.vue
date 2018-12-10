@@ -18,7 +18,7 @@
       <template v-if="pg == 1">
         <div class="home">
           <div class="cabStep">
-            <p>{{ dia }}</p>
+            <p>A proxima feira será dia -  {{ dia }}</p>
           </div>
           <a-steps :current="current">
             <a-step v-for="item in steps" :key="item.title" :title="item.title" />
@@ -63,15 +63,6 @@
         </a-button>
        </template>
       </template>
-      <a-button
-        :size="size"
-        v-if="current == 2"
-        type="primary"
-        block
-        @click="next"
-      >
-        INFORMAR FATURAMENTO
-      </a-button>
       <a-button
         :size="size"
         v-if="current == 2"
@@ -250,7 +241,7 @@ export default {
     }
     else{
       let prox = moment().weekday(7);
-      this.dia = `A proxima feira será dia - ${prox.format("DD/MM/YYYY")}`;
+      this.dia = prox.format("DD/MM/YYYY");
     }
     //this.dia = n.format('DD/MM/YYYY');
     },
