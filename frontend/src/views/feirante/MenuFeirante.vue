@@ -10,16 +10,9 @@
       <div class="cald-up">
         <p>Avisos</p>
       </div>
-      <div class="cald-down">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Vivamus eu quam vel nisi molestie blandit. Fusce facilisis, purus ac malesuada vestibulum,
-          neque magna porttitor felis, tincidunt cursus ligula leo in tellus.
-          Maecenas a rutrum arcu,
-          non consequat nisi. Vestibulum in dui mauris. Curabitur id dictum dolor.
-          Nulla sagittis nec mi sed tincidunt. Phasellus egestas augue diam,
-          et dapibus libero pulvinar a. Vestibulum
-          blandit ante libero, ut ultricies lorem congue mattis. Aenean molestie nisl et tincidunt
-          molestie.!</p>
+      <div class="cald-down" v-for="(obj, index) in avisos" :key="index">
+        <h3>{{obj.assunto}}</h3>
+        <p>{{obj.texto}}</p>
       </div>
     </div>
     <div class="steps-action">
@@ -78,9 +71,11 @@
 </template>
 <script>
 // import axios from 'axios';
+import * as avisosAPI from '@/api/aviso.js'
 export default {
   data() {
     return {
+      avisos: [],
       size: 'large',
       current: 0,
       valor: 2,
@@ -95,6 +90,9 @@ export default {
         title: 'CANCELAR',
       }],
     };
+  },
+  async created() {
+    this.avisos = await avisosAPI.get();
   },
   methods: {
     next() {
@@ -235,6 +233,9 @@ export default {
     padding-left: 40px;
     padding-right: 30px;
     font-size: 14px;
+  }
+  .cald-down h3, .cald-down p {
+    text-align: center
   }
   @media only screen and (max-device-width: 480px) {
   .ant-steps-horizontal.ant-steps-label-horizontal {
