@@ -9,7 +9,7 @@ const celulaController = require('../controllers/celula');
 const models = require('../models/');
 
 
-router.get('/:data', async (req, res) => {
+router.get('/data/:data', async (req, res) => {
   const { data } = req.params;
 
   const participaram = await participaController.getFeirantesParticipantes(data);

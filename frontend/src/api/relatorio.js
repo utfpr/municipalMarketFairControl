@@ -14,7 +14,7 @@ export async function getFeiras() {
 
 export async function getParticipantes(data) {
   return (await axios.get(
-    `${participa}/${data}`,
+    `${participa}/data/${data}`,
     { headers: { token: localStorage.getItem('token') } },
   )).data;
 }

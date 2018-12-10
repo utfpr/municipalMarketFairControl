@@ -4,7 +4,7 @@
             <a-tag v-for="participa in naoPosicionados" :key="participa.feirante.cpf" class="tag-feirante" draggable="true" @click="selectFeirante(participa.feirante)" @dragstart="dragStart"> {{participa.feirante.nome}}</a-tag>
         </a-collapse-panel>
         <a-collapse-panel header="Posicionados" key="2">
-            <a-tag v-for="participa in posicionados" :key="participa.feirante.cpf" class="tag-feirante" draggable="true" @dragstart="dragStart"> {{participa.feirante.nome}}</a-tag>
+            <a-tag v-for="participa in posicionados" :key="participa.feirante.cpf" class="tag-feirante" draggable="true" @dragstart="dragStart">{{participa.celulaId}} {{participa.feirante.nome}}</a-tag>
         </a-collapse-panel>
     </a-collapse>
 </template>
@@ -31,11 +31,11 @@ export default {
         },
 
         posicionados() {
-            return this.confirmados.filter(participa => { return participa.celulaId !== null })
+            return (this.confirmados.length > 0) ? this.confirmados.filter(participa => { return participa.celulaId !== null }) : [];
         },
 
         naoPosicionados() {
-            return this.confirmados.filter(participa => { return participa.celulaId === null })
+            return (this.confirmados.length > 0) ? this.confirmados.filter(participa => { return participa.celulaId === null }) : [];
         }
     },
 
