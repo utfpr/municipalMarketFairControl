@@ -1,11 +1,28 @@
 <template>
-  <div class="home">
-    <div class="cabStep">
-      <p>Proxima Feira - Dia: {{ dia }}</p>
-    </div>
-    <a-steps :current="current">
-      <a-step v-for="item in steps" :key="item.title" :title="item.title" />
-    </a-steps>
+  <a-layout>
+    <a-layout-header style="padding: 0 0">
+      <a-menu
+        theme="dark"
+        mode="horizontal"
+        :defaultSelectedKeys="['1']"
+        :style="{ lineHeight: '64px' }"
+      >
+        <a-menu-item class="menus" key="1" v-on:click="mudar(1)">Confirmar</a-menu-item>
+        <a-menu-item class="menus" key="2" v-on:click="mudar(2)">Faturamento</a-menu-item>
+        <a-menu-item class="menus" key="3" v-on:click="mudar(3)">Perfil</a-menu-item>
+      </a-menu>
+    </a-layout-header>
+    <a-layout-content style="padding: 0 0">
+  
+      <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
+      <template v-if="pg == 1">
+        <div class="home">
+          <div class="cabStep">
+            <p>A proxima feira será dia -  {{ dia }}</p>
+          </div>
+          <a-steps :current="current">
+            <a-step v-for="item in steps" :key="item.title" :title="item.title" />
+          </a-steps>
     <div class="cald">
       <div class="cald-up">
         <p>Avisos</p>
@@ -16,14 +33,29 @@
       </div>
     </div>
     <div class="steps-action">
+      <template v-if="current == 0">
+        <template v-if="btnAct == 0">
       <a-button
+        type = 'danger'
+        disabled = true
         :size="size"
         block
-        v-if="current == 0"
-        type="primary" @click="next"
       >
         CONFIRMAR PRESENÇA
       </a-button>
+      <p style="text-align: center">PERIODO DE CONFIRMAÇÃO EXPIRADO</p>
+      </template>
+       <template v-else>
+         <a-button
+        type = 'primary'
+        :size="size"
+        block
+        @click="next"
+      >
+        CONFIRMAR PRESENÇA
+        </a-button>
+       </template>
+      </template>
       <a-button
         :size="size"
         v-if="current == 2"
@@ -38,6 +70,9 @@
         <a-radio-button @click="showModal2b" value="b">Tarde: 13:00 - 18:00</a-radio-button>
         <a-radio-button @click="showModal2c" value="c">Integral: 8:00 - 18:00</a-radio-button>
       </a-radio-group>
+
+
+        
     </div>
     <a-modal
       title="Cancelar presença na FEIRA ?"
@@ -49,6 +84,10 @@
     >
       <p>Você deseja realmente cancelar sua participação na FEIRA do dia: {{ dia }}</p>
     </a-modal>
+
+  
+
+
     <a-modal
       title="Confirmar presença na FEIRA ?"
       v-model="visible2"
@@ -57,43 +96,137 @@
       okType= "success"
       cancelText="Cancelar"
     >
-      <p v-if="valor == 0">Você deseja confirmar sua participação na FEIRA do dia: {{ dia }},
-        no perido da Manhã: 8:00 - 13:00 ?
+      <p v-if="valor == 0">{{ dia }}, você deseja confirmar sua participação, no perido da Manhã: 8:00 - 13:00 ?
       </p>
-      <p v-if="valor == 1">Você deseja confirmar sua participação na FEIRA do dia: {{ dia }},
-        no perido da Tarde: 13:00 - 18:00 ?
+      <p v-if="valor == 1">{{ dia }}, você deseja confirmar sua participação, no perido da Manhã: 13:00 - 18:00 ?
       </p>
-      <p v-if="valor == 2">Você deseja confirmar sua participação na FEIRA do dia: {{ dia }},
-        em perido Integral: 8:00 - 18:00 ?
+      <p v-if="valor == 2">{{ dia }}, você deseja confirmar sua participação, no perido da Manhã: 8:00 - 18:00 ?
       </p>
     </a-modal>
+
   </div>
+      </template>
+ 
+  <template v-if="pg == 2">
+    <template v-if="participou ==1">
+      <template v-if="informado == 0">
+    <div class="cabStep">
+            <p>Informar faturamento do dia {{ dmgAnterior }}</p>
+          </div>
+    <div>
+          <div class="renda">
+          <span class="label-renda">ESCREVA SEU FATURAMENTO</span>
+          <a-input-number :min="1" v-model="value" @change="onChange" :precision="2" size="large" class="input-renda" ref="renda"/>
+          </div>
+            <a-button
+              :size="size"
+              type="submit"
+              block
+              @click.prevent="handleFaturamento"
+      >
+        INFORMAR FATURAMENTO
+      </a-button>
+        </div>
+    </template>
+
+
+    <template v-if="informado ==1">
+      <h1>Você já informou seu faturamento</h1>
+  </template>
+  </template>
+    <template v-if="participou == 0">
+        <h1>Você não partipou da feira anterior</h1>
+    </template>
+        <a-modal
+      title="Informar Faturamento"
+      v-model="visible3"
+      @ok="handleOk3"
+      okText="Confirmar"
+      okType= "sucess"
+      cancelText="Cancelar"
+    >
+      <p>O valor {{ fat }} está correto?</p>
+    </a-modal>
+  </template>
+ </div>
+    </a-layout-content>
+    <a-layout-footer style="text-align: center">
+      Ant Design ©2018 Created by Ant UED
+    </a-layout-footer>
+  </a-layout>
 </template>
 <script>
-// import axios from 'axios';
-import * as avisosAPI from '@/api/aviso.js'
+import getParticipa from '@/api/participa';
+import getDate from '@/api/date';
+import * as avisosAPI from '@/api/aviso';
+let moment = require('moment');
+//require('moment-recur');
 export default {
   data() {
     return {
       avisos: [],
+      informado: 0,
+      dmgAnterior: '',
+      participou: 0,
+      pg: 1,
+      collapsed: false,
+      value: 0,
+      btnAct: 1,
       size: 'large',
       current: 0,
       valor: 2,
+      fat: 0,
       visible1: false,
       visible2: false,
-      dia: '25/11/2018',
-      steps: [{
+      visible3: false,
+      dia: '',
+      steps: [
+        {
         title: 'CONFIRMAR',
-      }, {
+      },
+      {
         title: 'PERIODO',
-      }, {
+      },
+      {
         title: 'CANCELAR',
       }],
     };
   },
-  async created() {
+  async created(){
     this.avisos = await avisosAPI.get();
-  },
+    let id =localStorage.getItem('userID');
+    //let cal = moment.recur().every(7).daysOfWeek();
+    let k = await getDate();
+    let n =  moment(k.serverData);
+    let domingoAnterior = n.clone();
+    domingoAnterior.weekday(0);
+    console.log(domingoAnterior.format("DD-MM-DD"));
+    this.dmgAnterior = domingoAnterior.format("DD/MM/YYYY");
+
+
+    let part = await getParticipa(domingoAnterior.format("YYYY-MM-DD"));
+    let p;
+    for (p in part.participaram){
+      if(part.participaram[p].cpf == id){
+        this.participou = 1;  
+        console.log(part.participaram[p]);
+      }
+    }
+    console.log(part);
+
+    if(n.weekday() >= 5 ){
+      this.btnAct = 0
+    }
+    if(n.weekday() == 0){
+      this.dia = "A feira é hoje!";
+      this.btnAct = 0
+    }
+    else{
+      let prox = moment().weekday(7);
+      this.dia = prox.format("DD/MM/YYYY");
+    }
+    //this.dia = n.format('DD/MM/YYYY');
+    },
   methods: {
     next() {
       this.current++;
@@ -133,6 +266,23 @@ export default {
       console.log(e);
       this.visible2 = false;
     },
+    onChange(value) {
+        console.log('changed', value);
+      },
+    mudar(vl){
+      console.log(vl);
+      this.pg= vl;
+    },
+    handleFaturamento(){
+      this.fat = (this.$refs.renda.value);
+      this.visible3 = true;
+      console.log(fat);
+    },
+    handleOk3(){
+       this.$message.success('Renda informada com sucesso!');
+       this.informado = 1;
+       this.visible3 = false;
+    }
   },
   // handleSubmit(e) {
   //   e.preventDefault();
@@ -155,8 +305,7 @@ export default {
 <style scoped>
   .home {
     margin-top: 20px;
-    margin-right: 40px;
-    margin-left: 40px;
+    widows: 100%;
   }
   .cabStep {
     margin-bottom: 35px;
@@ -168,6 +317,7 @@ export default {
     text-align: center;
     padding-top: 40px;
     font-size: 35px;
+    width: 100%;
   }
   .ant-steps-item-title {
     font-size: 26px;
@@ -223,6 +373,7 @@ export default {
     text-align: center;
     padding-top: 30px;
     font-size: 20px;
+    width: 100%;
   }
   .cald-up {
     border-bottom: 2px dashed #e9e9e9;
@@ -237,6 +388,18 @@ export default {
   .cald-down h3, .cald-down p {
     text-align: center
   }
+  .renda{
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+.label-renda{
+  font-size: 14px;
+  margin-right: 7px;
+}
+.menus{
+  padding-right: 5%;
+}
   @media only screen and (max-device-width: 480px) {
   .ant-steps-horizontal.ant-steps-label-horizontal {
     padding-left: 50px;
@@ -251,6 +414,9 @@ export default {
   .ant-radio-group-large .ant-radio-button-wrapper {
     height: 40px;
     width: 100%;
+  }
+  .menus{
+    width: 33%;
   }
   }
   @media only screen and (min-device-width: 480px) {
