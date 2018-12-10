@@ -12,3 +12,9 @@ export async function getConfirmados() {
   });
   return info === null ? null : info.data;
 }
+
+export default async function getParticipa(data){
+  let a = "10/10/2018"
+  const feirantes = await axios.get(`${host}/:${data}`).catch(e => console.log(`Erro ${e}`));
+  return feirantes.data;
+}

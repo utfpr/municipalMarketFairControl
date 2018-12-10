@@ -1,16 +1,33 @@
 <template>
-  <div class="home">
-    <div class="cabStep">
-      <p>{{ dia }}</p>
-    </div>
-    <a-steps :current="current">
-      <a-step v-for="item in steps" :key="item.title" :title="item.title" />
-    </a-steps>
+  <a-layout>
+    <a-layout-header style="padding: 0 0">
+      <a-menu
+        theme="dark"
+        mode="horizontal"
+        :defaultSelectedKeys="['1']"
+        :style="{ lineHeight: '64px' }"
+      >
+        <a-menu-item class="menus" key="1" v-on:click="mudar(1)">Confirmar</a-menu-item>
+        <a-menu-item class="menus" key="2" v-on:click="mudar(2)">Faturamento</a-menu-item>
+        <a-menu-item class="menus" key="3" v-on:click="mudar(3)">Perfil</a-menu-item>
+      </a-menu>
+    </a-layout-header>
+    <a-layout-content style="padding: 0 0">
+  
+      <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
+      <template v-if="pg == 1">
+        <div class="home">
+          <div class="cabStep">
+            <p>{{ dia }}</p>
+          </div>
+          <a-steps :current="current">
+            <a-step v-for="item in steps" :key="item.title" :title="item.title" />
+          </a-steps>
     <div class="cald">
       <div class="cald-up">
         <p>Avisos</p>
       </div>
-      <div class="cald-down">
+      <div class="">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           Vivamus eu quam vel nisi molestie blandit. Fusce facilisis, purus ac malesuada vestibulum,
           neque magna porttitor felis, tincidunt cursus ligula leo in tellus.
@@ -71,20 +88,7 @@
       </a-radio-group>
 
 
-        <div v-if="current ==3">
-          <div class="renda">
-          <span class="label-renda">ESCREVA SEU FATURAMENTO</span>
-          <a-input-number :min="1" v-model="value" @change="onChange" :precision="2" size="large" class="input-renda" ref="renda"/>
-          </div>
-            <a-button
-              :size="size"
-              type="submit"
-              block
-              @click.prevent="fixData"
-      >
-        INFORMAR FATURAMENTO
-      </a-button>
-        </div>
+        
     </div>
     <a-modal
       title="Cancelar presença na FEIRA ?"
@@ -96,6 +100,10 @@
     >
       <p>Você deseja realmente cancelar sua participação na FEIRA do dia: {{ dia }}</p>
     </a-modal>
+
+  
+
+
     <a-modal
       title="Confirmar presença na FEIRA ?"
       v-model="visible2"
@@ -113,21 +121,84 @@
     </a-modal>
 
   </div>
+      </template>
+ 
+  <template v-if="pg == 2">
+    <template v-if="participou ==1">
+    <div class="cabStep">
+            <p>Informar faturamento do dia {{ dmgAnterior }}</p>
+          </div>
+    <div>
+          <div class="renda">
+          <span class="label-renda">ESCREVA SEU FATURAMENTO</span>
+          <a-input-number :min="1" v-model="value" @change="onChange" :precision="2" size="large" class="input-renda" ref="renda"/>
+          </div>
+            <a-button
+              :size="size"
+              type="submit"
+              block
+              @click.prevent="handleFaturamento"
+      >
+        INFORMAR FATURAMENTO
+      </a-button>
+        </div>
+        </template>
+          <template v-else>
+            <h1>Você não partipou da feira anterior</h1>
+          </template>
+        <a-modal
+      title="Informar Faturamento"
+      v-model="visible3"
+      @ok="handleOk3"
+      okText="Confirmar"
+      okType= "sucess"
+      cancelText="Cancelar"
+    >
+      <p>O valor {{ fat }} está correto?</p>
+    </a-modal>
+
+  </template>
+
+ </div>
+
+
+
+    </a-layout-content>
+    <a-layout-footer style="text-align: center">
+      Ant Design ©2018 Created by Ant UED
+    </a-layout-footer>
+  </a-layout>
 </template>
+
+
+
+
+
+
+
+
+
 <script>
-// import axios from 'axios';
+import getParticipa from '@/api/participa';
+import getDate from '@/api/date';
 let moment = require('moment');
 //require('moment-recur');
 export default {
   data() {
     return {
+      dmgAnterior: '',
+      participou: 0,
+      pg: 1,
+      collapsed: false,
       value: 0,
       btnAct: 1,
       size: 'large',
       current: 0,
       valor: 2,
+      fat: 0,
       visible1: false,
       visible2: false,
+      visible3: false,
       dia: '',
       steps: [
         {
@@ -138,15 +209,30 @@ export default {
       },
       {
         title: 'CANCELAR',
-      },
-      {
-        title: 'FATURAMENTO'
       }],
     };
   },
-  created(){
+  async created(){
+    let id =localStorage.getItem('userID');
     //let cal = moment.recur().every(7).daysOfWeek();
-    let n = moment('12/07/2018');
+    let k = await getDate();
+    let n =  moment(k.serverData);
+    let domingoAnterior = n.clone();
+    domingoAnterior.weekday(0);
+    console.log(domingoAnterior.format("DD-MM-DD"));
+    this.dmgAnterior = domingoAnterior.format("DD/MM/YYYY");
+
+
+    let part = await getParticipa(domingoAnterior.format("YYYY-MM-DD"));
+    let p;
+    for (p in part.participaram){
+      if(part.participaram[p].cpf == id){
+        this.participou = 1;  
+        console.log(part.participaram[p]);
+      }
+    }
+    console.log(part);
+
     if(n.weekday() >= 5 ){
       this.btnAct = 0
     }
@@ -202,10 +288,19 @@ export default {
     onChange(value) {
         console.log('changed', value);
       },
-    fixData() {
-      let valor = (this.$refs.renda.value);
-    
+    mudar(vl){
+      console.log(vl);
+      this.pg= vl;
     },
+    handleFaturamento(){
+      this.fat = (this.$refs.renda.value);
+      this.visible3 = true;
+      console.log(fat);
+    },
+    handleOk3(){
+       this.$message.success('Renda informada com sucesso!');
+       this.visible3 = false;
+    }
   },
   // handleSubmit(e) {
   //   e.preventDefault();
@@ -228,8 +323,7 @@ export default {
 <style scoped>
   .home {
     margin-top: 20px;
-    margin-right: 40px;
-    margin-left: 40px;
+    widows: 100%;
   }
   .cabStep {
     margin-bottom: 35px;
@@ -241,6 +335,7 @@ export default {
     text-align: center;
     padding-top: 40px;
     font-size: 35px;
+    width: 100%;
   }
   .ant-steps-item-title {
     font-size: 26px;
@@ -296,6 +391,7 @@ export default {
     text-align: center;
     padding-top: 30px;
     font-size: 20px;
+    width: 100%;
   }
   .cald-up {
     border-bottom: 2px dashed #e9e9e9;
@@ -316,6 +412,15 @@ export default {
   font-size: 14px;
   margin-right: 7px;
 }
+.menus{
+  padding-right: 5%;
+}
+
+
+
+
+
+
   @media only screen and (max-device-width: 480px) {
   .ant-steps-horizontal.ant-steps-label-horizontal {
     padding-left: 50px;
@@ -330,6 +435,9 @@ export default {
   .ant-radio-group-large .ant-radio-button-wrapper {
     height: 40px;
     width: 100%;
+  }
+  .menus{
+    width: 33%;
   }
   }
   @media only screen and (min-device-width: 480px) {
