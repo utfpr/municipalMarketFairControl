@@ -1,15 +1,15 @@
 <template>
 
     <a-layout class="content">
-        <a-layout v-if="this.feira === null" class="sem-feira">
+        <a-layout v-if="this.feira == null" class="sem-feira">
             <div>Sem feira na semana!</div>
             <a-icon type="frown-o" class="sem-feira-icon" />
         </a-layout>
 
-        <a-layout-content v-if="this.feira !== null" class="map">
-            <Mapa />
+        <a-layout-content v-if="this.feira != null" class="map">
+            <Mapa :selectCell="selectCell"/>
         </a-layout-content>
-        <a-layout-sider v-if="this.feira !== null" class="sider" width="30%">
+        <a-layout-sider v-if="this.feira != null" class="sider" width="30%">
             <ListaFeirantes />
         </a-layout-sider>
     </a-layout>
@@ -17,22 +17,29 @@
 
 <script>
 
-import ListaFeirantes from '@/components/mapeamento/ListaFeirantes';
-import Mapa from '@/components/mapeamento/Mapa';
+import ListaFeirantes from '@/components/mapeamento/ListaFeirantes.vue';
+import Mapa from '@/components/mapeamento/Mapa.vue';
 import * as feiraAPI from '@/api/feira';
 
 export default {
-    components: { ListaFeirantes, Mapa },
-    data() {
-        return {
-            feira: null
-        }
-    },
+  components: { ListaFeirantes, Mapa },
+  data() {
+    return {
+      feira: null,
+      cell: null,
+    };
+  },
 
-    async created() {
-        this.feira = await feiraAPI.get()
-    }
-}
+  async created() {
+    this.feira = await feiraAPI.get();
+  },
+
+  methods: {
+    selectCell(id) {
+      this.cell = id;
+    },
+  },
+};
 </script>
 
 <style scoped>

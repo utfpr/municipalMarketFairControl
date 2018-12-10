@@ -2,8 +2,8 @@
     <div class="container" v-resize.initial="onResize" v-on:click="this.clearSelection">
         <img src="@/assets/background.svg" style="position:absolute; top: 0; left: 0;" width="90%" ref="bg">
 
-        <div v-for="celula in celulasRender">
-            <Celula :id="celula.id" :y="celula.y" :x="celula.x" :comprimento="celula.comprimento" :largura="celula.largura" v-on:click="cellClick" :selected="celula.id === selectedCell" />
+        <div v-for="celula in celulasRender" :key="celula.id">
+            <Celula :id="celula.id" :y="celula.y" :x="celula.x" :comprimento="celula.comprimento" :largura="celula.largura" v-on:click="cellClick" :selected="celula.id === selectedCell" :associed="celula.associed" :feirante="celula.feirante" :base="bgHeight" />
         </div>
     </div>
 </template>
@@ -44,6 +44,17 @@ export default {
         })
 
         this.celulas = this.celulasRender = await celulaAPI.get();
+        this.participacoes = await participaAPI.getConfirmados();
+        for (var i = 0; i < this.celulas.length; i+=1) {
+            this.celulas[i].associed = false;
+            if (this.participacoes.length > 0)
+            this.participacoes.forEach(p => {
+                if (p.celulaId === this.celulas[i].id) {
+                    this.celulas[i].associed = true;
+                    this.celulas[i].feirante = p.feirante;
+                }
+            });
+        }
 
         this.$root.$on('selectFeirante', cpf => {
             this.selectedFeirante = cpf;
@@ -52,6 +63,7 @@ export default {
         this.$root.$on('selectCell', id => {
             this.selectedCell = id;
         })
+        this.onResize();
     },
 
     methods: {
@@ -86,7 +98,8 @@ export default {
             this.celulasRender = this.celulas.map(celula => {
                 return {
                     id: celula.id, y: this.transformPos(celula.y, this.bgHeight), x: this.transformPos(celula.x, this.bgWidth),
-                    comprimento: this.transformPos(celula.comprimento, this.bgWidth), largura: this.transformPos(celula.largura, this.bgHeight)
+                    comprimento: this.transformPos(celula.comprimento, this.bgWidth), largura: this.transformPos(celula.largura, this.bgHeight),
+                    associed: celula.associed, feirante: celula.feirante
                 }
             })
 

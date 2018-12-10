@@ -93,8 +93,7 @@ const listFeirantesConfirmados = async (dataFeira) => {
 const listFeirantesConfirmadosFeiraAtual = async () => {
   const feiraAtual = await feiraController.findFeiraAtual();
   if (feiraAtual === null) return null;
-
-  const ret = await listFeirantesConfirmados(new Date(feiraAtual.data));
+  const ret = await listFeirantesConfirmados(new Date(String(feiraAtual.data + "T02:00:00Z")));
   return ret;
 };
 
