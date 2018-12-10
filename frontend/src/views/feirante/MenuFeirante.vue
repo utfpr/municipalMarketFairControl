@@ -125,6 +125,7 @@
  
   <template v-if="pg == 2">
     <template v-if="participou ==1">
+      <template v-if="informado == 0">
     <div class="cabStep">
             <p>Informar faturamento do dia {{ dmgAnterior }}</p>
           </div>
@@ -142,10 +143,16 @@
         INFORMAR FATURAMENTO
       </a-button>
         </div>
-        </template>
-          <template v-else>
-            <h1>Você não partipou da feira anterior</h1>
-          </template>
+    </template>
+
+
+    <template v-if="informado ==1">
+      <h1>Você já informou seu faturamento</h1>
+  </template>
+  </template>
+    <template v-if="participou == 0">
+        <h1>Você não partipou da feira anterior</h1>
+    </template>
         <a-modal
       title="Informar Faturamento"
       v-model="visible3"
@@ -186,6 +193,7 @@ let moment = require('moment');
 export default {
   data() {
     return {
+      informado: 0,
       dmgAnterior: '',
       participou: 0,
       pg: 1,
@@ -299,6 +307,7 @@ export default {
     },
     handleOk3(){
        this.$message.success('Renda informada com sucesso!');
+       this.informado = 1;
        this.visible3 = false;
     }
   },
