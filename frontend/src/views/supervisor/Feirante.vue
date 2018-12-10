@@ -3,7 +3,7 @@
 <template>
   <div class="container">
     <div class="btn-container" style="text-align: right">
-      <a-button type="primary" icon="plus" size="medium" @click="showModal('', 'add')">Adicionar</a-button>
+      <a-button type="primary" icon="plus" @click="showModal('', 'add')">Adicionar</a-button>
     </div>
     
     <a-table :dataSource="data" :columns="columns" bordered>
@@ -15,9 +15,9 @@
       </span>
       <template slot="actions" slot-scope="text, record, index">
         <a-row  type="flex" justify="space-between">
-          <a-col>
-            <a-button type="dashed" icon="profile" @click="showModal(record.cpf, 'view')"></a-button>
-          </a-col>
+          <!-- <a-col>
+            <a-button type="dashed" icon="profile" @click="showModalView(record.cpf)"></a-button>
+          </a-col> -->
           <a-col>
             <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')"></a-button>
           </a-col>
@@ -26,9 +26,31 @@
           </a-col>
         </a-row>
       </template>
+      <p slot="expandedRowRender" @click="pegaDados(record)" slot-scope="record" style="margin: 0">
+        <strong>RG:</strong> {{record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4')}}<br/>
+        <strong>Nome:</strong> {{record.nome}}<br/>
+        <strong>Ramo:</strong> {{record.subCategoria.nome}}<br/>
+        <span v-if="String(record.nome_fantasia) !== '' ">
+          <strong>Nome Fantasia:</strong> {{record.nome_fantasia}}<br/>
+        </span>
+        <span v-if="String(record.razao_social) !== '' ">
+          <strong>Razão Social:</strong> {{record.razao_social}}<br/>        
+        </span>
+        <span v-if="String(record.cnpj) !== '' ">
+          <strong>CNPJ:</strong> {{String(record.cnpj).replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5')}}<br/>
+        </span>
+        <strong>CEP:</strong> {{record.endereco.cep.replace(/(\d{2})(\d{3})(\d{1})/g, '$1.$2-$3')}}<br/>
+        <strong>Bairro:</strong> {{record.endereco.bairro}}<br/>
+        <strong>Logradouro:</strong> {{record.endereco.logradouro}}<br/>
+        <strong>Número:</strong> {{record.endereco.numero}}<br/>
+        <strong>Barraca:</strong> {{String(record.comprimento_barraca)}} x {{String(record.largura_barraca)}}<br/>
+        <span v-if="String(record.usa_ee) == '1' ">
+          <strong>Voltagem:</strong> {{String(record.voltagem_ee).replace(/(\d{3})/g, '$1v')}}<br/>
+        </span>
+      </p>
     </a-table>
 
-    <a-modal title="Feirante" okText="Adicionar" cancelText="Cancelar" @cancel="this.onCancel" @ok="this.onOk" :visible="this.visible">
+    <a-modal title="Feirante" okText="Adicionar" cancelText="Cancelar" @cancel="this.onCancel" @ok="this.onOk" :visible="this.visible">    
       <a-form :autoFormCreate="(form)=>{this.form = form}" layout="vertical" ref="form">
         <p v-if="this.action === 'add'" style="font-size: 15px color: black"><span style="color: red">*</span> Campo Obrigatório</p>
         <!-- CPF, RG -->
@@ -238,7 +260,7 @@ const columns = [
   { title: 'CPF', dataIndex: 'cpf', width: '15%', scopedSlots: { customRender: 'cpf' } },
   { title: 'Nome', dataIndex: 'nome' },
   { title: 'Nome Fantasia', dataIndex:'nome_fantasia', scopedSlots: { customRender: 'nome_fantasia' } },
-  { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '18%'}
+  { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '12%'}
 ];
 
 export default {
@@ -264,6 +286,9 @@ export default {
   async created() {
     this.categorias = await categoriaAPI.get();
     this.data = await feiranteAPI.get();
+    for(let i = 0; i < this.data.length; i+=1) {
+      this.data[i].subCategoria = await subcategoriaAPI.getSubById(this.data[i].sub_categoria_id);
+    }
   },
 
   computed: {
@@ -282,6 +307,13 @@ export default {
   },
 
   methods: {
+
+    async pegaDados(record){
+      subcategoriaAPI.getSubById(record.sub_categoria_id).then(record => {
+        this.sub_categoria_id = record.nome;
+      });
+    },
+
     handleChange (value) {
       console.log(`selected ${value}`);
     },
@@ -331,7 +363,7 @@ export default {
         if (action === 'add') {
           this.form.resetFields();
           this.passChange = true;
-        } else if (action === 'edit' || action === 'view') {
+        } else if (action === 'edit') {
           this.passChange = strip(cpf) === localStorage.getItem('userID')? true: false;
           feiranteAPI.getByCpf(strip(cpf)).then(record => {
             subcategoriaAPI.getSubById(record.sub_categoria_id).then(record => {
@@ -340,8 +372,8 @@ export default {
             });
             subcategoriaAPI.getCatBySub(record.sub_categoria_id).then(record => {
               this.form.setFieldsValue({categoria_venda: String(record.nome)});
-              categoriaAPI.getSubByCat(record.id).then(record => {
-                this.subcategorias = record;action
+              categoriaAPI.getSub(record.id).then(record => {
+                this.subcategorias = record.action
               });
             });
             this.form.setFieldsValue({ 
