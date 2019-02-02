@@ -109,7 +109,7 @@ const insert_data = async () => {
     subcategoria.id,
   );
 
-  const feirante5 = await feiranteController.addFeirante(
+  await feiranteController.addFeirante(
     '52741277036',
     '469964807',
     faker.name.firstName(),
@@ -130,7 +130,7 @@ const insert_data = async () => {
     subcategoria.id,
   );
 
-  const feira = await feiraController.addFeira(proximoDomingo());
+  await feiraController.addFeira(proximoDomingo());
 
   await celulaController.updateCelula(1, { cpf_feirante: feirante1.cpf });
   await celulaController.updateCelula(2, { cpf_feirante: feirante2.cpf });

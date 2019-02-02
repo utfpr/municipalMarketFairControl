@@ -9,20 +9,27 @@ import Feirante from './views/supervisor/Feirante.vue';
 import Categoria from './views/supervisor/Categoria.vue';
 import Mapeamento from './views/supervisor/Mapeamento.vue';
 import Aviso from './views/supervisor/Aviso.vue';
-import Relatorio from './views/supervisor/Relatorio.vue'
+import Relatorio from './views/supervisor/Relatorio.vue';
 
 import MenuFeirante from './views/feirante/MenuFeirante.vue';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
+      redirect: '/login',
+    },
+    {
+      path: '/login',
       name: 'login',
       component: Login,
+      meta: {
+        login: true,
+      },
     },
     {
       path: '/feirante',
@@ -71,3 +78,16 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  const login = to.matched.some(record => record.meta.login);
+  if (login) {
+    next();
+  } else if (!localStorage.getItem('token')) {
+    next('/');
+  } else {
+    next();
+  }
+});
+
+export default router;
