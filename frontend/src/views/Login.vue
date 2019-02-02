@@ -138,7 +138,7 @@ export default {
             if (info.tag === 'feirante')
               this.$router.push({ name: 'feirante' })
             else
-              this.$router.push({ name: 'supervisor' })
+              this.$router.push('/supervisor')
           }
         }
       })

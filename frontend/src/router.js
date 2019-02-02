@@ -84,7 +84,7 @@ router.beforeEach((to, from, next) => {
   if (login) {
     next();
   } else if (!localStorage.getItem('token')) {
-    next('/');
+    next('/login');
   } else {
     next();
   }

@@ -18,7 +18,9 @@
             <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')"></a-button>
           </a-col>
           <a-col>
-            <a-button :disabled="record.root_adm !== 0" type="danger" icon="delete" @click="onDelete(record.cpf)"></a-button>
+            <a-popconfirm placement="bottomRight" title="Deseja realmente remover este supervisor?" @confirm="onDelete(record.cpf)" @cancel="" okText="Remover" cancelText="Cancelar">
+              <a-button :disabled="record.root_adm !== 0" type="danger" icon="delete" @click="onDelete(record.cpf)"></a-button>
+            </a-popconfirm>
           </a-col>
         </a-row>
       </template>
@@ -50,7 +52,7 @@
           </a-col>
           <!-- <a-col :span="11" :offset="1" v-if="this.action === 'add'"> -->
           <a-col :span="11" :offset="1">
-            <a-form-item fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: true, message: 'Mínimo 6 caracteres!', min: 6},]}">
+            <a-form-item fieldDecoratorId="senha" :fieldDecoratorOptions="{rules: [{ required: passChange, message: 'Mínimo 6 caracteres!', min: 6},]}">
               <a-input placeholder="Senha" :disabled="!passChange" :type="this.mostrarSenha ? 'text' : 'password'">
                 <a-icon slot="prefix" type="lock" />
                 <a-icon slot="suffix" type="eye" @click="clickMostrarSenha" />
@@ -77,7 +79,7 @@ import CPF, { validate, strip, format } from 'cpf-check';
 const columns = [
   { title: 'CPF', dataIndex: 'cpf', width: '15%', scopedSlots: { customRender: 'cpf' } },
   { title: 'Nome', dataIndex: 'nome' },
-  { title: 'Permissão', dataIndex: 'permissao', scopedSlots: { customRender: 'permissao' }, width: '15%' },
+  { title: 'Permissão', dataIndex: 'permissao', scopedSlots: { customRender: 'permissao' }, width: '10%' },
   { title: 'Ações', colSpan: 1, scopedSlots: { customRender: 'actions' }, width: '12%'}
 ];
 
@@ -144,7 +146,8 @@ export default {
     },
 
     onOk() {
-
+      
+      this.visible = false;
       this.form.validateFields(async (err, values) => {
         if (!err) {
 
@@ -152,10 +155,13 @@ export default {
             await supervisorAPI.post(values.cpf, values.nome, values.senha, values.isAdm);
           } else if (this.action === 'edit') {
             await supervisorAPI.put(strip(values.cpf), values.nome, values.isAdm);
+            if (!values.isAdm && !passChange) {
+              localStorage.setItem('tag', 'supervisor');
+              this.$router.push('/');
+            }
           }
-          this.data = await supervisorAPI.get();
-          this.visible = false;
         }
+        this.data = await supervisorAPI.get();
       })
 
     },

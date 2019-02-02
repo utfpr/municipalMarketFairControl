@@ -22,7 +22,9 @@
             <a-button type="dashed" icon="edit" @click="showModal(record.cpf, 'edit')"></a-button>
           </a-col>
           <a-col>
-            <a-button type="danger" icon="delete" @click="onDelete(record.cpf)"></a-button>
+            <a-popconfirm placement="bottomRight" title="Deseja realmente remover este feirante?" @confirm="onDelete(record.cpf)" okText="Remover" cancelText="Cancelar">
+              <a-button type="danger" icon="delete" @click="onDelete(record.cpf)"></a-button>
+            </a-popconfirm>
           </a-col>
         </a-row>
       </template>

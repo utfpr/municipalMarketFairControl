@@ -59,11 +59,21 @@
                         </span>
                     </router-link>
                 </a-menu-item>
+                
             </a-menu>
         </a-layout-sider>
         <a-layout>
             <a-layout-header style="background: #fff; padding: 0">
-                <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="()=> collapsed = !collapsed" />
+                <a-row type="flex" justify="space-between">
+                    <a-col>
+                        <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="()=> collapsed = !collapsed" />
+                    </a-col>
+                    <a-col>
+                        <a-popconfirm placement="bottomRight" title="Você será redirecionado para a tela de entrada, caso confirme a saída" @confirm="logOut" okText="Sair" cancelText="Cancelar">
+                            <a-icon class="trigger" type="logout"/>
+                        </a-popconfirm>
+                    </a-col>
+                </a-row>
             </a-layout-header>
             <a-layout-content :style="{  padding: '4px' }">
                 <router-view></router-view>
@@ -84,6 +94,13 @@ export default {
     computed: {
         isAdmin() {
             return localStorage.getItem('tag') === 'administrador';
+        }
+    },
+
+    methods: {
+        logOut () {
+            localStorage.clear();
+            this.$router.push('/');
         }
     }
 }
@@ -107,6 +124,13 @@ export default {
   height: 32px;
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
+}
+#components-a-popconfirm-demo-placement .ant-btn {
+  width: 70px;
+  text-align: center;
+  padding: 0;
+  margin-right: 8px;
+  margin-bottom: 8px;
 }
 </style>
 
