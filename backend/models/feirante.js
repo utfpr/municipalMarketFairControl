@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       usa_ee: {
-        type: DataTypes.INTEGER(1),
+        type: DataTypes.BOOLEAN(),
         allowNull: false
       },
       nome_fantasia: {
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       status: {
-        type: DataTypes.INTEGER(1),
+        type: DataTypes.BOOLEAN(),
         allowNull: true,
         defaultValue: 1
       },

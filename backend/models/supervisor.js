@@ -20,17 +20,17 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false
       },
       is_adm: {
-        type: DataTypes.INTEGER(1),
+        type: DataTypes.BOOLEAN(),
         allowNull: true,
         defaultValue: 0
       },
       root_adm: {
-        type: DataTypes.INTEGER(1),
+        type: DataTypes.BOOLEAN(),
         allowNull: true,
         defaultValue: 0
       },
       status: {
-        type: DataTypes.INTEGER(1),
+        type: DataTypes.BOOLEAN(),
         allowNull: true,
         defaultValue: 0
       }

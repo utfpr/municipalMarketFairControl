@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false,
       },
       need_cnpj: {
-        type: DataTypes.INTEGER(1),
+        type: DataTypes.BOOLEAN(),
         allowNull: false,
       },
     },
