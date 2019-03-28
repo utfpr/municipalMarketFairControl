@@ -47,7 +47,7 @@ const listSupervisor = async () => {
   return supervisores.map(el => ({
     cpf: el.cpf,
     nome: el.nome,
-    is_adm: el.is_adm === 1,
+    is_adm: el.is_adm,
     root_adm: el.root_adm,
   }));
 };

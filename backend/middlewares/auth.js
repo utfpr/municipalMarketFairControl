@@ -87,7 +87,7 @@ const isAdmin = async (req, res, next) => {
       if (decoded !== null) {
         const supervisor = await supervisorController.findSupervisorByCpf(decoded);
 
-        if (supervisor !== null && supervisor.is_adm === 1) {
+        if (supervisor !== null && supervisor.is_adm) {
           req.cpf = decoded;
           return next();
         }
