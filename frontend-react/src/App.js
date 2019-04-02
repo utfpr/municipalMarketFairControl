@@ -1,28 +1,51 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
+import { BrowserRouter, matchPath } from 'react-router-dom';
+import { hot } from 'react-hot-loader';
+import 'antd/dist/antd.css';
+// import axios from 'axios';
+
 import './App.css';
+import routes from './routes';
+import MainLayout from './layouts/MainLayout';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+
+    state = {};
+
+    _loadUser = async () => {
+        const route = routes.find(r => matchPath(window.location.pathname, r));
+
+        if (route && !route.private) {
+            return;
+        }
+
+        try {
+            // const { data: { token } } = await axios.put('/users/login');
+            // await updateToken(token);
+        } catch (ex) {
+            console.warn(ex);
+            if (route) {
+                // removeToken();
+                window.location = '/login';
+            }
+        }
+    };
+
+    _mediaProviderUpdate = ref => {
+        if (ref) {
+            ref.provider.update();
+        }
+    };
+
+    render() {
+        return (
+            <BrowserRouter>
+                <MainLayout />
+            </BrowserRouter>
+        );
+    }
+
 }
 
-export default App;
+export default hot(module)(App);
