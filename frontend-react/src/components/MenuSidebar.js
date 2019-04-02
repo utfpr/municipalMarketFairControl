@@ -8,7 +8,6 @@ import routes from '../routes';
 class MenuSidebar extends PureComponent {
 
     state = {
-        collapsed: false,
         selectedKey: [],
     };
 
@@ -22,17 +21,17 @@ class MenuSidebar extends PureComponent {
         this.setState({ selectedKey: [currentRoute.key] });
     }
 
-    toggle = () => {
-        const { collapsed } = { ...this.state };
-        this.setState({
-            collapsed: !collapsed,
-        });
-    }
 
     _onChangeRoute = event => {
         const { item: { props } } = event;
         const { history } = this.props;
-        history.push(props.path);
+        this.setState(
+            { selectedKey: [props.eventKey] },
+            history.push({
+                pathname: props.path,
+                state: { selectedKey: [props.eventKey] },
+            }),
+        );
     }
 
     render() {

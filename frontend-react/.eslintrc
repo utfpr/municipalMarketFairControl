@@ -74,7 +74,7 @@
         "react/jsx-one-expression-per-line": "off",
         "react/no-multi-comp": "off",
         "react/require-default-props": "warn",
-        "react/prop-types": "warn",
+        "react/prop-types": "off",
         "react/no-string-refs": "warn",
         "react/jsx-filename-extension": [
             "error",

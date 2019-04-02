@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
 import { Layout, Icon } from 'antd';
 import MenuSidebar from '../components/MenuSidebar';
 
-const { Header, Sider, Content } = Layout;
+const { Header, Sider } = Layout;
 
-class HomeScreen extends PureComponent {
+class HomeScreen extends Component {
 
     state = {
         collapsed: false,
@@ -19,6 +19,7 @@ class HomeScreen extends PureComponent {
     }
 
     render() {
+        const { children } = this.props;
         return (
             <Layout>
                 <Sider
@@ -37,12 +38,7 @@ class HomeScreen extends PureComponent {
                             onClick={this.toggle}
                         />
                     </Header>
-                    <Content style={{
-                        margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280,
-                    }}
-                    >
-                        Content
-                    </Content>
+                    {children}
                 </Layout>
             </Layout>
         );

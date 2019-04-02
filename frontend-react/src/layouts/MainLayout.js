@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 
 import routes from '../routes';
+import HomeScreen from '../screens/HomeScreen';
 
 class MainLayout extends Component {
 
@@ -19,7 +20,13 @@ class MainLayout extends Component {
         return (
             <Route
                 key={index}
-                render={props => <Comp {...props} />}
+                render={props => {
+                    return (
+                        <HomeScreen>
+                            <Comp {...props} />
+                        </HomeScreen>
+                    );
+                }}
                 {...others}
             />
         );
@@ -35,13 +42,10 @@ class MainLayout extends Component {
 
     render() {
 
-
         return (
             <div>
                 <Switch>
-
                     {this._renderContent()}
-
                 </Switch>
             </div>
         );
