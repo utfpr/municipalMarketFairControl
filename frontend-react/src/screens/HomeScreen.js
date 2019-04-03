@@ -38,7 +38,7 @@ class HomeScreen extends Component {
         );
     }
 
-    toggle = () => {
+    _toggle = () => {
         const { collapsed } = { ...this.state };
         this.setState({
             collapsed: !collapsed,
@@ -98,7 +98,7 @@ class HomeScreen extends Component {
                                 padding: 12,
                             }}
                             type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-                            onClick={this.toggle}
+                            onClick={this._toggle}
                         />
                         <h1 style={{
                             marginBottom: 3,

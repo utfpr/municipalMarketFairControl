@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 
 import { BrowserRouter, matchPath } from 'react-router-dom';
-import { hot } from 'react-hot-loader';
 import 'antd/dist/antd.css';
-// import axios from 'axios';
 
 import './App.css';
 import routes from './routes';
@@ -48,4 +46,4 @@ class App extends Component {
 
 }
 
-export default hot(module)(App);
+export default App;

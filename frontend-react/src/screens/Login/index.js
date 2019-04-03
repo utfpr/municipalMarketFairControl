@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 // import ContentComponent from '../../components/ContentComponent';
-import styles from './LoginScreen.scss';
+import styles from './LoginScreen.module.scss';
 
 export default class LoginScreen extends PureComponent {
 
