@@ -35,10 +35,11 @@ export async function put(id, nome, need_cnpj) {
 }
 
 export async function del(id) {
-  axios.delete(
+  return axios.delete(
     `${host}/${id}`,
     { headers: { token: localStorage.getItem('token') } },
   );
+  
 }
 
 export async function getSub(id) {

@@ -8,6 +8,7 @@ export default class TabelaComponent extends PureComponent {
 
     render() {
         const { colunas, linhas } = this.props;
+
         return (
             <Table dataSource={linhas} columns={colunas} />
         );

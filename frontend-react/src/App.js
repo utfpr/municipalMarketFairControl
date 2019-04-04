@@ -17,18 +17,17 @@ class App extends Component {
     }
 
     _loadUser = () => {
-        const { history } = this.props;
         const token = localStorage.getItem('token');
 
         try {
             if (token !== null){
                 const tag = localStorage.getItem('tag');
                 if (tag === 'feirante') {
-                    history.push('/feirante');
+                    // history.push('/feirante');
                 } else if(tag === 'supervisor' || tag === 'administrador') {
-                    history.push('/supervisor');
+                    // history.push('/supervisor');
                 } else {
-                    history.push('/');
+                    window.location = '/';
                 }
             }
         } catch (ex) {
