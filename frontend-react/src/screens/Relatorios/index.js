@@ -7,7 +7,9 @@ export default class RelatoriosScreen extends PureComponent {
 
     render() {
         return (
-            <ContentComponent>
+            <ContentComponent
+                title="Relatórios"
+            >
                 <h1>Componente Relatorios</h1>
             </ContentComponent>
         );

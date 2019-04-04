@@ -7,7 +7,9 @@ export default class CategoriasScreen extends PureComponent {
 
     render() {
         return (
-            <ContentComponent>
+            <ContentComponent
+                title="Categorias"
+            >
                 <h1>Componente Categorias</h1>
             </ContentComponent>
         );

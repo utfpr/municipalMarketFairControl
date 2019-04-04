@@ -9,7 +9,9 @@ export default class MapeamentoScreen extends PureComponent {
 
     render() {
         return (
-            <ContentComponent>
+            <ContentComponent
+                title="Mapeamento"
+            >
                 <h1>Componente Mapeamento</h1>
                 <ModalComponent titulo="Modal Mapeamento">
                     Hello 1

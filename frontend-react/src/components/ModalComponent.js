@@ -15,14 +15,12 @@ export default class ModalComponent extends PureComponent {
     }
 
     handleOk = (e) => {
-        console.log(e);
         this.setState({
             visible: false,
         });
     }
 
     handleCancel = (e) => {
-        console.log(e);
         this.setState({
             visible: false,
         });

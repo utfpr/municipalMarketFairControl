@@ -10,7 +10,6 @@ export async function getSubById(id) {
 }
   
 export async function getCatBySub(id) {
-  console.log(id);
   const record = (await axios.get(`${host}/${id}/categoria`, {
     headers: { token: localStorage.getItem('token') },
   })).data;

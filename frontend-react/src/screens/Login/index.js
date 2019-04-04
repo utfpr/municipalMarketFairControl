@@ -1,23 +1,138 @@
 import React, { PureComponent } from 'react';
-// import ContentComponent from '../../components/ContentComponent';
+
 import styles from './LoginScreen.module.scss';
-// import image from '../../assets/bg.jpg';
+import image from '../../assets/brazao.png';
 
-import { Input } from 'antd';
+import { Input, Icon, Button, Form } from 'antd';
+import { validateCPF } from '../../helpers/validators';
 
-export default class LoginScreen extends PureComponent {
+import login from '../../api/login';
+
+function hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
+
+class LoginScreen extends PureComponent {
 
     state = {};
 
+    componentDidMount() {
+        const { history } = this.props;
+        if (localStorage.getItem('token') !== null){
+            if (localStorage.getItem('tag') === 'feirante') {
+                history.push('/feirante');
+            }
+            else {
+                history.push('/supervisor');
+            }
+        }
+        this.props.form.validateFields();
+    }
+
+    _handleSubmit = (e) => {
+        const { history } = this.props;
+        e.preventDefault();
+        this.props.form.validateFields(async (err, values) => {
+            if (!err) {
+                const info = await login(values.cpf, values.senha);
+                if (info === null) {
+                //   this.openNotificationWithIcon('error');
+                } else {
+                    localStorage.setItem('userID', info.userID);
+                    localStorage.setItem('token', info.token);
+                    localStorage.setItem('tag', info.tag);
+      
+                    if (info.tag === 'feirante') {
+                        history.push('/feirante');
+                    } else {
+                        history.push('/supervisor');
+                    }
+                }
+            }
+        });
+    }
+
     render() {
+
+        const {
+            getFieldDecorator, getFieldsError, getFieldError, isFieldTouched,
+        } = this.props.form;
+
+        const cpfError = isFieldTouched('cpf') && getFieldError('cpf');
+        const senhaError = isFieldTouched('senha') && getFieldError('senha');
         return (
-            <div className={styles.container}>
-                <div className={styles.card}>
-                    <Input placeholder="CPF" />
-                    <Input placeholder="Senha" type="password" />
+            <div className={styles.holder}>
+                <div className={styles.bgImage}/>
+                <div className={styles.container}>
+                    <div className={styles.card}>
+                        <img className={styles.brazao} alt="brazão" src={image} />
+                        <h1>Sistema da Feira</h1>
+                        <Form onSubmit={this._handleSubmit}>
+                            <Form.Item
+                                validateStatus={cpfError ? 'error' : ''}
+                                help={cpfError || ''}
+                            >
+                                {getFieldDecorator('cpf', {
+                                    rules: [
+                                        { 
+                                            required: true,
+                                        }, { 
+                                            validator: validateCPF,
+                                        },
+                                    ],
+                                })(
+                                    <Input 
+                                        prefix={
+                                            <Icon
+                                                type="user"
+                                                style={{ color: 'rgba(0,0,0,.25)' }}
+                                            />
+                                        }
+                                        placeholder="CPF"
+                                    />
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                            validateStatus={senhaError ? 'error' : ''}
+                            help={senhaError || ''}
+                            >
+                                {getFieldDecorator('senha', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'Insira sua senha!'
+                                    }],
+                                })(
+                                    <Input 
+                                        prefix={
+                                            <Icon 
+                                                type="lock"
+                                                style={{ color: 'rgba(0,0,0,.25)' }}
+                                            />
+                                        } 
+                                        type="password"
+                                        placeholder="senha"
+                                    />
+                                )}
+                            </Form.Item>
+                            <Form.Item>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                block
+                                disabled={hasErrors(getFieldsError())}
+                            >
+                                Entrar
+                            </Button>
+                            </Form.Item>
+                        </Form>
+                    </div>
                 </div>
             </div>
         );
     }
 
 }
+
+const WrappedHorizontalLoginForm = Form.create({ name: 'login_form' })(LoginScreen);
+
+export default WrappedHorizontalLoginForm;

@@ -7,7 +7,9 @@ export default class SupervisorScreen extends PureComponent {
 
     render() {
         return (
-            <ContentComponent>
+            <ContentComponent
+                title="Supervisores"
+            >
                 <h1>Componente Supervisor</h1>
             </ContentComponent>
         );

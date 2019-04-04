@@ -7,7 +7,9 @@ export default class AvisosComponent extends PureComponent {
 
     render() {
         return (
-            <ContentComponent>
+            <ContentComponent
+                title="Avisos"
+            >
                 <h1>Componente Avisos</h1>
             </ContentComponent>
         );

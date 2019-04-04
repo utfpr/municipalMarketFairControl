@@ -1,33 +1,40 @@
 import React, { Component } from 'react';
 
 import { BrowserRouter, matchPath } from 'react-router-dom';
-import 'antd/dist/antd.css';
 
-import './App.css';
 import routes from './routes';
 import MainLayout from './layouts/MainLayout';
+
+import './App.css';
+import 'antd/dist/antd.css';
 
 class App extends Component {
 
     state = {};
 
-    _loadUser = async () => {
-        const route = routes.find(r => matchPath(window.location.pathname, r));
+    componentDidMount() {
+        this._loadUser();
+    }
 
-        if (route && !route.private) {
-            return;
-        }
+    _loadUser = () => {
+        const { history } = this.props;
+        const token = localStorage.getItem('token');
 
         try {
-            // const { data: { token } } = await axios.put('/users/login');
-            // await updateToken(token);
+            if (token !== null){
+                const tag = localStorage.getItem('tag');
+                if (tag === 'feirante') {
+                    history.push('/feirante');
+                } else if(tag === 'supervisor' || tag === 'administrador') {
+                    history.push('/supervisor');
+                } else {
+                    history.push('/');
+                }
+            }
         } catch (ex) {
             console.warn(ex);
-            if (route) {
-                // removeToken();
-                window.location = '/login';
-            }
         }
+
     };
 
     _mediaProviderUpdate = ref => {
@@ -37,6 +44,14 @@ class App extends Component {
     };
 
     render() {
+        const route = routes.find(r => matchPath(window.location.pathname, r));
+        const token = localStorage.getItem('token');
+        
+        if (route && route.private && !token) {
+            localStorage.clear();
+            window.location = '/';
+            return null;
+        }
         return (
             <BrowserRouter>
                 <MainLayout />

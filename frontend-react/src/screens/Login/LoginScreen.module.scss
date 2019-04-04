@@ -4,20 +4,49 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url('../../assets/bg.jpg');
-    background-size: cover;
-    background-position: center center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: transparent;
 
     h1 {
-        color: red;
+        font-size: 20px;
     }
 }
 
+.holder {
+    overflow: hidden;
+    width: 100%;
+}
+
+.bgImage {
+    background-image: url('../../assets/bg.jpg');
+    background-size: cover;
+    background-position: center center;
+    filter: blur(8px);
+    transform: scale(1.1);
+}
 
 .card {
     height: fit-content !important;
     border-radius: 8px;
     padding: 24px;
+    width: 90%;
+    max-width: 400px;
     background-color: #fff;
+    text-align: center;
+
+    :global {
+        .ant-form-item {
+            margin-bottom: 8px !important;
+        }
+    }
 }
 
+
+.brazao {
+    max-height: 150px;
+    width: auto;
+    margin-bottom: 12px;
+}

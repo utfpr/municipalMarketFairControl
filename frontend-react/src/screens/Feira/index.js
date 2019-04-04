@@ -7,7 +7,9 @@ export default class FeiraScreen extends PureComponent {
 
     render() {
         return (
-            <ContentComponent>
+            <ContentComponent
+                title="Feira"
+            >
                 <h1>Componente Feira</h1>
             </ContentComponent>
         );

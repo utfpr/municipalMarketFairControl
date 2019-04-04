@@ -9,14 +9,14 @@ import LoginScreen from '../screens/Login';
 
 export default [
     {
-        path: '/login',
+        path: '/',
         exact: true,
         hidden: true,
         component: LoginScreen,
         key: 'login',
     },
     {
-        path: '/',
+        path: '/supervisor',
         exact: true,
         private: true,
         component: FeiraScreen,
@@ -25,7 +25,7 @@ export default [
         label: 'Feira',
     },
     {
-        path: '/supervisores',
+        path: '/supervisor/supervisores',
         exact: true,
         private: true,
         component: SupervisoresScreen,
@@ -34,7 +34,7 @@ export default [
         label: 'Supervisores',
     },
     {
-        path: '/feirante',
+        path: '/supervisor/feirante',
         exact: true,
         private: true,
         component: FeiranteScreen,
@@ -43,7 +43,7 @@ export default [
         label: 'Feirantes',
     },
     {
-        path: '/categorias',
+        path: '/supervisor/categorias',
         exact: true,
         private: true,
         component: CategoriasScreen,
@@ -52,7 +52,7 @@ export default [
         label: 'Categorias',
     },
     {
-        path: '/relatorios',
+        path: '/supervisor/relatorios',
         exact: true,
         private: true,
         component: RelatoriosScreen,
@@ -61,7 +61,7 @@ export default [
         label: 'Relatórios',
     },
     {
-        path: '/mapeamento',
+        path: '/supervisor/mapeamento',
         exact: true,
         private: true,
         component: MapeamentoScreen,
@@ -70,7 +70,7 @@ export default [
         label: 'Mapeamento',
     },
     {
-        path: '/avisos',
+        path: '/supervisor/avisos',
         exact: true,
         private: true,
         component: AvisosScreen,

@@ -54,7 +54,7 @@ export default class FeiranteScreen extends PureComponent {
 
         return (
             <ContentComponent
-                title="Componente Feirante"
+                title="Feirante"
                 renderExtraContents={this._renderButtons}
             >
                 <ModalComponent titulo="Modal feirante">
