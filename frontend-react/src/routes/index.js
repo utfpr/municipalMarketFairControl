@@ -4,6 +4,7 @@ import AvisosScreen from '../screens/Avisos';
 import SupervisoresScreen from '../screens/Supervisores';
 import RelatoriosScreen from '../screens/Relatorios';
 import MapeamentoScreen from '../screens/Mapeamento';
+import CategoriasScreen from '../screens/Categorias';
 import LoginScreen from '../screens/Login';
 
 export default [
@@ -40,6 +41,15 @@ export default [
         icon: 'team',
         key: 'feirante',
         label: 'Feirantes',
+    },
+    {
+        path: '/categorias',
+        exact: true,
+        private: true,
+        component: CategoriasScreen,
+        icon: 'tags',
+        key: 'categorias',
+        label: 'Categorias',
     },
     {
         path: '/relatorios',

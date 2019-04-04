@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 
 import { Layout } from 'antd';
 
+import styles from './ContentComponent.module.scss';
+
 const { Content } = Layout;
 
 
@@ -10,12 +12,12 @@ export default class ContentComponent extends PureComponent {
     state = {};
 
     render() {
-        const { children } = this.props;
+        const { children, title } = this.props;
         return (
-            <Content style={{
-                margin: '16px', padding: 24, background: '#fff', minHeight: 280,
-            }}
-            >
+            <Content className={styles.container}>
+                <div className={styles.header}>
+                    <h1>{title}</h1>
+                </div>
                 {children}
             </Content>
         );

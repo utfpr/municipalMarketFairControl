@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 // import ContentComponent from '../../components/ContentComponent';
 import styles from './LoginScreen.module.scss';
+// import image from '../../assets/bg.jpg';
+
+import { Input } from 'antd';
 
 export default class LoginScreen extends PureComponent {
 
@@ -9,7 +12,10 @@ export default class LoginScreen extends PureComponent {
     render() {
         return (
             <div className={styles.container}>
-                <h1>Login Screen</h1>
+                <div className={styles.card}>
+                    <Input placeholder="CPF" />
+                    <Input placeholder="Senha" type="password" />
+                </div>
             </div>
         );
     }
