@@ -1,0 +1,12 @@
+.header {
+    background: #fff !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding-left: 16px !important;
+    h1 {
+        overflow: hidden ;
+        white-space: nowrap ;
+        text-overflow: ellipsis ;
+    }
+}

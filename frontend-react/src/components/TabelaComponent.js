@@ -7,10 +7,21 @@ export default class TabelaComponent extends PureComponent {
     state = {};
 
     render() {
-        const { colunas, linhas } = this.props;
+        const { colunas, linhas, ...tableProps } = this.props;
+
+        const lin = linhas.map(linha => {
+            return {
+                key: linha.id,
+                ...linha,
+            }
+        });
 
         return (
-            <Table dataSource={linhas} columns={colunas} />
+            <Table
+                dataSource={lin}
+                columns={colunas}
+                {...tableProps}
+            />
         );
     }
 

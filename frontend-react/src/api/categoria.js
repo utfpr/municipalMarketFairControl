@@ -13,11 +13,10 @@ export async function get() {
 }
 
 export async function post(nome, need_cnpj) {
-  need_cnpj = need_cnpj ? 1 : 0;
   await axios.post(
     host, {
       nome,
-      need_cnpj,
+      need_cnpj: need_cnpj ? 1 : 0,
     },
     { headers: { token: localStorage.getItem('token') } },
   );

@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 // import MenuSidebar from '../components/MenuSidebar';
 
 import routes from '../routes';
+import styles from './HomeScreen.module.scss';
 
 
 const { Header, Sider } = Layout;
@@ -82,14 +83,7 @@ class HomeScreen extends Component {
                     </Menu>
                 </Sider>
                 <Layout>
-                    <Header style={{
-                        background: '#fff',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingLeft: 16,
-                    }}
-                    >
+                    <Header className={styles.header}>
                         <Icon
                             className="trigger"
                             style={{

@@ -8,8 +8,25 @@
 
 .header {
     display: flex;
+    justify-content: space-between;
+    align-items: center !important;
+    
 
     h1 {
         font-size: 25px;
+        margin-bottom: 5px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
+    button {
+        margin-bottom: 5px;
+    }
+}
+
+.divider {
+    width: 100%;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    // background-color: rgba(0,0,0,0.3);
 }
