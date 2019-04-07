@@ -64,16 +64,16 @@ router.get('/:id/categoria', authMiddleware.isSupervisor, async (req, res) => {
 
 // Atualiza subcategoria
 router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
-    const id_sub = req.params.id;
+    const { id } = req.params;
     const { nome } = req.body;
 
     if(nome == null){
         res.status(400).send();
     } else{
         let resposta = '';
-        const subcategoriaValidate = await subcategoriaController.findSubcategoriaById(id_sub);
+        const subcategoriaValidate = await subcategoriaController.findSubcategoriaById(id);
         if(subcategoriaValidate != null){
-            const subcategoria = await subcategoriaController.updateSubcategoria(id_sub, {nome});
+            const subcategoria = await subcategoriaController.updateSubcategoria(id, nome);
             
             if (subcategoria != null) {
                 resposta = 'ok';

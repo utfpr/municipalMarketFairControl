@@ -1,29 +1,56 @@
 import React, { PureComponent, Fragment } from 'react';
 
-import { Popconfirm, Button } from 'antd';
+import { 
+    Popconfirm, Button, Form,
+    Input, Modal,
+} from 'antd';
 
 import TabelaComponent from '../../components/TabelaComponent';
 
+import UpdateSubcategoria from './UpdateSubcategoria';
+
 import * as categoriasAPI from '../../api/categoria';
 import * as subcategoriasAPI from '../../api/subcategoria';
+
+function hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
 
 class Subcategorias extends PureComponent {
 
     state = {
         subcategorias: [],
+        loading: true,
+        editingSubcategoria: {},
     };
 
     componentDidMount() {
         this._loadSubcategorias();
     }
 
+    _handleSubmit = (e) => {
+        const { 
+            form: {resetFields},
+            categoria,
+        } = this.props;
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            console.log(values);
+            if (!err) {
+                return subcategoriasAPI.post(values.nome, categoria.id)
+                    .then(() => {
+                        resetFields();
+                        this._loadSubcategorias();
+                    });
+            }
+        });
+    }
+
     _loadSubcategorias = async () => {
         const { categoria } = this.props;
-        
-        // if(!categoria.id) return null;
+        this.setState({loading: true});
         const subcategorias = await categoriasAPI.getSub(categoria.id);
-        this.setState({subcategorias});
-            
+        this.setState({subcategorias, loading: false});
     }
 
     _onDeleteSubCategoria = id => {
@@ -33,8 +60,17 @@ class Subcategorias extends PureComponent {
             });
     }
 
+    _onEditSub = async sub => {
+        const { form: { setFieldsValue } } = this.props;
+
+        this.setState({ editingSubcategoria: sub });
+        return await setFieldsValue({
+            novo_nome: sub.nome,
+        });
+    }
+
     _renderSubcategorias = () => {
-        const { subcategorias } = this.state;
+        const { subcategorias, loading } = this.state;
 
         const colunas = [
             {
@@ -49,17 +85,20 @@ class Subcategorias extends PureComponent {
             }, {
                 key: 'acoes',
                 title: 'Ações',
-                width: 50,
+                width: 90,
                 render: linha => {
                     return (
-                        <Popconfirm
-                            title="Você quer relamente deletar esta categoria?"
-                            okText="Sim"
-                            cancelText="Não"
-                            onConfirm={() => this._onDeleteSubCategoria(linha.id)}
-                        >
-                            <Button shape="circle" icon="delete" type="danger" />
-                        </Popconfirm>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <Button shape="circle" icon="edit" onClick={() => this._onEditSub(linha)} />
+                            <Popconfirm
+                                title="Você quer relamente deletar esta categoria?"
+                                okText="Sim"
+                                cancelText="Não"
+                                onConfirm={() => this._onDeleteSubCategoria(linha.id)}
+                            >
+                                <Button shape="circle" icon="delete" type="danger" />
+                            </Popconfirm>
+                        </div>
                     );
                 }
             },
@@ -69,6 +108,7 @@ class Subcategorias extends PureComponent {
             <TabelaComponent
                 linhas={subcategorias} 
                 colunas={colunas}
+                loading={loading}
                 size="small"
                 pagination={{
                     pageSize: 15,
@@ -77,12 +117,70 @@ class Subcategorias extends PureComponent {
         );
     }
 
+    handleCancel = () => {
+        this.setState({ editingSubcategoria: {} });
+    }
+
     render() {
 
-        // const { subcategorias } = this.state;
+        const { form } = this.props;
+
+        const {
+            getFieldDecorator, getFieldsError, getFieldError,
+            isFieldTouched, getFieldValue,
+        } = form;
+
+        const { editingSubcategoria } = this.state;
+
+        const nomeError = isFieldTouched('nome') && getFieldError('nome');
 
         return (
             <Fragment>
+                <Form layout="inline" onSubmit={this._handleSubmit}>
+                    <Form.Item
+                        validateStatus={nomeError ? 'error' : ''}
+                        help={nomeError || ''}
+                    >
+                        {getFieldDecorator('nome', {rules: [{
+                            required: true,
+                            message: 'O nome da subcategoria é obrigatório!'
+                        }]})(
+                            <Input
+                                placeholder="Nome"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        disabled={
+                            hasErrors(getFieldsError())
+                            || !getFieldValue('nome')
+                        }
+                    >
+                        Adicionar
+                    </Button>
+                    </Form.Item>
+                </Form>
+                <Modal
+                    title={`${editingSubcategoria.id} - ${editingSubcategoria.nome}`}
+                    visible={Boolean(editingSubcategoria && editingSubcategoria.id)}
+                    onCancel={this.handleCancel}
+                    footer={null}
+                    width={300}
+                >
+                    {
+                        editingSubcategoria && editingSubcategoria.id
+                        ? (
+                            <UpdateSubcategoria
+                                onCancel={this.handleCancel}
+                                refresh={this._loadSubcategorias}
+                                subcategoria={editingSubcategoria}
+                            />
+                        ) : null
+                    }
+                </Modal>
                 { this._renderSubcategorias() }
             </Fragment>
         );
@@ -90,4 +188,6 @@ class Subcategorias extends PureComponent {
 
 }
 
-export default Subcategorias;
+const WrappedHorizontalSubcategoriasForm = Form.create({ name: 'categorias_form' })(Subcategorias);
+
+export default WrappedHorizontalSubcategoriasForm;
