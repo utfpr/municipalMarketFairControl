@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Input, Button, Form,
@@ -15,67 +15,101 @@ class CategoriasForm extends PureComponent {
 
     state = {};
 
-    componentDidMount() {
+    async componentDidMount() {
         this.props.form.validateFields();
+        await this._loadValues();
+    }
+
+    _loadValues = async id => {
+        const { categoria, form } = this.props;
+        const { setFieldsValue, resetFields } = form;
+        if (categoria) {
+            resetFields();
+            await setFieldsValue({
+                nome_categoria: categoria.nome,
+                need_cnpj: categoria.need_cnpj === 1,
+            });
+        }
     }
 
     _handleSubmit = (e) => {
-        const { refresh, onSuccess } = this.props;
+        const { 
+            refresh, onSuccess, form: {resetFields},
+            categoria,
+        } = this.props;
         e.preventDefault();
-        this.props.form.validateFields(async (err, values) => {
+        this.props.form.validateFields((err, values) => {
             console.log(values);
             if (!err) {
-                const info = await categoriasAPI.post(values.nome_categoria, values.need_cnpj)
-                    .then(() => {
-                        refresh();
-                        onSuccess();
-                    });
+                return categoria && categoria.id
+                    ? categoriasAPI.put(categoria.id, values.nome_categoria, values.need_cnpj)
+                        .then(() => {
+                            resetFields();
+                            refresh();
+                            onSuccess();
+                        })
+                    : categoriasAPI.post(values.nome_categoria, values.need_cnpj)
+                        .then(() => {
+                            resetFields();
+                            refresh();
+                            onSuccess();
+                        });
             }
         });
     }
 
     render() {
-
+        const { categoria, form } = this.props;
         
         const {
-            getFieldDecorator, getFieldsError, getFieldError, isFieldTouched,
-        } = this.props.form;
+            getFieldDecorator, getFieldsError, getFieldError,
+            isFieldTouched, getFieldValue,
+        } = form;
 
         const nomeCategoriaError = isFieldTouched('nome_categoria') && getFieldError('nome_categoria');
         const needCNPJError = isFieldTouched('need_cnpj') && getFieldError('need_cnpj');
         return (
-            <Form layout="inline" onSubmit={this._handleSubmit}>
-                <Form.Item
-                    validateStatus={nomeCategoriaError ? 'error' : ''}
-                    help={nomeCategoriaError || ''}
-                >
-                    {getFieldDecorator('nome_categoria', {rules: [{
-                        required: true,
-                        message: 'O nome da categoria é obrigatório!'
-                    }]})(
-                        <Input
-                            placeholder="Nome"
-                        />
-                    )}
-                </Form.Item>
-                <Form.Item
-                validateStatus={needCNPJError ? 'error' : ''}
-                help={needCNPJError || ''}
-                >
-                    {getFieldDecorator('need_cnpj')(
-                        <Checkbox>Requer CNPJ?</Checkbox>
-                    )}
-                </Form.Item>
-                <Form.Item>
-                <Button
-                    type="primary"
-                    htmlType="submit"
-                    disabled={hasErrors(getFieldsError())}
-                >
-                    Adicionar
-                </Button>
-                </Form.Item>
-            </Form>
+            <Fragment>
+                <Form layout="inline" onSubmit={this._handleSubmit}>
+                    <Form.Item
+                        validateStatus={nomeCategoriaError ? 'error' : ''}
+                        help={nomeCategoriaError || ''}
+                    >
+                        {getFieldDecorator('nome_categoria', {rules: [{
+                            required: true,
+                            message: 'O nome da categoria é obrigatório!'
+                        }]})(
+                            <Input
+                                placeholder="Nome"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                    validateStatus={needCNPJError ? 'error' : ''}
+                    help={needCNPJError || ''}
+                    >
+                        {getFieldDecorator('need_cnpj')(
+                            <Checkbox checked={getFieldValue('need_cnpj')}>Requer CNPJ?</Checkbox>
+                        )}
+                    </Form.Item>
+                    <Form.Item>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        disabled={
+                            hasErrors(getFieldsError())
+                            || getFieldValue('nome_categoria') === categoria.nome
+                        }
+                    >
+                        {
+                            categoria.id
+                                ? 'Atualizar'
+                                : 'Adicionar'
+                        }
+                    </Button>
+                    </Form.Item>
+                </Form>
+            </Fragment>
         );
     }
 

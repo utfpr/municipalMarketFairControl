@@ -15,3 +15,10 @@ export async function getCatBySub(id) {
   })).data;
   return { ...record };
 }
+
+export async function deleteSub(id) {
+  const record = (await axios.delete(`${host}/${id}`, {
+    headers: { token: localStorage.getItem('token') },
+  })).data;
+  return { ...record };
+}

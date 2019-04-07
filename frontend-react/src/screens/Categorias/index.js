@@ -2,10 +2,11 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Button, Popconfirm, Modal,
-    Tag,
+    Tag, Divider,
 } from 'antd';
 
 import CategoriasForm from './CategoriasForm';
+import Subcategorias from './Subcategorias';
 import ContentComponent from '../../components/ContentComponent';
 import TabelaComponent from '../../components/TabelaComponent';
 import * as categoriasAPI from '../../api/categoria';
@@ -15,6 +16,8 @@ export default class CategoriasScreen extends PureComponent {
     state = {
         categorias: [],
         visible: false,
+        loading: true,
+        selectedCategoria: {},
     };
 
     componentDidMount() {
@@ -22,8 +25,9 @@ export default class CategoriasScreen extends PureComponent {
     }
     
     _loadCategorias = async () => {
+        this.setState({ loading: true });
         const categorias = await categoriasAPI.get();
-        this.setState({ categorias });
+        this.setState({ categorias, loading: false });
     }
 
     _onDeleteCategoria = async id => {
@@ -33,26 +37,64 @@ export default class CategoriasScreen extends PureComponent {
             });
     }
 
-    showModal = () => {
+    showModal = categoria => {
         this.setState({
             visible: true,
+            selectedCategoria: categoria,
         });
     }
 
     handleOk = (e) => {
         this.setState({
             visible: false,
+            selectedCategoria: {},
         });
     }
 
     handleCancel = (e) => {
         this.setState({
             visible: false,
+            selectedCategoria: {},
         });
     }
 
+    _renderModal = () => {
+        const { visible, selectedCategoria } = this.state;
+
+        if (!visible) return null;
+
+        return (
+            <Modal
+                title={ selectedCategoria && selectedCategoria.id
+                    ? `#${selectedCategoria.id} - ${selectedCategoria.nome}`
+                    : 'Adicionar uma nova categoria'
+                }
+                visible={visible}
+                onCancel={this.handleCancel}
+                footer={null}
+                >
+                    <CategoriasForm 
+                        categoria={selectedCategoria}
+                        onSuccess={this.handleOk}
+                        refresh={this._loadCategorias}
+                    />
+                    {
+                        selectedCategoria && selectedCategoria.id
+                            ? (
+                                <Fragment>
+                                    <Divider>
+                                        Subcategorias
+                                    </Divider>
+                                    <Subcategorias categoria={selectedCategoria} />
+                                </Fragment>
+                            ) : null
+                    }
+            </Modal>
+        );
+    }
+
     render() {
-        const { categorias } = this.state;
+        const { categorias, loading } = this.state;
 
         const colunas = [
             {
@@ -82,7 +124,7 @@ export default class CategoriasScreen extends PureComponent {
                 title: 'Ações',
                 render: linha => (
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button type="primary" onClick={() => categoriasAPI.getSub(linha.id)}>
+                        <Button type="primary" onClick={() => this.showModal(linha)}>
                             Detalhes
                         </Button>
                         <Popconfirm
@@ -114,21 +156,12 @@ export default class CategoriasScreen extends PureComponent {
                         linhas={categorias} 
                         colunas={colunas}
                         size="small"
+                        loading={loading}
                         pagination={{
                             pageSize: 15,
                         }}
                     />
-                    <Modal
-                        title="Adicionar uma nova categoria"
-                        visible={this.state.visible}
-                        onCancel={this.handleCancel}
-                        footer={null}
-                        >
-                            <CategoriasForm 
-                                onSuccess={this.handleOk}
-                                refresh={this._loadCategorias}
-                            />
-                    </Modal>
+                    { this._renderModal() }
                 </ContentComponent>
             </Fragment>
            

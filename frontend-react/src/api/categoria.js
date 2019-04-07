@@ -27,7 +27,7 @@ export async function put(id, nome, need_cnpj) {
     `${host}/${id}`,
     {
       nome,
-      need_cnpj,
+      need_cnpj: need_cnpj ? 1 : 0,
     },
     { headers: { token: localStorage.getItem('token') } },
   );

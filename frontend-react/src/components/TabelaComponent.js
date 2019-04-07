@@ -16,6 +16,7 @@ export default class TabelaComponent extends PureComponent {
             }
         });
 
+
         return (
             <Table
                 dataSource={lin}
