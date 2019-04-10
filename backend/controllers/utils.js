@@ -6,7 +6,7 @@ const amanha = () => {
 
 const proximaSexta = () => {
   const tmp = new Date();
-  tmp.setDate(tmp.getDate() + ((((7 - tmp.getDay()) % 7) + 5) % 7));
+  tmp.setDate(tmp.getDate() + ((((7 - tmp.getDay()) % 7) + 4) % 7));
   tmp.setUTCHours(18);
   tmp.setUTCMinutes(0);
   tmp.setUTCSeconds(0);
@@ -16,7 +16,7 @@ const proximaSexta = () => {
 
 const proximoDomingo = () => {
   const tmp = new Date();
-  tmp.setDate(tmp.getDate() + ((((7 - tmp.getDay()) % 7) + 7) % 7));
+  tmp.setDate(tmp.getDate() + ((((7 - tmp.getDay()) % 7) + 6) % 7));
   tmp.setUTCHours(18);
   tmp.setUTCMinutes(0);
   tmp.setUTCSeconds(0);
