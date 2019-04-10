@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/supervisor/';
+const host = 'http://localhost:3000/api/supervisor';
 
 export async function get() {
   const data = await axios
@@ -28,7 +28,7 @@ export async function post(cpf, nome, senha, isAdm) {
       cpf,
       nome,
       senha,
-      is_adm: isAdm,
+      is_adm: isAdm ? 1 : 0,
     },
     { headers: { token: localStorage.getItem('token') } },
   );
@@ -36,7 +36,7 @@ export async function post(cpf, nome, senha, isAdm) {
 
 export async function put(cpf, nome, isAdm) {
   await axios.put(
-    `${host}${cpf}`,
+    `${host}/${cpf}`,
     {
       nome,
       is_adm: isAdm,
@@ -46,5 +46,5 @@ export async function put(cpf, nome, isAdm) {
 }
 
 export async function del(cpf) {
-  axios.delete(`${host}${cpf}`, { headers: { token: localStorage.getItem('token') } });
+  axios.delete(`${host}/${cpf}`, { headers: { token: localStorage.getItem('token') } });
 }

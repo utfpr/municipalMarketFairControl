@@ -29,7 +29,7 @@ export default class SupervisorScreen extends PureComponent {
         this.setState({ Supervisor, loading: false });
     }
     
-    _onDeleteFeirante = async cpf => {
+    _onDeleteSupervisor = async cpf => {
         await SupervisorAPI.del(cpf)
             .then(() => {
                 this._loadSupervisor();
@@ -117,8 +117,8 @@ export default class SupervisorScreen extends PureComponent {
             {
                 key: 'cpf',
                 dataIndex: 'cpf',
-                title: 'Cpf',
-                width: 60,
+                title: 'CPF',
+                width: 150,
             },
             {
                 key: 'nome',
@@ -127,11 +127,11 @@ export default class SupervisorScreen extends PureComponent {
             },
             {
                 key: 'isAdm',
-                dataIndex: 'isAdm',
-                title: 'É Adm',
-                width: 70,
+                dataIndex: 'is_adm',
+                title: 'Administrador',
+                width: 50,
                 render: isAdm => {
-                    return isAdm === 1
+                    return isAdm
                         ? <Tag color="#87d068">Sim</Tag>
                         : <Tag color="#2db7f5">Não</Tag>
                 }
@@ -142,13 +142,17 @@ export default class SupervisorScreen extends PureComponent {
                 render: linha => (
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Button type="primary" onClick={() => this.showModal(linha)}>
-                            Detalhes
+                            Editar
                         </Button>
-                        
-                        
+                        <Button 
+                            shape="circle"
+                            icon="delete"
+                            type="danger"
+                            onClick={() => this._onDeleteSupervisor(linha.cpf)}
+                        />
                     </div>
                 ),
-                width: 160,
+                width: 130,
             },
         ];
 
