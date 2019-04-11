@@ -1,8 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 
 import { 
-    Input, Button, Form,
-    Checkbox,
+    Input, Button, Form, Checkbox,
 } from 'antd';
 
 import * as supervisorAPI from '../../api/supervisor';

@@ -14,10 +14,10 @@ const getFaturamento = async (cpfFeirante, dataFeira) => {
   });
 
   return faturamento.faturamento;
-}
+};
 
 const getFeirantesParticipantes = async (dataFeira) => {
-  const feira  = await feiraController.findFeira(dataFeira);
+  const feira = await feiraController.findFeira(dataFeira);
 
   if (feira === null) return null;
 
@@ -61,10 +61,12 @@ const getFeirantesNaoParticipantes = async (dataFeira) => {
     nome: np.nome,
     nomeFantasia: np.nome_fantasia,
   }));
-}
+};
+
 // Feirantes confirmados em determinada feira
 const listFeirantesConfirmados = async (dataFeira) => {
   const feira = await feiraController.findFeira(dataFeira);
+  console.log(dataFeira);
   if (feira === null) return null;
 
   const confirmacoes = await feira.getFeirantes({
@@ -92,9 +94,12 @@ const listFeirantesConfirmados = async (dataFeira) => {
 // Feirantes confirmados feira atual
 const listFeirantesConfirmadosFeiraAtual = async () => {
   const feiraAtual = await feiraController.findFeiraAtual();
-  if (feiraAtual === null) return null;
-  const ret = await listFeirantesConfirmados(new Date(String(feiraAtual.data + "T02:00:00Z")));
-  return ret;
+  if (!feiraAtual) return null;
+  const ret = await listFeirantesConfirmados(feiraAtual.data);
+  return {
+    feiraAtual,
+    feirantes: ret,
+  };
 };
 
 const isFeiranteConfirmadoFeiraAtual = async (cpfFeirante) => {

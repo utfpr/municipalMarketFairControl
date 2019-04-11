@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { 
     Button, Popconfirm, Modal,
-    Tag, Divider,Icon
+    Tag,
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';
