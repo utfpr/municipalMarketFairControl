@@ -2,10 +2,8 @@ import React, { PureComponent } from 'react';
 
 import { 
     Button, Form,
-    Input, Modal,
+    Input,
 } from 'antd';
-
-import TabelaComponent from '../../components/TabelaComponent';
 
 import * as subcategoriasAPI from '../../api/subcategoria';
 
@@ -40,7 +38,7 @@ class UpdateSubcategoria extends PureComponent {
         event.preventDefault();
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
-                const updated = await subcategoriasAPI.put(values.nome, subcategoria.id)
+                return subcategoriasAPI.put(values.nome, subcategoria.id)
                     .then(() => {
                         resetFields(['nome']);
                         this.setState({subcategoria: {}});
@@ -53,7 +51,7 @@ class UpdateSubcategoria extends PureComponent {
 
     render() {
 
-        const { form, subcategoria } = this.props;
+        const { form } = this.props;
 
         const {
             getFieldError, getFieldDecorator,

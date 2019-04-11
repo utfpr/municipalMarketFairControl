@@ -98,7 +98,6 @@ class CategoriasForm extends PureComponent {
                         htmlType="submit"
                         disabled={
                             hasErrors(getFieldsError())
-                            || getFieldValue('nome_categoria') === categoria.nome
                         }
                     >
                         {
