@@ -9,6 +9,7 @@ import moment from 'moment-timezone';
 import ContentComponent from '../../components/ContentComponent';
 
 import * as feiraAPI from '../../api/feira';
+import styles from './Feira.module.scss';
 
 const { Column } = Table;
 
@@ -21,16 +22,18 @@ class FeiraScreen extends PureComponent {
     state = {
         feiras: [],
         visible: false,
+        feiraAtual: {},
     };
 
     componentDidMount() {
         this.props.form.validateFields();
-        this._loadFeira();
+        this._loadFeiras();
     }
 
-    _loadFeira = async () => {
+    _loadFeiras = async () => {
         const feiras = await feiraAPI.listFeiras();
-        this.setState({ feiras });
+        const feiraAtual = await feiraAPI.feiraAtual();
+        this.setState({ feiras, feiraAtual });
     }
 
     _handleSubmit = (e) => {
@@ -43,7 +46,7 @@ class FeiraScreen extends PureComponent {
                 return feiraAPI.post(values.data)
                     .then(() => {
                         resetFields();
-                        this._loadFeira();
+                        this._loadFeiras();
                         this._hideModal();
                     });
             }
@@ -128,6 +131,38 @@ class FeiraScreen extends PureComponent {
         this.setState({visible: false});
     }
 
+    _renderFeiraAtual = () => {
+        const { feiraAtual } = this.state;
+        if (!feiraAtual || !feiraAtual.data) return (
+            <div className={styles.proximaFeiraContainer}>
+                <h3>Não existe nenhuma feira para a próxima semana.</h3>
+            </div>
+        ) 
+
+        return (
+            <div className={styles.proximaFeiraContainer}>
+                <div className={styles.descricao}>
+                    <h3>Próxima feira: <span style={{ fontWeight: 'normal' }}>{moment(feiraAtual.data).format('DD/MM/YYYY')}</span></h3>
+                    <h3>Data limite: <span style={{ fontWeight: 'normal' }}>{moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')}</span></h3>
+                </div>
+                <div>
+                    <Popconfirm
+                        title="Você quer relamente cancelar esta feira? Você não poderá criar outra feira para este dia"
+                        okText="Sim"
+                        cancelText="Não"
+                        onConfirm={this._cancelaFeiraAtual}
+                    >
+                        <Button icon="close" type="danger">Cancelar</Button>
+                    </Popconfirm>
+                </div>
+            </div>
+        );
+    }
+
+    _cancelaFeiraAtual = async () => {
+        await feiraAPI.deletaUltimaFeira().then(()=>{this._loadFeiras()});
+        
+    }
     render() {
         const { feiras } = this.state;
 
@@ -150,7 +185,7 @@ class FeiraScreen extends PureComponent {
                         icon: 'plus',
                     }}
                 >
-
+                    {this._renderFeiraAtual()}
                     <Table dataSource={novaFeiras}>
                         <Column
                             title="Data"
