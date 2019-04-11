@@ -141,17 +141,16 @@ export default class FeiranteScreen extends PureComponent {
                 dataIndex: 'nome_fantasia',
                 title: 'Nome Fantasia',
             },
-            {
-                key: 'usa_ee',
-                dataIndex: 'usa_ee',
-                title: 'Usa EE',
-                width: 70,
-                render: usa_ee => {
-                    return usa_ee === 1
-                        ? <Tag color="#87d068">Sim</Tag> //CASO SIM , MOSTRA A VOLTAGEM , VER COMO FAZ 
-                        : <Tag color="#2db7f5">Não</Tag>
-                }
-            },
+            { key: 'usa_ee',
+            dataIndex: 'usa_ee',
+            title: 'Usa EE',
+            width: 70,
+            render: (usa_ee, linha) => {
+                return usa_ee
+                    ? <Tag color={linha.voltagem_ee === 110 ? '#87d068' : '#1abc9c'}>{linha.voltagem_ee}v</Tag>
+                    : <Tag color="#108ee9">Não</Tag>
+            }
+        },
             {
                 key: 'acoes',
                 title: 'Ações',

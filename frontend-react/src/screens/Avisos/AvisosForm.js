@@ -6,6 +6,8 @@ import {
 
 import * as avisosAPI from '../../api/aviso';
 
+const { TextArea } = Input;
+
 function hasErrors(fieldsError) {
     return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
@@ -26,6 +28,7 @@ class AvisosForm extends PureComponent {
         if (aviso) {
             resetFields();
             await setFieldsValue({
+                //id: aviso.id,
                 assunto_aviso: aviso.assunto,
                 texto_aviso: aviso.texto
             });
@@ -70,8 +73,9 @@ class AvisosForm extends PureComponent {
         const textoAvisoError = isFieldTouched('texto_aviso') && getFieldError('texto_aviso');
         return (
             <Fragment>
-                <Form layout="inline" onSubmit={this._handleSubmit}>
+                <Form onSubmit={this._handleSubmit}>
                     <Form.Item
+                        label="Assunto"
                         validateStatus={assuntoAvisoError ? 'error' : ''}
                         help={assuntoAvisoError || ''}
                     >
@@ -83,13 +87,15 @@ class AvisosForm extends PureComponent {
                         )}
                     </Form.Item>
                     <Form.Item
-                    validateStatus={textoAvisoError ? 'error' : ''}
-                    help={textoAvisoError || ''}
+                        label="Texto"
+                        validateStatus={textoAvisoError ? 'error' : ''}
+                        help={textoAvisoError || ''}
                     >
                         {getFieldDecorator('texto_aviso')(
-                            <Input 
-                            placeholder="Texto">
-                            /></Input>
+                            <TextArea 
+                                placeholder="Texto"
+                                rows={4}
+                            />
                         )}
                     </Form.Item>
                     <Form.Item>
@@ -97,8 +103,9 @@ class AvisosForm extends PureComponent {
                         type="primary"
                         htmlType="submit"
                         disabled={
-                            hasErrors(getFieldsError())
-                            || getFieldValue('assunto_aviso') === aviso.assunto
+                            hasErrors(getFieldsError()) || (
+                            getFieldValue('assunto_aviso') === aviso.assunto
+                            && getFieldValue('texto_aviso') === aviso.texto )
                         }
                     >
                         {

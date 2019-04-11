@@ -2,14 +2,14 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Button, Popconfirm, Modal,
-    Tag, Divider,
+    Table,
 } from 'antd';
 
 import AvisosForm from './AvisosForm';
 import ContentComponent from '../../components/ContentComponent';
-import TabelaComponent from '../../components/TabelaComponent';
 import * as avisosAPI from '../../api/aviso';
 
+const { Column } = Table;
 /* Campos no BD
 id
 assunto
@@ -90,47 +90,6 @@ export default class AvisosScreen extends PureComponent {
     render() {
         const { avisos, loading } = this.state;
 
-        const colunas = [
-            {
-                key: 'id',
-                dataIndex: 'id',
-                title: '#',
-                width: 60,
-            },
-            {
-                key: 'assunto',
-                dataIndex: 'assunto',
-                title: 'Assunto',
-            },
-            {
-                key: 'texto',
-                dataIndex: 'texto',
-                title: 'Texto',
-                width: 70,
-                
-            },
-            {
-                key: 'acoes',
-                title: 'Ações',
-                render: linha => (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button type="primary" onClick={() => this.showModal(linha)}>
-                            Detalhes
-                        </Button>
-                        <Popconfirm
-                            title="Você quer relamente deletar esta aviso?"
-                            okText="Sim"
-                            cancelText="Não"
-                            onConfirm={() => this._onDeleteAviso(linha.id)}
-                        >
-                            <Button shape="circle" icon="delete" type="danger" />
-                        </Popconfirm>
-                    </div>
-                ),
-                width: 160,
-            },
-        ];
-
         return (
             <Fragment>
                 <ContentComponent
@@ -142,15 +101,46 @@ export default class AvisosScreen extends PureComponent {
                     }}
                     title="Avisos"
                 >
-                    <TabelaComponent
-                        linhas={avisos} 
-                        colunas={colunas}
+                    <Table
+                        dataSource={avisos} 
                         size="small"
                         loading={loading}
                         pagination={{
                             pageSize: 15,
                         }}
-                    />
+                    >
+                        <Column
+                            key='id'
+                            dataIndex='id'
+                            title='#'
+                            width={60}
+                        />
+                        <Column
+                            key='assunto'
+                            dataIndex='assunto'
+                            title='Assunto'
+                        />
+                        <Column
+                            key='acoes'
+                            title='Ações'
+                            width={160}
+                            render={ linha => (
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <Button type="primary" onClick={() => this.showModal(linha)}>
+                                        Detalhes
+                                    </Button>
+                                    <Popconfirm
+                                        title="Você quer relamente deletar esta aviso?"
+                                        okText="Sim"
+                                        cancelText="Não"
+                                        onConfirm={() => this._onDeleteAviso(linha.id)}
+                                    >
+                                        <Button shape="circle" icon="delete" type="danger" />
+                                    </Popconfirm>
+                                </div>
+                            )}
+                        />
+                    </Table>
                     { this._renderModal() }
                 </ContentComponent>
             </Fragment>
