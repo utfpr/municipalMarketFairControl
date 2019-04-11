@@ -2,6 +2,10 @@ import axios from 'axios';
 
 const host = 'http://localhost:3000/api/supervisor';
 
+const formatCPF = cpf => {
+  return cpf.replace('.', '').replace('.', '').replace('-', '');
+}
+
 export async function get() {
   const data = await axios
     .get(host, { headers: { token: localStorage.getItem('token') } })
@@ -35,8 +39,9 @@ export async function post(cpf, nome, senha, isAdm) {
 }
 
 export async function put(cpf, nome, isAdm) {
+  const cleanedCPF = formatCPF(cpf);
   await axios.put(
-    `${host}/${cpf}`,
+    `${host}/${cleanedCPF}`,
     {
       nome,
       is_adm: isAdm,
@@ -45,6 +50,7 @@ export async function put(cpf, nome, isAdm) {
   );
 }
 
-export async function del(cpf) {
-  axios.delete(`${host}/${cpf}`, { headers: { token: localStorage.getItem('token') } });
+export function del(cpf) {
+  const cleanedCPF = formatCPF(cpf);
+  return axios.delete(`${host}/${cleanedCPF}`, { headers: { token: localStorage.getItem('token') } });
 }
