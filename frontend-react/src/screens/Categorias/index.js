@@ -142,29 +142,27 @@ export default class CategoriasScreen extends PureComponent {
         ];
 
         return (
-            <Fragment>
-                <ContentComponent
-                    buttonProps={{
-                        text: 'Adicionar',
-                        onClick: this.showModal,
-                        type: 'primary',
-                        icon: 'plus',
+            <ContentComponent
+                buttonProps={{
+                    text: 'Adicionar',
+                    onClick: this.showModal,
+                    type: 'primary',
+                    icon: 'plus',
+                }}
+                title="Categorias"
+            >
+                <TabelaComponent
+                    linhas={categorias} 
+                    colunas={colunas}
+                    size="small"
+                    loading={loading}
+                    pagination={{
+                        pageSize: 15,
                     }}
-                    title="Categorias"
-                >
-                    <TabelaComponent
-                        linhas={categorias} 
-                        colunas={colunas}
-                        size="small"
-                        loading={loading}
-                        pagination={{
-                            pageSize: 15,
-                        }}
-                    />
-                    { this._renderModal() }
-                </ContentComponent>
-            </Fragment>
-           
+                />
+                { this._renderModal() }
+            </ContentComponent>
+
         );
     }
 

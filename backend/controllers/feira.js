@@ -96,12 +96,11 @@ const addFeira = async (dataFeira) => {
   const agora = new Date();
   if (dataFeira < agora) return null;
 
-  const status = true;
   try {
     return await models.feira.create({
       data: dataFeira.toISOString().split('T')[0],
       data_limite: proximaSexta().toISOString(),
-      status,
+      status: true,
     });
   } catch (error) {
     return null;
