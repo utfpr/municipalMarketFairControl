@@ -65,7 +65,7 @@ export default class SupervisorScreen extends PureComponent {
         return (
             <Modal
                 title={ selectedSupervisor && selectedSupervisor.cpf
-                    ? `#${selectedSupervisor.cpf} - ${selectedSupervisor.nome}`
+                    ? selectedSupervisor.nome
                     : 'Cadastrar um novo supervisor'
                 }
                 visible={visible}
@@ -77,39 +77,56 @@ export default class SupervisorScreen extends PureComponent {
                         onSuccess={this.handleOk}
                         refresh={this._loadSupervisor}
                     />
-                    {
-                        /*
-                        selectedSupervisor && selectedSupervisor.cpf
-                            ? (
-                                <Fragment>
-                                    <Divider>
-                                        Supervisores
-                                    </Divider>
-                                    <Supervisores supervisor={selectedCategoria} />
-                                </Fragment>
-                            ) : null
-                        */
-                    }
             </Modal>
-        );
-    }
+    );
+}
  
 /* atrubutos :
   cpf,
-  cnpj,
   nome,
-  rg, 
-  usa_ee,
-  nome_fantasia,
-  razao_social,
-  comprimento_barraca,
-  largura_barraca,
-  endereco,
-  voltagem_ee,
-  sub_categoria_id,
+  senha,
+  isAdm
   */
 
   // TABELA SÓ COM AS INFORMAÇÕES BÁSICA, CLICAR NUMA MODAL ABRE O RESTO DAS INFORMAÇÕES !
+    _renderAcoes = linha => {
+
+        return (
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button type="primary" onClick={() => this.showModal(linha)}>
+                    Editar
+                </Button>
+
+                {
+                    linha.root_adm
+                        ? (
+                            <Button 
+                                shape="circle"
+                                icon="delete"
+                                type="danger"
+                                disabled
+                            />
+                        )
+                        : (
+                            <Popconfirm
+                                title="Você quer relamente deletar este supervisor?"
+                                okText="Sim"
+                                cancelText="Não"
+                                onConfirm={() => this._onDeleteSupervisor(linha.cpf)}
+                            >
+                                <Button 
+                                    shape="circle"
+                                    icon="delete"
+                                    type="danger"
+                                />
+                            </Popconfirm>
+                        )
+                }
+                
+            </div>
+        )
+    }
+
     render() {
         const { Supervisor, loading } = this.state;
 
@@ -139,19 +156,7 @@ export default class SupervisorScreen extends PureComponent {
             {
                 key: 'acoes',
                 title: 'Ações',
-                render: linha => (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button type="primary" onClick={() => this.showModal(linha)}>
-                            Editar
-                        </Button>
-                        <Button 
-                            shape="circle"
-                            icon="delete"
-                            type="danger"
-                            onClick={() => this._onDeleteSupervisor(linha.cpf)}
-                        />
-                    </div>
-                ),
+                render: linha => this._renderAcoes(linha),
                 width: 130,
             },
         ];
@@ -182,85 +187,4 @@ export default class SupervisorScreen extends PureComponent {
            
         );
     }
-
-    /*
-    _renderButtons = () => (
-        <Button type="primary">
-            <Icon type="plus" />
-            Adicionar
-        </Button>
-    );
-    */
-
-    /*render() {
-
-        const linhas = [
-            {
-                key: 1,
-                nome: 'Willian',
-                idade: 21,
-                email: 'willianbarbosa@alunos.utfpr.edu.br',
-            },
-            {
-                key: 2,
-                nome: 'Alan',
-                idade: 13,
-                email: 'alan@alunos.utfpr.edu.br',
-            },
-        ];
-
-        const colunas = [
-            {
-                title: 'Nome',
-                dataIndex: 'nome',
-                key: 'nome',
-            },
-            {
-                title: 'Idade',
-                dataIndex: 'idade',
-                key: 'idade',
-            },
-            {
-                title: 'Email',
-                dataIndex: 'email',
-                key: 'email',
-            },
-        ]
-
-        return (
-            <ContentComponent
-                title="supervisor"
-                renderExtraContents={this._renderButtons}
-            >
-                <ModalComponent titulo="Modal supervisor">
-                    Hello
-                </ModalComponent>
-                <h1>Teste</h1>
-                <TabelaComponent linhas={linhas} colunas={colunas}/>
-            </ContentComponent>
-        );
-    } */
-
 }
-
-/*
-import React, { PureComponent } from 'react';
-import ContentComponent from '../../components/ContentComponent';
-
-export default class SupervisorScreen extends PureComponent {
-
-    state = {};
-
-    render() {
-        return (
-            <ContentComponent
-                title="Supervisor"
-            >
-                <h1>Componente Supervisor</h1>
-            </ContentComponent>
-        );
-
-    }
-
-}
-*/

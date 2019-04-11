@@ -26,9 +26,8 @@ class SupervisorForm extends PureComponent {
         if (supervisor) {
             resetFields();
             await setFieldsValue({
-                cpf_feirante: supervisor.cpf,
-                nome: supervisor.nome,
-                cpf: supervisor.nome_fantasia ,
+                cpf: supervisor.cpf,
+                nome: supervisor.nome
             });
         }
     }
@@ -39,6 +38,8 @@ class SupervisorForm extends PureComponent {
             supervisor,
         } = this.props;
         e.preventDefault();
+
+        console.log('CHESQUEDELE');
         this.props.form.validateFields((err, values) => {
             console.log(values);
             if (!err) {
@@ -70,7 +71,7 @@ class SupervisorForm extends PureComponent {
         const nomeSupervisorError = isFieldTouched('nome') && getFieldError('nome');
         const cpfError = isFieldTouched('cpf') && getFieldError('cpf');
         const isAdmError = isFieldTouched('isAdm') && getFieldError('isAdm');
-        const senhaError = isFieldTouched('senha') && getFieldError('senha');
+        const senhaError = supervisor.cpf ? isFieldTouched('senha') && getFieldError('senha') : false;
         return (
             <Fragment>
                 <Form onSubmit={this._handleSubmit}>
@@ -101,21 +102,28 @@ class SupervisorForm extends PureComponent {
                             />
                         )}
                     </Form.Item>
+                    {
+                        supervisor && supervisor.cpf
+                            ? null
+                            : (
+                                <Form.Item
+                                    validateStatus={senhaError ? 'error' : ''}
+                                    help={senhaError || ''}
+                                >
+                                    {getFieldDecorator('senha', {rules :[{
+                                        required: true,
+                                        message: "A senha do supervisor é obrigatória!"
+                                    }]})(
+                                        <Input 
+                                            placeholder="senha"
+                                            type="password"
+                                        />
+                                    )}
+                                </Form.Item>
+                            )
+                        
+                    }
                     
-                    <Form.Item
-                        validateStatus={senhaError ? 'error' : ''}
-                        help={senhaError || ''}
-                    >
-                        {getFieldDecorator('senha', {rules :[{
-                            required: true,
-                            message: "A senha do supervisor é obrigatória!"
-                        }]})(
-                            <Input 
-                                placeholder="senha"
-                                type="password"
-                            />
-                        )}
-                    </Form.Item>
                     <Form.Item
                         validateStatus={isAdmError ? 'error' : ''}
                         help={isAdmError || ''}
@@ -146,6 +154,6 @@ class SupervisorForm extends PureComponent {
 
 }
 
-const WrappedHorizontalSupervisorForm = Form.create({ name: 'feirantes_form' })(SupervisorForm);
+const WrappedHorizontalSupervisorForm = Form.create({ name: 'supervisor_form' })(SupervisorForm);
 
 export default WrappedHorizontalSupervisorForm;
