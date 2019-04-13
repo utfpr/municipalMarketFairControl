@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 
-import { Layout, Button } from 'antd';
+import { Layout, Button, Spin } from 'antd';
 
 import styles from './ContentComponent.module.scss';
 
@@ -20,10 +20,10 @@ export default class ContentComponent extends PureComponent {
         )
     }
 
-    render() {
-        const { children, title, buttonProps } = this.props;
+    _renderContent = () => {
+        const { buttonProps, title, children} = this.props;
         return (
-            <Content className={styles.container}>
+            <Fragment>
                 <div className={styles.header}>
                     <h1>{title}</h1>
                     {
@@ -35,6 +35,28 @@ export default class ContentComponent extends PureComponent {
                 </div>
                 <div className={styles.divider} />
                 {children}
+            </Fragment>
+        )
+    }
+
+    render() {
+        const { loading } = this.props;
+        return (
+            <Content className={styles.container}>
+                {
+                    loading
+                        ? (
+                            <Spin>
+                                {this._renderContent()}
+                            </Spin>
+                        )
+                        : (
+                            <Fragment>
+                                {this._renderContent()}
+                            </Fragment>
+                        )
+                }
+                
             </Content>
         );
     }

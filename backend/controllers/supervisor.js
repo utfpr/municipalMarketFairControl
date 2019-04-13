@@ -5,7 +5,6 @@ const addSupervisor = async (cpf, nome, senha, isAdm, rootAdm = false) => {
   const supervisor = await models.supervisor.findOne({
     where: { cpf },
   });
-  console.log(isAdm);
   const hashSenha = await bcrypt.hash(senha, 10);
 
   if (supervisor !== null && !supervisor.status) {

@@ -1,10 +1,21 @@
 .container {
     margin: 16px;
+    // height: 100%;
     padding: 24px;
     background: #fff;
     min-height: unset !important;
 }
 
+.spinContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100% !important;
+    margin: 16px;
+    padding: 24px;
+    background: #fff;
+    min-height: unset !important;
+}
 
 .header {
     display: flex;
@@ -30,3 +41,4 @@
     border-bottom: 1px solid rgba(0,0,0,0.1);
     // background-color: rgba(0,0,0,0.3);
 }
+

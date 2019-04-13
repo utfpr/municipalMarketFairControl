@@ -30,13 +30,8 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
     return res.status(400).send();
   }
 
-  const dataSplitted = [dataA.slice(0, 2), dataA.slice(2, 4), dataA.slice(4, 8)];
-  const date = new Date(dataSplitted[2], dataSplitted[1] - 1, dataSplitted[0]);
-  // if (
-  //   date.getDate() > dataSplitted[0].parseInt
-  //   || date.getMonth() >= dataSplitted[1].parseInt
-  //   || date.getFullYear() >= dataSplitted[2].parseInt
-  // ) {
+  const date = new Date(dataA);
+
   if (date < new Date()) {
     return res.status(400).send({
       msg: 'data_nao_permitida',
@@ -54,18 +49,33 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
   });
 });
 
-router.delete('/', authMiddleware.isSupervisor, async (req, res) => {
-  const feira = await constrollerFeira.cancelaFeiraAtual();
-
-  if (feira == null) {
-    res.status(200).send({
-      msg: 'feira_nao_cancelada',
-    });
-  } else {
-    res.status(200).send({
-      msg: 'ok',
+router.put('/altera-status', authMiddleware.isSupervisor, async (req, res) => {
+  const { data } = req.body;
+  if (!data) {
+    return res.status(400).send({
+      msg: 'data_nao_informada',
     });
   }
+
+  const newDate = new Date(data);
+
+  if (newDate < new Date()) {
+    return res.status(400).send({
+      msg: 'nao_pode_cancelar_feira_ja_realizada',
+    });
+  }
+
+  const feira = await constrollerFeira.alteraFeiraStatus(data);
+
+  if (feira === null) {
+    return res.status(400).send({
+      msg: 'feira_nao_cancelada',
+    });
+  }
+
+  return res.status(200).send({
+    msg: 'ok',
+  });
 });
 
 module.exports = router;

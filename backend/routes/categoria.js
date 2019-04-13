@@ -7,8 +7,7 @@ const subcategoriaController = require('../controllers/subcategoria');
 router.post('/', async (req, res) => {
     const nome = req.body.nome;
     const need_cnpj = req.body.need_cnpj;
-    console.log(nome)
-    console.log(need_cnpj)
+    
     if ((nome == null) || (need_cnpj == null) || (need_cnpj !== 0 && !need_cnpj)) {
         res.status(400).send();
     } else {

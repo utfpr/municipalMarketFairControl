@@ -8,7 +8,7 @@ export async function listFeiras() {
     .catch(() => null);
 
   return info === null ? null : info.data;
-}
+};
 
 export async function feiraAtual() {
   const feira = await axios
@@ -16,7 +16,7 @@ export async function feiraAtual() {
     .catch(() => null);
 
   return feira ? feira.data : {};
-}
+};
 
 export async function post(data) {
   const feira = await axios
@@ -24,7 +24,7 @@ export async function post(data) {
     .catch(() => null);
 
   return Boolean(feira);
-}
+};
 
 export async function deletaUltimaFeira() {
   const feira = await axios
@@ -32,4 +32,12 @@ export async function deletaUltimaFeira() {
     .catch(() => null);
 
   return feira;
-}
+};
+
+export async function alteraStatusFeira(data) {
+  const feira = await axios
+    .put(`${host}/altera-status`, { data }, { headers: { token: localStorage.getItem('token') } })
+    .catch(() => null);
+
+  return feira;
+};

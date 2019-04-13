@@ -5,6 +5,7 @@ import SupervisoresScreen from '../screens/Supervisores';
 import RelatoriosScreen from '../screens/Relatorios';
 import MapeamentoScreen from '../screens/Mapeamento';
 import CategoriasScreen from '../screens/Categorias';
+import RelatorioPage from '../screens/Relatorios/RelatorioPage';
 import LoginScreen from '../screens/Login';
 
 export default [
@@ -58,6 +59,16 @@ export default [
         component: RelatoriosScreen,
         icon: 'read',
         key: 'relatorios',
+        label: 'Relatórios',
+    },
+    {
+        path: '/supervisor/relatorios/:data',
+        exact: true,
+        private: true,
+        hidden: true,
+        component: RelatorioPage,
+        icon: 'read',
+        key: 'relatoriopage',
         label: 'Relatórios',
     },
     {

@@ -13,8 +13,13 @@ export async function getFeiras() {
 }
 
 export async function getParticipantes(data) {
-  return (await axios.get(
+  const relatorios = await axios.get(
     `${participa}/data/${data}`,
     { headers: { token: localStorage.getItem('token') } },
-  )).data;
+  ).catch(ex => {
+    console.warn(ex);
+    return false;
+  });
+
+  return relatorios && !relatorios.msg ? relatorios.data : false;
 }

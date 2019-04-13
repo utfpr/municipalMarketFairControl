@@ -66,7 +66,7 @@ const getFeirantesNaoParticipantes = async (dataFeira) => {
 // Feirantes confirmados em determinada feira
 const listFeirantesConfirmados = async (dataFeira) => {
   const feira = await feiraController.findFeira(dataFeira);
-  console.log(dataFeira);
+
   if (feira === null) return null;
 
   const confirmacoes = await feira.getFeirantes({

@@ -25,6 +25,6 @@ export async function getConfirmados() {
 }
 
 export default async function getParticipa(data){
-  const feirantes = await axios.get(`${host}/:${data}`).catch(e => console.log(`Erro ${e}`));
-  return feirantes.data;
+  const feirantes = await axios.get(`${host}/${data}`).catch(e => console.log(`Erro ${e}`));
+  return feirantes;
 }

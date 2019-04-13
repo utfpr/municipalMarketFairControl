@@ -2,7 +2,6 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Table, Tag, Button,
-    Modal, Popconfirm,
 } from 'antd';
 import moment from 'moment-timezone';
 
@@ -10,16 +9,15 @@ import ContentComponent from '../../components/ContentComponent';
 
 import * as relatorioAPI from '../../api/relatorio';
 
-import RelatoriosForm from './Relatoriosform';
-
 const { Column } = Table;
 
 export default class RelatoriosScreen extends PureComponent {
 
     state = {
-        relatorios: [],
+        feiras: [],
         visible: false,
         participantes: {},
+        loading: true,
     };
 
     componentDidMount() {
@@ -27,24 +25,20 @@ export default class RelatoriosScreen extends PureComponent {
     }
 
     _loadRelatorios = async () => {
-        const relatorios = await relatorioAPI.getFeiras();
-        this.setState({ relatorios });
+        this.setState({loading: true});
+        const feiras = await relatorioAPI.getFeiras();
+        this.setState({ feiras, loading: false });
     }
 
-    _getParticipantes = async data => {
-        const participantes = await relatorioAPI.getParticipantes(data);
-        this.setState({ participantes });
-    }
-    
-    _showModal = (event, data) => {
+    _goToRelatorio = (event, data) => {
         event.preventDefault();
-        this._getParticipantes(data);
-        this.setState({visible: true});
+        const { history } = this.props;
+        history.push(`/supervisor/relatorios/${moment(data).format('DD-MM-YYYY')}`);
     }
 
     _renderAcoes = feira => {
         return (
-            <Button onClick={() => this._showModal(feira.data)} disabled={!feira.status} type="primary">
+            <Button onClick={event => this._goToRelatorio(event, feira.data)} disabled={!feira.status} type="primary">
                 Relatório
             </Button>
         );
@@ -54,35 +48,19 @@ export default class RelatoriosScreen extends PureComponent {
         this.setState({visible: false});
     }
 
-    _renderModal = () => {
-        const { visible, relatorios, participantes } = this.state;
-
-        if (!visible) return null;
-
-        return (
-            <Modal
-                title="Relatório"
-                visible={visible}
-                onCancel={this._hideModal}
-                footer={null}
-                >
-                    <Table rowKey={linha => linha.id} dataSource={participantes}>
-
-                    </Table>
-
-            </Modal>
-        );
-    }
-
     render() {
-        const { relatorios, loading } = this.state;
+        const { feiras, loading } = this.state;
 
         return (
         <Fragment>
                 <ContentComponent
                     title="Relatórios"
                 >
-                    <Table rowKey={linha => linha.id} dataSource={relatorios}>
+                    <Table 
+                        rowKey={linha => linha.id}
+                        dataSource={feiras}
+                        loading={loading}
+                    >
                         <Column
                             title="Data"
                             dataIndex="data"
@@ -103,7 +81,7 @@ export default class RelatoriosScreen extends PureComponent {
                             render={status => {
                                 return status
                                 ? <Tag color="#87d068">Ativo</Tag>
-                                : <Tag color="#f50">Cancelada</Tag>
+                                : <Tag color="#f50">Inativo</Tag>
                             }}
                             width={70}
                         />
@@ -115,7 +93,6 @@ export default class RelatoriosScreen extends PureComponent {
                         />
                     </Table>
                 </ContentComponent>
-                {this._renderModal()}
             </Fragment>
         )
     }

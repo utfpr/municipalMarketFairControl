@@ -24,6 +24,7 @@ class HomeScreen extends Component {
     _setPath = () => {
         const { pathname } = this.props.location;
         const currentRoute = routes.find(route => route.path === pathname);
+        if (!currentRoute) return null;
         this.setState({ selectedKey: [currentRoute.key] });
     }
 

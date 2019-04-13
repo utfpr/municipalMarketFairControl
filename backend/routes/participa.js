@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const { body, param, validationResult } = require('express-validator/check');
-const { isCpf, isCnpj, isEndereco } = require('./utils');
+const { body, validationResult } = require('express-validator/check');
+const { isCpf } = require('./utils');
 const authMiddleware = require('../middlewares/auth');
 const participaController = require('../controllers/participa');
 const feiraController = require('../controllers/feira');
@@ -15,16 +15,24 @@ router.get('/data/:data', async (req, res) => {
   const participaram = await participaController.getFeirantesParticipantes(data);
   const naoParticiparam = await participaController.getFeirantesNaoParticipantes(data);
 
-  if (participaram !== null) {
-    res.status(200).send({
-      participaram,
-      naoParticiparam,
-    });
-  } else {
-    res.status(200).send({
-      msg: 'nenhum participante',
+  if (!participaram && !naoParticiparam) {
+    return res.status(400).send({
+      msg: 'feira_invalida',
     });
   }
+
+  const faturamento = await participaram.reduce((tot, feirante) => tot + feirante.faturamento, 0);
+
+  if (participaram !== null) {
+    return res.status(200).send({
+      participaram,
+      naoParticiparam,
+      faturamento,
+    });
+  }
+  return res.status(400).send({
+    msg: 'nenhum_participante',
+  });
 });
 
 router.get('/confirmados', authMiddleware.isSupervisor, async (req, res) => {

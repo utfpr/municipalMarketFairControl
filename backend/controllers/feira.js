@@ -5,7 +5,7 @@ const { proximaSexta } = require('./utils');
 const op = Sequelize.Op;
 
 const listFeiras = async () => {
-  const feiras = await models.feira.findAll();
+  const feiras = await models.feira.findAll({ order: [['data', 'DESC']] });
 
   return feiras.map(el => ({
     data: el.data,
@@ -18,7 +18,9 @@ const findFeira = async (dataFeira) => {
   const feira = await models.feira.findOne({
     where: { data: dataFeira },
   });
-  if (feira === null) return null;
+
+  if (!feira) return null;
+
   return feira;
 };
 
@@ -110,6 +112,18 @@ const addFeira = async (dataFeira) => {
   // caso algum erro ocorra devolve null
 };
 
+const alteraFeiraStatus = async (data) => {
+  const feira = await findFeira(data);
+
+  if (feira) {
+    return feira.update({ status: !feira.status });
+  }
+
+  return null;
+  // altera o status de uma feira
+  // retorna null se der errado
+};
+
 const cancelaFeiraAtual = async () => {
   const feira = await findFeiraAtual();
 
@@ -130,6 +144,7 @@ module.exports = {
   feiraAtualInfo,
   setDataLimiteFeiraAtual,
   addFeira,
+  alteraFeiraStatus,
   cancelaFeiraAtual,
   listFeiras,
 };

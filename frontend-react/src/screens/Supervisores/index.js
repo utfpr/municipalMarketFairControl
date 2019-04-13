@@ -170,7 +170,7 @@ export default class SupervisorScreen extends PureComponent {
                         type: 'primary',
                         icon: 'plus',
                     }}
-                    title="Supervisor"
+                    title="Supervisores"
                 >
                     <TabelaComponent
                         linhas={Supervisor} 

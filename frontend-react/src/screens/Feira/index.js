@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Table, Tag, Popconfirm, Button,
-    Modal, Form, Input,
+    Modal, Form, DatePicker,
 } from 'antd';
 import moment from 'moment-timezone';
 
@@ -23,6 +23,7 @@ class FeiraScreen extends PureComponent {
         feiras: [],
         visible: false,
         feiraAtual: {},
+        loading: true,
     };
 
     componentDidMount() {
@@ -31,9 +32,10 @@ class FeiraScreen extends PureComponent {
     }
 
     _loadFeiras = async () => {
+        this.setState({loading: true});
         const feiras = await feiraAPI.listFeiras();
         const feiraAtual = await feiraAPI.feiraAtual();
-        this.setState({ feiras, feiraAtual });
+        this.setState({ feiras, feiraAtual, loading: false });
     }
 
     _handleSubmit = (e) => {
@@ -41,9 +43,9 @@ class FeiraScreen extends PureComponent {
 
         e.preventDefault();
         validateFields((err, values) => {
-            console.log(values);
+            const data = moment(values.data).format('YYYY-MM-DD');
             if (!err) {
-                return feiraAPI.post(values.data)
+                return feiraAPI.post(data)
                     .then(() => {
                         resetFields();
                         this._loadFeiras();
@@ -53,26 +55,46 @@ class FeiraScreen extends PureComponent {
         });
     }
 
-    // _renderAcoes = feira => {
-    //     if (!feira.status) return (
-    //         <Button icon="close" disabled={true} type="danger">
-    //             Cancelar
-    //         </Button>
-    //     );
+    _alteraStatusFeira = data => {
+        return feiraAPI.alteraStatusFeira(data).then(() => {
+            this._loadFeiras();
+        });
+    }
 
-    //     return (
-    //         <Popconfirm
-    //             title="Você quer relamente cancelar esta feira?"
-    //             okText="Sim"
-    //             cancelText="Não"
-    //             onConfirm={() => console.log('cancelar')}
-    //         >
-    //             <Button icon="close" disabled={!feira.status} type="danger">
-    //                 Cancelar
-    //             </Button>
-    //         </Popconfirm>
-    //     );
-    // }
+    _renderAcoes = feira => {
+        
+        if (moment(feira.data).isBefore(moment())) return (
+            <Button icon="close" disabled type="danger">
+                Inativar
+            </Button>
+        )
+
+        if (!feira.status) return (
+            <Popconfirm
+                title="Você quer relamente reativar esta feira?"
+                okText="Sim"
+                cancelText="Não"
+                onConfirm={() => this._alteraStatusFeira(feira.data)}
+            >
+                <Button icon="check">
+                    Reativar
+                </Button>
+            </Popconfirm>
+        );
+
+        return (
+            <Popconfirm
+                title="Você quer relamente cancelar esta feira?"
+                okText="Sim"
+                cancelText="Não"
+                onConfirm={() => this._alteraStatusFeira(feira.data)}
+            >
+                <Button icon="close" type="danger">
+                    Inativar
+                </Button>
+            </Popconfirm>
+        );
+    }
 
     _renderModal = () => {
         const { visible } = this.state;
@@ -104,9 +126,7 @@ class FeiraScreen extends PureComponent {
                             required: true,
                             message: 'O data é obrigatória!'
                         }]})(
-                            <Input
-                                placeholder="DD/MM/AAAA"
-                            />
+                            <DatePicker placeholder="Selecione uma data" format="DD/MM/YYYY"/>
                         )}
                     </Form.Item>
                     <Button
@@ -137,7 +157,7 @@ class FeiraScreen extends PureComponent {
             <div className={styles.proximaFeiraContainer}>
                 <h3>Não existe nenhuma feira para a próxima semana.</h3>
             </div>
-        ) 
+        );
 
         return (
             <div className={styles.proximaFeiraContainer}>
@@ -147,12 +167,12 @@ class FeiraScreen extends PureComponent {
                 </div>
                 <div>
                     <Popconfirm
-                        title="Você quer relamente cancelar esta feira? Você não poderá criar outra feira para este dia"
+                        title={<span>Você quer relamente inativar esta feira?</span>}
                         okText="Sim"
                         cancelText="Não"
-                        onConfirm={this._cancelaFeiraAtual}
+                        onConfirm={() => this._alteraStatusFeira(feiraAtual.data)}
                     >
-                        <Button icon="close" type="danger">Cancelar</Button>
+                        <Button icon="close" type="danger">Inativar</Button>
                     </Popconfirm>
                 </div>
             </div>
@@ -160,11 +180,14 @@ class FeiraScreen extends PureComponent {
     }
 
     _cancelaFeiraAtual = async () => {
-        await feiraAPI.deletaUltimaFeira().then(()=>{this._loadFeiras()});
+        await feiraAPI.deletaUltimaFeira()
+            .then(() => {
+                this._loadFeiras()
+            });
         
     }
     render() {
-        const { feiras } = this.state;
+        const { feiras, loading } = this.state;
 
         const novaFeiras = feiras.map(feira => {
             return {
@@ -186,7 +209,7 @@ class FeiraScreen extends PureComponent {
                     }}
                 >
                     {this._renderFeiraAtual()}
-                    <Table dataSource={novaFeiras}>
+                    <Table dataSource={novaFeiras} loading={loading}>
                         <Column
                             title="Data"
                             dataIndex="data"
@@ -207,16 +230,16 @@ class FeiraScreen extends PureComponent {
                             render={status => {
                                 return status
                                 ? <Tag color="#87d068">Ativo</Tag>
-                                : <Tag color="#f50">Cancelada</Tag>
+                                : <Tag color="#f50">Inativo</Tag>
                             }}
-                            width={70}
+                            width={110}
                         />
-                        {/* <Column
+                        <Column
                             title="Ações"
                             key="acoes"
                             render={this._renderAcoes}
                             width={105}
-                        /> */}
+                        />
                     </Table>
                 </ContentComponent>
                 {this._renderModal()}
