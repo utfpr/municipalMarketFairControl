@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
-import { Layout, Icon, Menu } from 'antd';
+import { Layout, Icon, Menu, Popconfirm } from 'antd';
 import { withRouter } from 'react-router-dom';
-// import MenuSidebar from '../components/MenuSidebar';
 
 import routes from '../routes';
 import styles from './HomeScreen.module.scss';
@@ -40,6 +39,11 @@ class HomeScreen extends Component {
         );
     }
 
+    _onLogout = () => {
+        localStorage.clear();
+        window.location = '/';
+    }
+
     _toggle = () => {
         const { collapsed } = { ...this.state };
         this.setState({
@@ -49,7 +53,11 @@ class HomeScreen extends Component {
 
     _renderNavItems = () => {
         return routes.map(route => {
+            const loggedUserType = localStorage.getItem('tag');
             if (route.hidden) return null;
+
+            if(loggedUserType === 'supervisor' && route.key === 'supervisores') return null;
+            
             return (
                 <Menu.Item
                     key={route.key}
@@ -86,23 +94,29 @@ class HomeScreen extends Component {
                 <Layout>
                     <Header className={styles.header}>
                         <Icon
-                            className="trigger"
-                            style={{
-                                border: '1px solid rgba(0,0,0,0.3)',
-                                borderRadius: 4,
-                                padding: 12,
-                            }}
+                            className={styles.collapseButton}
                             type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                             onClick={this._toggle}
                         />
-                        <h1 style={{
-                            marginBottom: 3,
-                            marginLeft: 8,
-                            fontSize: 20,
-                        }}
+                        <h1 
+                            style={{
+                                marginBottom: 3,
+                                marginLeft: 8,
+                                fontSize: 20,
+                                flex: 1,
+                            }}
                         >
                             Municipal Market Fair Control
                         </h1>
+                        <Popconfirm
+                            title="Você quer sair da aplicação?"
+                            placement="bottomRight"
+                            okText="Sim"
+                            cancelText="Não"
+                            onConfirm={this._onLogout}
+                        >
+                            <Icon className={styles.logoutButton} type="logout" />
+                        </Popconfirm>
                     </Header>
                     {children}
                 </Layout>

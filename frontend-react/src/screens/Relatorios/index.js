@@ -60,6 +60,9 @@ export default class RelatoriosScreen extends PureComponent {
                         rowKey={linha => linha.id}
                         dataSource={feiras}
                         loading={loading}
+                        locale={{
+                            emptyText: 'Nenhum registro'
+                        }}
                     >
                         <Column
                             title="Data"

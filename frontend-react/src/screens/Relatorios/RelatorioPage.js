@@ -118,7 +118,13 @@ export default class RelatorioPage extends PureComponent {
                 </Row>
 
                 <Divider>Participaram</Divider>
-                <Table rowKey={linha => linha.cpf} dataSource={participantes.participaram}>
+                <Table 
+                    rowKey={linha => linha.cpf} 
+                    dataSource={participantes.participaram}
+                    locale={{
+                        emptyText: 'Nenhum registro'
+                    }}
+                >
                     <Column
                         title="CPF"
                         dataIndex="cpf"
@@ -149,7 +155,13 @@ export default class RelatorioPage extends PureComponent {
                     />
                 </Table>
                 <Divider>Não participaram</Divider>
-                <Table rowKey={linha => linha.cpf} dataSource={participantes.naoParticiparam}>
+                <Table 
+                    rowKey={linha => linha.cpf} 
+                    dataSource={participantes.naoParticiparam}
+                    locale={{
+                        emptyText: 'Nenhum registro'
+                    }}
+                >
                     <Column
                         title="CPF"
                         dataIndex="cpf"

@@ -3,10 +3,23 @@
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    padding-left: 16px !important;
+    padding: 0 16px !important;
     h1 {
         overflow: hidden ;
         white-space: nowrap ;
         text-overflow: ellipsis ;
     }
+}
+
+.collapseButton {
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 4px;
+    padding: 12px;
+}
+
+
+.logoutButton {
+    font-size: 20px;
+    align-self: right !important;
+
 }

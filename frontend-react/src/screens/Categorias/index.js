@@ -112,7 +112,7 @@ export default class CategoriasScreen extends PureComponent {
                 key: 'cnpj',
                 dataIndex: 'need_cnpj',
                 title: 'Requer CNPJ',
-                width: 70,
+                width: 120,
                 render: need_cnpj => {
                     return need_cnpj === 1
                         ? <Tag color="#87d068">Sim</Tag>
@@ -154,10 +154,12 @@ export default class CategoriasScreen extends PureComponent {
                 <TabelaComponent
                     linhas={categorias} 
                     colunas={colunas}
-                    size="small"
                     loading={loading}
                     pagination={{
                         pageSize: 15,
+                    }}
+                    locale={{
+                        emptyText: 'Nenhum registro'
                     }}
                 />
                 { this._renderModal() }

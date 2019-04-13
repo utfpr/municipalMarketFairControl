@@ -6,14 +6,26 @@ const celulaController = require('./celula');
 
 
 const getFaturamento = async (cpfFeirante, dataFeira) => {
-  const faturamento = await models.participa.findOne({
+  const feirante = await models.participa.findOne({
     where: {
       data_feira: dataFeira,
       cpf_feirante: cpfFeirante,
     },
   });
 
-  return faturamento.faturamento;
+  return feirante.faturamento;
+};
+
+const getFaturamentoPorPeriodo = async (dataFeira) => {
+  const faturamentoPorPeriodo = await models.participa.findAll({
+    where: {
+      data_feira: dataFeira,
+    },
+    attributes: ['periodo', [models.sequelize.fn('sum', models.sequelize.col('faturamento')), 'total_cost']],
+    group: ['periodo'],
+  });
+
+  return faturamentoPorPeriodo;
 };
 
 const getFeirantesParticipantes = async (dataFeira) => {
@@ -259,6 +271,7 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
 module.exports = {
   getFeirantesParticipantes,
   getFeirantesNaoParticipantes,
+  getFaturamentoPorPeriodo,
   listFeirantesConfirmados,
   listFeirantesConfirmadosFeiraAtual,
   confirmaPresencaFeiraAtual,

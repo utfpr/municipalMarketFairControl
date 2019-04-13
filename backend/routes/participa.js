@@ -35,6 +35,27 @@ router.get('/data/:data', async (req, res) => {
   });
 });
 
+router.get('/faturamento-periodo/:data', async (req, res) => {
+  const { data } = req.params;
+
+  const faturamentoPorPeriodo = await participaController.getFaturamentoPorPeriodo(data);
+
+  if (!faturamentoPorPeriodo) {
+    return res.status(400).send({
+      msg: 'feira_invalida',
+    });
+  }
+
+  if (faturamentoPorPeriodo !== null) {
+    return res.status(200).send({
+      faturamentoPorPeriodo,
+    });
+  }
+  return res.status(400).send({
+    msg: 'nenhum_participante',
+  });
+});
+
 router.get('/confirmados', authMiddleware.isSupervisor, async (req, res) => {
   const confirmados = await participaController.listFeirantesConfirmadosFeiraAtual();
   if (confirmados === null) {
