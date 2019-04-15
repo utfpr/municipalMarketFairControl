@@ -21,7 +21,7 @@ const getFaturamentoPorPeriodo = async (dataFeira) => {
     where: {
       data_feira: dataFeira,
     },
-    attributes: ['periodo', [models.sequelize.fn('sum', models.sequelize.col('faturamento')), 'total_cost']],
+    attributes: ['periodo', [models.sequelize.fn('sum', models.sequelize.col('faturamento')), 'faturamento']],
     group: ['periodo'],
   });
 
