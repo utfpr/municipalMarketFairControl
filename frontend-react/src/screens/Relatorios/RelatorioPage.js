@@ -16,19 +16,26 @@ const { Column } = Table;
 export default class RelatorioPage extends PureComponent {
     state = {
         participantes: [],
+        faturamentoPeriodo: [],
         loading: true,
         dataFeira: '',
     };
 
     componentDidMount() {
-        this._loadParticipantes();
+        this._loadValues();
     }
     
-    _loadParticipantes = () => {
-        const { data } = this.props.match.params;
-        const newDate = data.split('-');
-        const dataFeira = `${newDate[2]}-${newDate[1]}-${newDate[0]}`;
-        this.setState({dataFeira}, this._getParticipantes);
+    _loadValues = async () => {
+        try {
+            const { data } = this.props.match.params;
+            const newDate = data.split('-');
+            const dataFeira = `${newDate[2]}-${newDate[1]}-${newDate[0]}`;
+            await this.setState({dataFeira});
+            await this._getParticipantes();
+            await this._getFaturamento();
+        } catch(ex) {
+            console.warn(ex);
+        }
     }
     
     _getParticipantes = async () => {
@@ -38,6 +45,12 @@ export default class RelatorioPage extends PureComponent {
         this.setState({participantes, loading: false});
     }
 
+    _getFaturamento = async () => {
+        const { dataFeira } = this.state;
+        const faturamentoPeriodo = await relatorioAPI.getFaturamentoPeriodo(moment(dataFeira).format('YYYY-MM-DD'));
+        this.setState({faturamentoPeriodo});
+    }
+    
     _renderFeiraInvalida = () => {
         return (
             <ContentComponent
@@ -51,8 +64,16 @@ export default class RelatorioPage extends PureComponent {
         )
     }
 
+    _getFaturamentoDeUmPeriodo = (periodoDesejado) => {
+        const { faturamentoPeriodo } = this.state;
+        if (!faturamentoPeriodo) return 0;
+        const periodo = faturamentoPeriodo.find(fat => fat.periodo === periodoDesejado);
+        return periodo ? periodo.faturamento : 0;
+    }
+
     render() {
-        const { participantes, dataFeira, loading } = this.state;
+        const { participantes, dataFeira, loading, faturamentoPeriodo } = this.state;
+        console.log(faturamentoPeriodo);
 
         if (!participantes) return this._renderFeiraInvalida();
 
@@ -71,6 +92,7 @@ export default class RelatorioPage extends PureComponent {
                             style={{
                                 backgroundColor: '#2ecc71',
                                 border: 'none',
+                                borderRadius: 4,
                             }}
                         >
                             <Statistic
@@ -88,6 +110,7 @@ export default class RelatorioPage extends PureComponent {
                             style={{
                                 backgroundColor: '#3498db',
                                 border: 'none',
+                                borderRadius: 4,
                             }}
                         >
                             <Statistic
@@ -104,6 +127,7 @@ export default class RelatorioPage extends PureComponent {
                             style={{
                                 backgroundColor: '#e74c3c',
                                 border: 'none',
+                                borderRadius: 4,
                             }}
                         >
                             <Statistic
@@ -117,7 +141,66 @@ export default class RelatorioPage extends PureComponent {
                     </Col>
                 </Row>
 
-                <Divider>Participaram</Divider>
+                <h2 className={styles.titulo}>Faturamento por período</h2>
+
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Card 
+                            style={{
+                                backgroundColor: '#e67e22',
+                                border: 'none',
+                                borderRadius: 4,
+                            }}
+                        >
+                            <Statistic
+                                title="Manhã"
+                                value={this._getFaturamentoDeUmPeriodo(1)}
+                                precision={2}
+                                style={{color: '#fff'}}
+                                valueStyle={{ color: '#fff' }}
+                                prefix="R$"
+                            />
+                        </Card>
+                    </Col>
+                    <Col span={8}>
+                        <Card
+                            style={{
+                                backgroundColor: '#34495e',
+                                border: 'none',
+                                borderRadius: 4,
+                            }}
+                        >
+                            <Statistic
+                                title="Tarde"
+                                value={this._getFaturamentoDeUmPeriodo(2)}
+                                precision={2}
+                                style={{color: '#fff'}}
+                                valueStyle={{ color: '#fff' }}
+                                prefix="R$"
+                            />
+                        </Card>
+                    </Col>
+                    <Col span={8}>
+                        <Card
+                            style={{
+                                backgroundColor: '#9b59b6',
+                                border: 'none',
+                                borderRadius: 4,
+                            }}
+                        >
+                            <Statistic
+                                title="Manhã e Tarde"
+                                value={this._getFaturamentoDeUmPeriodo(3)}
+                                precision={2}
+                                style={{color: '#fff'}}
+                                valueStyle={{ color: '#fff' }}
+                                prefix="R$"
+                            />
+                        </Card>
+                    </Col>
+                </Row>
+
+                <h2 className={styles.titulo}>Participaram</h2>
                 <Table 
                     rowKey={linha => linha.cpf} 
                     dataSource={participantes.participaram}
@@ -154,7 +237,7 @@ export default class RelatorioPage extends PureComponent {
                         width={105}
                     />
                 </Table>
-                <Divider>Não participaram</Divider>
+                <h2 className={styles.titulo}>Não participaram</h2>
                 <Table 
                     rowKey={linha => linha.cpf} 
                     dataSource={participantes.naoParticiparam}

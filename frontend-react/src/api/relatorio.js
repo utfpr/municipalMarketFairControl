@@ -12,6 +12,13 @@ export async function getFeiras() {
   return feiras;
 }
 
+export async function getFaturamentoPeriodo(data) {
+  const faturamento = await axios.get(`${participa}/faturamento-periodo/${data}`, {
+    headers: { token: localStorage.getItem('token') },
+  });
+  return faturamento.data.faturamentoPorPeriodo;
+}
+
 export async function getParticipantes(data) {
   const relatorios = await axios.get(
     `${participa}/data/${data}`,
