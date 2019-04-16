@@ -1,11 +1,15 @@
 import React, { PureComponent } from 'react';
 import ContentComponent from '../../components/ContentComponent';
 
+import { Table } from 'antd';
+
 import { SVGMap } from 'react-svg-map';
 import Map from './Mapa';
 import * as participaAPI from '../../api/participa';
 
 import 'react-svg-map/lib/index.css';
+
+const { Column } = Table;
 
 export default class MapeamentoScreen extends PureComponent {
 
@@ -28,6 +32,7 @@ export default class MapeamentoScreen extends PureComponent {
     }
 
     render() {
+        const { confirmados } = this.state;
         return (
             <ContentComponent
                 title="Mapeamento"
@@ -35,6 +40,15 @@ export default class MapeamentoScreen extends PureComponent {
                 <div style={{ height: 100, width: 100 }}>
                     <SVGMap map={Map} onLocationClick={this._onClick} />
                 </div>
+                <Table
+                    // title="Alocados"
+                    dataSource={confirmados.feirantes}
+                >
+                    <Column
+                        title="Nome"
+                        dataIndex="feirante.nome"
+                    />
+                </Table>
             </ContentComponent>
         );
     }
