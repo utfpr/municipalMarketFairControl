@@ -65,7 +65,7 @@ export default class FeiranteScreen extends PureComponent {
         return (
             <Modal
                 title={ selectedFeirante && selectedFeirante.cpf
-                    ? `#${selectedFeirante.cpf} - ${selectedFeirante.nome}`
+                    ? `${selectedFeirante.nome} - ${selectedFeirante.nome_fantasia}`
                     : 'Cadastrar um novo feirante'
                 }
                 visible={visible}
@@ -117,13 +117,18 @@ export default class FeiranteScreen extends PureComponent {
                 key: 'cpf',
                 dataIndex: 'cpf',
                 title: 'Cpf',
-                width: 60,
+                width: 120,
             },
             {
                 key: 'cnpj', 
                 dataIndex: 'cnpj',
                 title: 'Cnpj',
                 width: 60,
+                render: (cnpj) => {
+                    return cnpj
+                    ? <Tag color="#108ee9">{cnpj}</Tag>
+                    : <Tag color='#f50'>Não usa</Tag>
+                }
             },
             {
                 key: 'rg',

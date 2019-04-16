@@ -27,8 +27,8 @@ class FeirantesForm extends PureComponent {
             resetFields();
             await setFieldsValue({
                 cpf_feirante: feirante.cpf,
-                nome_feirante: feirante.nome,
-                nome_fantasia_feirante: feirante.nome_fantasia ,
+                cnpj: feirante.nome,
+                nomeFantasia: feirante.nome_fantasia ,
             });
         }
     }
@@ -43,13 +43,13 @@ class FeirantesForm extends PureComponent {
             console.log(values);
             if (!err) {
                 return feirante && feirante.cpf
-                    ? feirantesAPI.put(feirante.cpf, values.nome_feirante, values.nome_fantasia_feirante)
+                    ? feirantesAPI.put(feirante.cpf, values.cnpj, values.rg)
                         .then(() => {
                             resetFields();
                             refresh();
                             onSuccess();
                         })
-                    : feirantesAPI.post(values.nome_feirante, values.nome_fantasia_feirante)
+                    : feirantesAPI.post(values.nome, values.nomeFantasia)
                         .then(() => {
                             resetFields();
                             refresh();
@@ -67,29 +67,29 @@ class FeirantesForm extends PureComponent {
             isFieldTouched, getFieldValue,
         } = form;
 
-        const nomeFeiranteError = isFieldTouched('nome_feirante') && getFieldError('nome_feirante');
-        const nome_fantasia_feiranteError = isFieldTouched('nome_fantasia_feirante') && getFieldError('nome_fantasia_feirante');
+        const cpfFeiranteError = isFieldTouched('cpf') && getFieldError('cpf');
+        const nomeFantasiaError = isFieldTouched('nomeFantasia') && getFieldError('nomeFantasia');
+        const cnpjFeiranteError = isFieldTouched('nomeFantasia') && getFieldError('nomeFantasia');
+        const rgFeiranteError = isFieldTouched('rg') && getFieldError('rg');
+        const usaEEFeiranteError = isFieldTouched('usaEE') && getFieldError('usaEE');
+        const nomeFantasiaFeiranteError = isFieldTouched('nomeFantasia') && getFieldError('nomeFantasia');
+        const razaoSocialFeiranteError = isFieldTouched('razaoSocial') && getFieldError('razaoSocial');
+        //const comprimentoFeiranteError = isFieldTouched('comprimentoBarraca') && getFieldError('comprimentoBarraca');
+        //const larguraBarracaFeiranteError = isFieldTouched('larguraBarraca') && getFieldError('larguraBarraca');
+        //const enderecoFeiranteError = isFieldTouched('endereco') && getFieldError('endereco');
+        //const voltagemEEFeiranteError = isFieldTouched('voltagemEE') && getFieldError('voltagemEE');
+        //const subcategoriaFeiranteError = isFieldTouched('subcategoria') && getFieldError('subcategoria');
+        
+
         return (
             <Fragment>
-                <Form layout="inline" onSubmit={this._handleSubmit}>
-                    <Form.Item
-                        validateStatus={nomeFeiranteError ? 'error' : ''}
-                        help={nomeFeiranteError || ''}
+                <Form onSubmit={this._handleSubmit}>
+                    
+                <Form.Item
+                    validateStatus={nomeFantasiaError ? 'error' : ''}
+                    help={nomeFantasiaError || ''}
                     >
-                        {getFieldDecorator('nome_feirante', {rules: [{
-                            required: true,
-                            message: 'O nome do feirante é obrigatório!'
-                        }]})(
-                            <Input
-                                placeholder="Nome"
-                            />
-                        )}
-                    </Form.Item>
-                    <Form.Item
-                    validateStatus={nome_fantasia_feiranteError ? 'error' : ''}
-                    help={nome_fantasia_feiranteError || ''}
-                    >
-                        {getFieldDecorator('nome_fantasia_feirante', {rules :[{
+                        {getFieldDecorator('nomeFantasia', {rules :[{
                             required: true,
                             message: "O nome fantasia do feirante é obrigatório!"
                         }]})(
@@ -98,13 +98,90 @@ class FeirantesForm extends PureComponent {
                             />
                         )}
                     </Form.Item>
+                    <Form.Item
+                        validateStatus={cpfFeiranteError ? 'error' : ''}
+                        help={cpfFeiranteError || ''}
+                    >
+                        {getFieldDecorator('cpf', {rules: [{
+                            required: true,
+                            message: 'O CPF do feirante é obrigatório!'
+                        }]})(
+                            <Input
+                                placeholder="CPF"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        validateStatus={cnpjFeiranteError ? 'error' : ''}
+                        help={cnpjFeiranteError || ''}
+                    >
+                        {getFieldDecorator('cnpj', {rules: [{
+                            required: false,
+                            message: 'O cnpj do feirante é obrigatório!'
+                        }]})(
+                            <Input
+                                placeholder="CNPJ"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        validateStatus={rgFeiranteError ? 'error' : ''}
+                        help={rgFeiranteError || ''}
+                    >
+                        {getFieldDecorator('rg', {rules: [{
+                            required: true,
+                            message: 'O rg do feirante é obrigatório para sua categoria!'
+                        }]})(
+                            <Input
+                                placeholder="RG"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        validateStatus={usaEEFeiranteError ? 'error' : ''}
+                        help={usaEEFeiranteError || ''}
+                    >
+                        {getFieldDecorator('usaEE', {rules: [{
+                            required: true,
+                            message: 'É preciso especificar se o feirante usa energia.'
+                        }]})(
+                            <Checkbox checked={getFieldValue('usaEE')}>Usa Eletricidade</Checkbox>
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        validateStatus={nomeFantasiaFeiranteError ? 'error' : ''}
+                        help={nomeFantasiaFeiranteError || ''}
+                    >
+                        {getFieldDecorator('nomeFantasia', {rules: [{
+                            required: false,
+                            message: 'O nome fantasia do feirante não é obrigatório!'
+                        }]})(
+                            <Input
+                                placeholder="Nome Fantasia"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        validateStatus={razaoSocialFeiranteError ? 'error' : ''}
+                        help={razaoSocialFeiranteError || ''}
+                    >
+                        {getFieldDecorator('razaoSocial', {rules: [{
+                            required: false,
+                            message: 'A razao social não é obrigatória!'
+                        }]})(
+                            <Input
+                                placeholder="Razão Social"
+                            />
+                        )}
+                    </Form.Item>
+                   
                     <Form.Item>
                     <Button
                         type="primary"
                         htmlType="submit"
                         disabled={
                             hasErrors(getFieldsError())
-                            || getFieldValue('nome_feirante') === feirante.nome
+                            || getFieldValue('nome') === feirante.nome
                         }
                     >
                         {
@@ -114,6 +191,8 @@ class FeirantesForm extends PureComponent {
                         }
                     </Button>
                     </Form.Item>
+
+                    
                 </Form>
             </Fragment>
         );
