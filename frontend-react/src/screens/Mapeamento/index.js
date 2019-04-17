@@ -37,7 +37,7 @@ export default class MapeamentoScreen extends PureComponent {
             <ContentComponent
                 title="Mapeamento"
             >
-                <div style={{ height: 100, width: 100 }}>
+                <div style={{ height: 'auto', width: '100%' }}>
                     <SVGMap map={Map} onLocationClick={this._onClick} />
                 </div>
                 <Table

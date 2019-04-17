@@ -1,6 +1,6 @@
 const { body, validationResult } = require('express-validator/check');
 const express = require('express');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const { isCpf } = require('./utils');
 const loginController = require('../controllers/login');
 
