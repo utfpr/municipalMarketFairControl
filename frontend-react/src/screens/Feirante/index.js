@@ -5,7 +5,6 @@ import {
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';
-//import ModalComponent from '../../components/ModalComponent'; //? precisa ?
 import TabelaComponent from '../../components/TabelaComponent';
 import FeirantesForm from './FeirantesForm';
 import * as feirantesAPI from '../../api/feirante';
@@ -126,7 +125,7 @@ export default class FeiranteScreen extends PureComponent {
                 width: 60,
                 render: (cnpj) => {
                     return cnpj
-                    ? <Tag color="#108ee9">{cnpj}</Tag>
+                    ? cnpj
                     : <Tag color='#f50'>Não usa</Tag>
                 }
             },
@@ -156,6 +155,7 @@ export default class FeiranteScreen extends PureComponent {
                     : <Tag color="#108ee9">Não</Tag>
             }
         },
+            
             {
                 key: 'acoes',
                 title: 'Ações',
@@ -198,61 +198,4 @@ export default class FeiranteScreen extends PureComponent {
            
         );
     }
-
-    /*_renderButtons = () => (
-        <Button type="primary">
-            <Icon type="plus" />
-            Adicionar
-        </Button>
-    );*/
-
-    /*render() {
-
-        const linhas = [
-            {
-                key: 1,
-                nome: 'Willian',
-                idade: 21,
-                email: 'willianbarbosa@alunos.utfpr.edu.br',
-            },
-            {
-                key: 2,
-                nome: 'Alan',
-                idade: 13,
-                email: 'alan@alunos.utfpr.edu.br',
-            },
-        ];
-
-        const colunas = [
-            {
-                title: 'Nome',
-                dataIndex: 'nome',
-                key: 'nome',
-            },
-            {
-                title: 'Idade',
-                dataIndex: 'idade',
-                key: 'idade',
-            },
-            {
-                title: 'Email',
-                dataIndex: 'email',
-                key: 'email',
-            },
-        ]
-
-        return (
-            <ContentComponent
-                title="Feirante"
-                renderExtraContents={this._renderButtons}
-            >
-                <ModalComponent titulo="Modal feirante">
-                    Hello
-                </ModalComponent>
-                <h1>Teste</h1>
-                <TabelaComponent linhas={linhas} colunas={colunas}/>
-            </ContentComponent>
-        );
-    } */
-
 }

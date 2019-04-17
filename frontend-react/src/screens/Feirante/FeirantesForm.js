@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Input, Button, Form,
-    Checkbox,
+    Checkbox,Radio,
 } from 'antd';
 
 import * as feirantesAPI from '../../api/feirante';
@@ -26,9 +26,19 @@ class FeirantesForm extends PureComponent {
         if (feirante) {
             resetFields();
             await setFieldsValue({
-                cpf_feirante: feirante.cpf,
-                cnpj: feirante.nome,
+                cpf: feirante.cpf,
+                cnpj: feirante.cnpj,
                 nomeFantasia: feirante.nome_fantasia ,
+                nomeFeirante: feirante.nome ,
+                rg: feirante.rg ,
+                razaoSocial: feirante.razao_social ,
+                comprimentoBarraca: feirante.comprimento_barraca ,
+                larguraBarraca:feirante.largura_barraca ,
+                voltagemEE : (feirante.usa_ee==1)
+                             ?((feirante.voltagem_ee===110)
+                                 ? 1 :2)
+                             :0 ,
+                usaEE :feirante.usa_ee,
             });
         }
     }
@@ -43,13 +53,34 @@ class FeirantesForm extends PureComponent {
             console.log(values);
             if (!err) {
                 return feirante && feirante.cpf
-                    ? feirantesAPI.put(feirante.cpf, values.cnpj, values.rg)
+                    //? feirantesAPI.put(feirante.cpf, values.cnpj, values.rg)
+                    ? feirantesAPI.put(feirante.cpf,values.cnpj, values.nome,values.rg,values.usaEE,values.nomeFantasia,
+                        values.razaoSocial,values.comprimentoBarraca,values.larguraBarraca,"",
+                        (values.voltagemEE==1)?110:220,0) // FALTA O SUBCATEGORIA E ENDEREÇO
                         .then(() => {
                             resetFields();
                             refresh();
                             onSuccess();
                         })
-                    : feirantesAPI.post(values.nome, values.nomeFantasia)
+  /*PUT já existe , POST novo
+  cpf,
+  cnpj,
+  nome,
+  rg, 
+  usa_ee, 
+  nome_fantasia,
+  razao_social,
+  comprimento_barraca,
+  largura_barraca,
+  endereco,
+  voltagem_ee,
+  sub_categoria_id,
+  POST : senha
+  */
+
+                    : feirantesAPI.post(values.cpf,values.cnpj, values.nome,values.rg,values.usaEE,values.nomeFantasia,
+                        values.razaoSocial,values.comprimentoBarraca,values.larguraBarraca,"",
+                        values.voltagemEE,0)
                         .then(() => {
                             resetFields();
                             refresh();
@@ -61,6 +92,7 @@ class FeirantesForm extends PureComponent {
 
     render() {
         const { feirante, form } = this.props;
+        const RadioGroup = Radio.Group;
         
         const {
             getFieldDecorator, getFieldsError, getFieldError,
@@ -68,16 +100,16 @@ class FeirantesForm extends PureComponent {
         } = form;
 
         const cpfFeiranteError = isFieldTouched('cpf') && getFieldError('cpf');
-        const nomeFantasiaError = isFieldTouched('nomeFantasia') && getFieldError('nomeFantasia');
+        const nomeFeiranteError = isFieldTouched('nomeFeirante') && getFieldError('nomeFeirante');
         const cnpjFeiranteError = isFieldTouched('nomeFantasia') && getFieldError('nomeFantasia');
         const rgFeiranteError = isFieldTouched('rg') && getFieldError('rg');
         const usaEEFeiranteError = isFieldTouched('usaEE') && getFieldError('usaEE');
         const nomeFantasiaFeiranteError = isFieldTouched('nomeFantasia') && getFieldError('nomeFantasia');
         const razaoSocialFeiranteError = isFieldTouched('razaoSocial') && getFieldError('razaoSocial');
-        //const comprimentoFeiranteError = isFieldTouched('comprimentoBarraca') && getFieldError('comprimentoBarraca');
-        //const larguraBarracaFeiranteError = isFieldTouched('larguraBarraca') && getFieldError('larguraBarraca');
+        const comprimentoFeiranteError = isFieldTouched('comprimentoBarraca') && getFieldError('comprimentoBarraca');
+        const larguraFeiranteError = isFieldTouched('larguraBarraca') && getFieldError('larguraBarraca');
         //const enderecoFeiranteError = isFieldTouched('endereco') && getFieldError('endereco');
-        //const voltagemEEFeiranteError = isFieldTouched('voltagemEE') && getFieldError('voltagemEE');
+        const voltagemEEFeiranteError = isFieldTouched('voltagemEE') && getFieldError('voltagemEE');
         //const subcategoriaFeiranteError = isFieldTouched('subcategoria') && getFieldError('subcategoria');
         
 
@@ -86,12 +118,12 @@ class FeirantesForm extends PureComponent {
                 <Form onSubmit={this._handleSubmit}>
                     
                 <Form.Item
-                    validateStatus={nomeFantasiaError ? 'error' : ''}
-                    help={nomeFantasiaError || ''}
+                    validateStatus={nomeFeiranteError ? 'error' : ''}
+                    help={nomeFeiranteError || ''}
                     >
-                        {getFieldDecorator('nomeFantasia', {rules :[{
+                        {getFieldDecorator('nomeFeirante', {rules :[{
                             required: true,
-                            message: "O nome fantasia do feirante é obrigatório!"
+                            message: "O nome do feirante é obrigatório!"
                         }]})(
                             <Input 
                             placeholder="Nome"
@@ -154,7 +186,7 @@ class FeirantesForm extends PureComponent {
                     >
                         {getFieldDecorator('nomeFantasia', {rules: [{
                             required: false,
-                            message: 'O nome fantasia do feirante não é obrigatório!'
+                            message: 'O nome fantasia do feirante é obrigatório!'
                         }]})(
                             <Input
                                 placeholder="Nome Fantasia"
@@ -174,15 +206,63 @@ class FeirantesForm extends PureComponent {
                             />
                         )}
                     </Form.Item>
+                    
+                    <Form.Item
+                        validateStatus={comprimentoFeiranteError ? 'error' : ''}
+                        help={comprimentoFeiranteError || ''}
+                    >
+                        {getFieldDecorator('comprimentoBarraca', {rules: [{
+                            required: false,
+                            message: 'É necessário especificar o comprimento da barraca.'
+                        }]})(
+                            <Input
+                                placeholder="Comprimento da barraca (em metros)."
+                            />
+                        )}
+                    </Form.Item>
+
+                    <Form.Item
+                        validateStatus={larguraFeiranteError ? 'error' : ''}
+                        help={larguraFeiranteError || ''}
+                    >
+                        {getFieldDecorator('larguraBarraca', {rules: [{
+                            required: false,
+                            message: 'É necessário especificar a largura da barraca.'
+                        }]})(
+                            <Input
+                                placeholder="Largura da barraca (em metros)."
+                            />
+                        )}
+                    </Form.Item>
+                    
+                    
+                    <Form.Item
+                        validateStatus={voltagemEEFeiranteError ? 'error' : ''}
+                        help={voltagemEEFeiranteError || ''}
+                    >
+                        {getFieldDecorator('voltagemEE', {rules: [{
+                            required: false,
+                            message: 'se tiver energia, mostrar que é requerido'
+                        }]})(
+                            <RadioGroup onChange={this.onChange} value={this.state.value}>
+                            <Radio  disabled={(getFieldValue('usaEE'))?false:true}
+                                value={1}>110v
+                                </Radio>
+                            <Radio  disabled={(getFieldValue('usaEE'))?false:true}
+                                value={2}>220v
+                                </Radio>
+                            </RadioGroup>
+                        )}
+                    </Form.Item>
                    
                     <Form.Item>
                     <Button
                         type="primary"
                         htmlType="submit"
-                        disabled={
+                        /*disabled="false"/*{
                             hasErrors(getFieldsError())
                             || getFieldValue('nome') === feirante.nome
-                        }
+                        }*/
                     >
                         {
                             feirante.cpf
