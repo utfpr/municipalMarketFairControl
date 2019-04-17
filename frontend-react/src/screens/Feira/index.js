@@ -76,7 +76,7 @@ class FeiraScreen extends PureComponent {
 
         if (!feira.status) return (
             <Popconfirm
-                title="Você quer relamente reativar esta feira?"
+                title="Você quer reativar esta feira?"
                 okText="Sim"
                 cancelText="Não"
                 onConfirm={() => this._alteraStatusFeira(feira.data)}
@@ -89,7 +89,7 @@ class FeiraScreen extends PureComponent {
 
         return (
             <Popconfirm
-                title="Você quer relamente cancelar esta feira?"
+                title="Você quer cancelar esta feira?"
                 okText="Sim"
                 cancelText="Não"
                 onConfirm={() => this._alteraStatusFeira(feira.data)}
@@ -232,7 +232,7 @@ class FeiraScreen extends PureComponent {
                 </div>
                 <div>
                     <Popconfirm
-                        title={<span>Você quer relamente inativar esta feira?</span>}
+                        title={<span>Você quer inativar esta feira?</span>}
                         okText="Sim"
                         cancelText="Não"
                         onConfirm={() => this._alteraStatusFeira(feiraAtual.data)}

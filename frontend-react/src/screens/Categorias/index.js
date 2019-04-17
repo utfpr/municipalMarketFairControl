@@ -128,7 +128,7 @@ export default class CategoriasScreen extends PureComponent {
                             Detalhes
                         </Button>
                         <Popconfirm
-                            title="Você quer relamente deletar esta categoria?"
+                            title="Você quer deletar esta categoria?"
                             okText="Sim"
                             cancelText="Não"
                             onConfirm={() => this._onDeleteCategoria(linha.id)}

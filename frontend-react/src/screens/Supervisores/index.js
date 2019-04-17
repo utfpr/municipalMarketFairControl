@@ -109,7 +109,7 @@ export default class SupervisorScreen extends PureComponent {
                         )
                         : (
                             <Popconfirm
-                                title="Você quer relamente deletar este supervisor?"
+                                title="Você quer deletar este supervisor?"
                                 okText="Sim"
                                 cancelText="Não"
                                 onConfirm={() => this._onDeleteSupervisor(linha.cpf)}
