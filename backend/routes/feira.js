@@ -1,6 +1,23 @@
 const router = require('express').Router();
+const multer = require('multer');
+// const url = require('url');
+// const fs = require('fs');
+
 const authMiddleware = require('../middlewares/auth');
 const constrollerFeira = require('../controllers/feira');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads');
+  },
+  filename: (req, file, cb) => {
+    const extArray = file.mimetype.split('/');
+    const extension = extArray[extArray.length - 1];
+    cb(null, `${Date.now()}.${extension}`);
+  },
+});
+const upload = multer({ storage });
+
 
 router.get('/', authMiddleware.isSupervisor, async (req, res) => {
   const feiras = await constrollerFeira.listFeiras();
@@ -25,26 +42,25 @@ router.get('/info', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
 });
 
 router.post('/', authMiddleware.isSupervisor, async (req, res) => {
-  const dataA = req.body.data;
-  if (!dataA) {
+  const { data, photo } = req.body;
+  if (!data) {
     return res.status(400).send();
   }
 
-  const date = new Date(dataA);
-
+  const date = new Date(data);
   if (date < new Date()) {
     return res.status(400).send({
       msg: 'data_nao_permitida',
     });
   }
 
-  const feira = await constrollerFeira.addFeira(date);
-
+  const feira = await constrollerFeira.addFeira(date, photo);
 
   if (feira === null) {
     return res.status(400).send();
   }
   return res.status(200).send({
+    file: req.file,
     msg: 'ok',
   });
 });

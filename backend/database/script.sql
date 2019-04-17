@@ -43,7 +43,8 @@ CREATE TABLE feira (
 	data DATE,
 	data_limite DATETIME,
 	status BOOLEAN DEFAULT false,
-
+	evento_image_url VARCHAR(200),
+	
 	PRIMARY KEY (data)
 );
 

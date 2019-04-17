@@ -82,7 +82,7 @@ const setDataLimiteFeiraAtual = async (dataHora) => {
   }
 };
 
-const addFeira = async (dataFeira) => {
+const addFeira = async (dataFeira, eventoImageUrl) => {
   //  const data = date.slice(6, 10).concat('-', date.slice(3, 5), '-', date.slice(0, 2));
 
   // const feira = await models.feira.findOne({
@@ -102,6 +102,7 @@ const addFeira = async (dataFeira) => {
     return await models.feira.create({
       data: dataFeira.toISOString().split('T')[0],
       data_limite: proximaSexta().toISOString(),
+      evento_image_url: eventoImageUrl,
       status: true,
     });
   } catch (error) {
