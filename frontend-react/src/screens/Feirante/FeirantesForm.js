@@ -43,26 +43,7 @@ class FeirantesForm extends PureComponent {
         }
     }
 
-    _handleSubmit = (e) => {
-        const { 
-            refresh, onSuccess, form: {resetFields},
-            feirante,
-        } = this.props;
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            console.log(values);
-            if (!err) {
-                return feirante && feirante.cpf
-                    //? feirantesAPI.put(feirante.cpf, values.cnpj, values.rg)
-                    ? feirantesAPI.put(feirante.cpf,values.cnpj, values.nome,values.rg,values.usaEE,values.nomeFantasia,
-                        values.razaoSocial,values.comprimentoBarraca,values.larguraBarraca,"",
-                        (values.voltagemEE==1)?110:220,0) // FALTA O SUBCATEGORIA E ENDEREÇO
-                        .then(() => {
-                            resetFields();
-                            refresh();
-                            onSuccess();
-                        })
-  /*PUT já existe , POST novo
+ /*PUT já existe , POST novo
   cpf,
   cnpj,
   nome,
@@ -78,9 +59,64 @@ class FeirantesForm extends PureComponent {
   POST : senha
   */
 
-                    : feirantesAPI.post(values.cpf,values.cnpj, values.nome,values.rg,values.usaEE,values.nomeFantasia,
-                        values.razaoSocial,values.comprimentoBarraca,values.larguraBarraca,"",
-                        values.voltagemEE,0)
+
+    _handleSubmit = (e) => {
+        const { 
+            refresh, onSuccess, form: {resetFields},
+            feirante,
+        } = this.props;
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            // console.log(values.voltagemEE);
+            if (!err) {
+                return feirante && feirante.cpf
+                    //? feirantesAPI.put(feirante.cpf, values.cnpj, values.rg)
+                    ? feirantesAPI
+                        .put(
+                            feirante.cpf,
+                            values.cnpj,
+                            values.nome,
+                            values.rg,
+                            values.usaEE,
+                            values.nomeFantasia,
+                            values.razaoSocial,
+                            values.comprimentoBarraca,
+                            values.larguraBarraca,
+                            {
+                                logradouro: 'Rua Carlos gomes',
+                                bairro: 'Jd. Independencia',
+                                numero: 1461,
+                                CEP: '87113100',
+                            },
+                            values.voltagemEE === 1 ? 110 : 220,
+                            1, // FALTA O SUBCATEGORIA E ENDEREÇO
+                            1234506,
+                        )
+                        .then(() => {
+                            resetFields();
+                            refresh();
+                            onSuccess();
+                        })
+                    : feirantesAPI.post(
+                        values.cpf,
+                        values.cnpj,
+                        values.nome,
+                        values.rg,
+                        values.usaEE,
+                        values.nomeFantasia,
+                        values.razaoSocial,
+                        values.comprimentoBarraca,
+                        values.larguraBarraca,
+                        {
+                            logradouro: 'Rua Carlos gomes',
+                            bairro: 'Jd. Independencia',
+                            numero: 1461,
+                            CEP: '87113100',
+                        },
+                        values.voltagemEE === 1 ? 110 : 220,
+                        1,
+                        123456,
+                    )
                         .then(() => {
                             resetFields();
                             refresh();
@@ -118,6 +154,7 @@ class FeirantesForm extends PureComponent {
                 <Form onSubmit={this._handleSubmit}>
                     
                 <Form.Item
+                    label="Nome"
                     validateStatus={nomeFeiranteError ? 'error' : ''}
                     help={nomeFeiranteError || ''}
                     >
@@ -181,6 +218,30 @@ class FeirantesForm extends PureComponent {
                         )}
                     </Form.Item>
                     <Form.Item
+                        validateStatus={voltagemEEFeiranteError ? 'error' : ''}
+                        help={voltagemEEFeiranteError || ''}
+                    >
+                        {getFieldDecorator('voltagemEE', {rules: [{
+                            required: false,
+                            message: 'se tiver energia, mostrar que é requerido'
+                        }]})(
+                            <RadioGroup onChange={this.onChange} value={this.state.value}>
+                                <Radio
+                                    disabled={(getFieldValue('usaEE'))?false:true}
+                                    value={1}
+                                >
+                                    110v
+                                </Radio>
+                                <Radio 
+                                    disabled={(getFieldValue('usaEE'))?false:true}
+                                    value={2}
+                                >
+                                    220v
+                                </Radio>
+                            </RadioGroup>
+                        )}
+                    </Form.Item>
+                    <Form.Item
                         validateStatus={nomeFantasiaFeiranteError ? 'error' : ''}
                         help={nomeFantasiaFeiranteError || ''}
                     >
@@ -233,28 +294,7 @@ class FeirantesForm extends PureComponent {
                                 placeholder="Largura da barraca (em metros)."
                             />
                         )}
-                    </Form.Item>
-                    
-                    
-                    <Form.Item
-                        validateStatus={voltagemEEFeiranteError ? 'error' : ''}
-                        help={voltagemEEFeiranteError || ''}
-                    >
-                        {getFieldDecorator('voltagemEE', {rules: [{
-                            required: false,
-                            message: 'se tiver energia, mostrar que é requerido'
-                        }]})(
-                            <RadioGroup onChange={this.onChange} value={this.state.value}>
-                            <Radio  disabled={(getFieldValue('usaEE'))?false:true}
-                                value={1}>110v
-                                </Radio>
-                            <Radio  disabled={(getFieldValue('usaEE'))?false:true}
-                                value={2}>220v
-                                </Radio>
-                            </RadioGroup>
-                        )}
-                    </Form.Item>
-                   
+                    </Form.Item>                   
                     <Form.Item>
                     <Button
                         type="primary"
@@ -283,3 +323,10 @@ class FeirantesForm extends PureComponent {
 const WrappedHorizontalFeirantesForm = Form.create({ name: 'feirantes_form' })(FeirantesForm);
 
 export default WrappedHorizontalFeirantesForm;
+/*
+                Endereço:
+                  logradouro: values.logradouro,
+                  bairro: values.bairro,
+                  numero: parseInt(values.numero),
+                  CEP: cep
+*/

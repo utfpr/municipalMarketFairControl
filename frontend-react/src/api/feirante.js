@@ -11,6 +11,8 @@ export async function get() {
   return data.map(record => ({
     ...record,
     cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4'),
+    cnpj: record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5'),
+    rg: record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4'),
   }));
 }
 
@@ -18,10 +20,11 @@ export async function getByCpf(cpf) {
   const record = (await axios.get(`${host}/${cpf}`, {
     headers: { token: localStorage.getItem('token') },  
   })).data;
-  return { ...record, cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4'), 
-                      rg: record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4'), 
-                      cnpj: record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5'), 
-                      cep: record.endereco.cep.replace(/(\d{5})(\d{3})/g, '$1-$2')};
+  return { ...record, 
+    cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4'), 
+    rg: record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4'), 
+    cnpj: record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5'), 
+    cep: record.endereco.cep.replace(/(\d{5})(\d{3})/g, '$1-$2')};
 }
 
 export async function post(
@@ -41,7 +44,7 @@ export async function post(
 ) {
   await axios.post(
     host, {
-      cpf,
+      cpf: cpf.replace(/\D/g, ''),
       cnpj,
       nome,
       rg,   
@@ -73,9 +76,10 @@ export async function put(
   voltagem_ee,
   sub_categoria_id,
 ) {
-  await axios.put(`${host}/${cpf}`, {
+  console.log(cpf.replace(/\D/g, ''));
+  await axios.put(`${host}/${cpf.replace(/\D/g, '')}`, {
     cnpj,
-    nome,
+    nome, 
     rg, 
     usa_ee, 
     nome_fantasia,

@@ -1,7 +1,10 @@
 const cpfCheck = require('cpf-check');
 const cnpjCheck = require('cnpj');
 
-const isCpf = cpf => cpfCheck.validate(cpfCheck.strip(cpf)).valid;
+const isCpf = cpf => {
+  console.log(cpf);
+  return cpfCheck.validate(cpfCheck.strip(cpf)).valid;
+}
 const isCnpj = cnpj => cnpj === '' || cnpjCheck.validate(cnpj); // CNPJ pode ser vazio
 const isEndereco = (endereco) => {
   if (

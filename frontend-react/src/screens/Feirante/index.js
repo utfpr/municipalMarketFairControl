@@ -1,13 +1,15 @@
 import React, { PureComponent, Fragment } from 'react';
 import { 
     Button, Modal,
-    Tag,
+    Tag, Table,
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';
 import TabelaComponent from '../../components/TabelaComponent';
 import FeirantesForm from './FeirantesForm';
 import * as feirantesAPI from '../../api/feirante';
+
+const { Column } = Table;
 
 export default class FeiranteScreen extends PureComponent {
 
@@ -122,7 +124,7 @@ export default class FeiranteScreen extends PureComponent {
                 key: 'cnpj', 
                 dataIndex: 'cnpj',
                 title: 'Cnpj',
-                width: 60,
+                width: 120,
                 render: (cnpj) => {
                     return cnpj
                     ? cnpj
@@ -133,7 +135,7 @@ export default class FeiranteScreen extends PureComponent {
                 key: 'rg',
                 dataIndex: 'rg',
                 title: 'RG',
-                width: 60,
+                width: 100,
             },
             {
                 key: 'nome',
@@ -183,15 +185,75 @@ export default class FeiranteScreen extends PureComponent {
                     }}
                     title="Feirantes"
                 >
-                    <TabelaComponent
-                        linhas={feirantes} 
-                        colunas={colunas}
+                    <Table
+                        dataSource={feirantes} 
                         size="small"
                         loading={loading}
                         pagination={{
                             pageSize: 15,
                         }}
-                    />
+                    >
+                        <Column
+                            key='nome'
+                            dataIndex='nome'
+                            title='Nome'
+                        />
+                        <Column
+                            key='nome_fantasia'
+                            dataIndex='nome_fantasia'
+                            title='Nome Fantasia'
+                        />
+                        <Column
+                            key='cpf'
+                            dataIndex='cpf'
+                            title='Cpf'
+                            width={120}
+                        />
+                        
+                        <Column
+                            key='rg'
+                            dataIndex='rg'
+                            title='RG'
+                            width={100}
+                        />
+                        <Column
+                            key='cnpj' 
+                            dataIndex='cnpj'
+                            title='Cnpj'
+                            width={180}
+                            render={(cnpj) => {
+                                return cnpj
+                                ? cnpj
+                                : <Tag color='#f50'>Não usa</Tag>
+                            }}
+                        />
+                        <Column
+                            key='usa_ee'
+                            dataIndex='usa_ee'
+                            title='Usa EE'
+                            width={70}
+                            render={(usa_ee, linha) => {
+                                return usa_ee
+                                ? <Tag color={linha.voltagem_ee === 110 ? '#87d068' : '#1abc9c'}>{linha.voltagem_ee}v</Tag>
+                                : <Tag color="#f50">Não</Tag>
+                            }}
+                        />
+                        <Column
+                            key='acoes'
+                            title='Ações'
+                            width={160}
+                            render={ linha => (
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <Button type="primary" onClick={() => this.showModal(linha)}>
+                                        Detalhes
+                                    </Button>
+                                    
+                                    
+                                </div>
+                            )}
+                        />
+                    </Table>
+
                     { this._renderModal() }
                 </ContentComponent>
             </Fragment>

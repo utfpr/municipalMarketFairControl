@@ -188,7 +188,6 @@ router.put(
     if (!validationResult(req).isEmpty()) return res.status(400).send();
 
     const { cpf } = req.params;
-
     const {
       cnpj,
       nome,
@@ -204,6 +203,8 @@ router.put(
       sub_categoria_id,
     } = req.body;
 
+    console.log('Validacoes', cpf);
+
     if (sub_categoria_id !== undefined) {
       const subcategoria = await subCategoriaController.findSubcategoriaById(sub_categoria_id);
       if (subcategoria === null) return res.json({ msg: 'subcategoria_nao_existe' });
@@ -214,7 +215,7 @@ router.put(
 
     // Isso permite tornar os atributos opcionais (atualiza somente o que precisar)
     const ret = await feiranteController.updateFeirante(cpf, {
-      ...(cnpj !== undefined ? { cnpj } : {}),
+      ...(cnpj !== undefined ? { cnpj } : {}), 
       ...(nome !== undefined ? { nome } : {}),
       ...(rg !== undefined ? { rg } : {}),
       ...(senha !== undefined ? { senha } : {}),
