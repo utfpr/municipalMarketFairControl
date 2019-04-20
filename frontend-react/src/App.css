@@ -6,3 +6,16 @@
     height: 40px !important;
     background: rgba(255,255,255, 0.2);
 }
+
+
+.meioPeriodo {
+    fill: yellow;
+    cursor: pointer;
+    outline: none;
+}
+
+.diaTodo {
+    fill: red;
+    cursor: pointer;
+    outline: none;
+}

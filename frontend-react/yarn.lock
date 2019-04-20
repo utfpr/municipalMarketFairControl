@@ -9148,10 +9148,10 @@ react-slick@~0.23.2:
     prettier "^1.14.3"
     resize-observer-polyfill "^1.5.0"
 
-react-svg-map@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/react-svg-map/-/react-svg-map-1.2.0.tgz#dd43c80d8c72af440204caea259a90f14fe1051d"
-  integrity sha512-YuZWOfQ4nLWk9/zCs8odjjon3KmPhfQbYoIkruRcQTvyg+vfjB7v/3imMLTNDDGI/CuM9+1q0hnfJEe3eLegUg==
+react-svg-map@1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/react-svg-map/-/react-svg-map-1.3.1.tgz#b1a7b23fd5efb6a66dd3fa460dfbc0a03dc5c2df"
+  integrity sha512-/BeilQGMBVDX6dvvkePy01oSdvciKPr4gVR/TIUSfTLvAWORviIqvjjMBhiZ5k2YSikBmDvLf2GeS5oovSt2sg==
   dependencies:
     prop-types "^15.6.2"
 
