@@ -7,15 +7,45 @@
     background: rgba(255,255,255, 0.2);
 }
 
-
-.meioPeriodo {
-    fill: yellow;
+.celulaMapa {
     cursor: pointer;
     outline: none;
+    /* stroke: 0.5px; */
+}
+
+.livre {
+    fill: #1abc9c;
+}
+
+.meioPeriodo {
+    fill: #f1c40f !important;
 }
 
 .diaTodo {
-    fill: red;
-    cursor: pointer;
-    outline: none;
+    fill: #e74c3c !important;
+}
+
+.livre:hover {
+    fill: rgb(32, 212, 176);
+}
+
+.meioPeriodo:hover {
+    fill: rgb(252, 208, 34) !important;
+}
+
+.diaTodo:hover {
+    fill: rgb(255, 95, 77) !important;
+}
+
+.map-tooltip {
+    position: fixed;
+	width: 250px;
+	padding: 10px;
+	border: 1px solid darkgray;
+    background-color: white;
+}
+
+.map-tooltip p {
+    padding: 0 !important;
+    margin: 0 !important;
 }

@@ -106,7 +106,7 @@ class HomeScreen extends Component {
                                 flex: 1,
                             }}
                         >
-                            Municipal Market Fair Control
+                            Sistema de Controle da Feira Criativa
                         </h1>
                         <Popconfirm
                             title="Você quer sair da aplicação?"

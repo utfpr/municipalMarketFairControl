@@ -148,7 +148,7 @@ router.post(
     if (celulaId !== null) {
       const celula = await celulaController.findCelulaById(celulaId);
       if (celula === null) return res.json({ msg: 'celula_invalida' });
-
+      console.log(celula);
       if (celula.periodo !== confirmacao.periodo) return res.json({ msg: 'periodo_invalido' });
 
       const dadosCelula = await participaController.getDadosCelulaFeiraAtual(celulaId);
@@ -156,6 +156,8 @@ router.post(
         return res.json({ msg: 'celula_ocupada' });
       }
     }
+
+    console.log('Antes');
 
     const ret = await participaController.setPosicaoFeiranteFeiraAtual(
       cpfFeirante,

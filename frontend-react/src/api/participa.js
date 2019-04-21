@@ -8,13 +8,6 @@ export async function setPosicao(cpf, celula) {
   }, {
     headers: { token: localStorage.getItem('token') },
   });
-  if (res.status === 200) {
-    // eslint-disable-next-line no-alert
-    alert(`cpf ${cpf} : celula ${celula}`);
-  } else {
-    // eslint-disable-next-line no-alert
-    alert('Não foi possivel fazer a associação');
-  }
 }
 
 export async function getConfirmados() {

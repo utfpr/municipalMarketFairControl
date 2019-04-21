@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import ContentComponent from '../../components/ContentComponent';
 
-import { Table } from 'antd';
+import { Table, Modal, Tag } from 'antd';
 import moment from 'moment-timezone';
 
 import { SVGMap } from 'react-svg-map';
 import Map from './Mapa';
 import * as participaAPI from '../../api/participa';
-import * as celulaAPI from '../../api/celula';
+
+import AlocacaoForm from './AlocacaoForm';
 
 import 'react-svg-map/lib/index.css';
 
@@ -15,24 +16,79 @@ const { Column } = Table;
 
 export default class MapeamentoScreen extends PureComponent {
 
-    state = {
-        confirmados: [],
-        celulas: [],
-    };
+    constructor(props) {
+        super(props);
 
+        this.state = {
+            confirmados: [],
+            participa: [],
+            loading: true,
+			pointedLocation: null,
+            visible: false,
+            celula: {},
+			tooltipStyle: {
+				display: 'none'
+            },
+		};
+    
+        this.customMap = {
+          ...Map,
+        };
+
+        this.handleLocationMouseOver = this.handleLocationMouseOver.bind(this);
+		this.handleLocationMouseOut = this.handleLocationMouseOut.bind(this);
+		this.handleLocationMouseMove = this.handleLocationMouseMove.bind(this);
+	}
 
     componentDidMount() {
         this._loadValues();
     }
-
-    _loadValues = () => {
-        this._getConfirmados();
-        this._getCelulas();
+    
+    _getLocationName = (event) => {
+        return this._findCelula(Number(event.target.id));
     }
 
-    _getCelulas = async () => {
-        const celulas = await celulaAPI.get();
-        this.setState({celulas});
+    handleLocationMouseOver = (event) => {
+        const pointedLocation = this._getLocationName(event);
+		this.setState({ pointedLocation });
+	}
+
+	handleLocationMouseOut = () => {
+		this.setState({ pointedLocation: null, tooltipStyle: { display: 'none' } });
+	}
+
+	handleLocationMouseMove = (event) => {
+		const tooltipStyle = {
+			display: 'block',
+			top: event.clientY + 25,
+			left: event.clientX - 125
+		};
+		this.setState({ tooltipStyle });
+    }
+
+    _loadValues = async () => {
+        // this.setState({loading: true});
+        await this._getConfirmados();
+        await this._loadCelulas();
+        this.setState({loading: false});
+    }
+
+    _loadCelulas = () => {
+        const { confirmados } = this.state;
+        const customMap = this.customMap;
+        const newMap = {
+            ...customMap,
+            locations: customMap.locations.map(location => {
+                const feirantes = confirmados.feirantes.filter(feirante => feirante.celulaId === location.id);
+                const newLocation = {
+                    ...location,
+                    feirantes,
+                }
+
+                return newLocation;
+            })
+        }
+        this.customMap = newMap;
     }
 
     _getConfirmados = async () => {
@@ -41,31 +97,74 @@ export default class MapeamentoScreen extends PureComponent {
     }
 
     _onClick = event => {
-        console.log(event.target.id);
+        const id = Number(event.target.id);
+        const celula = this._findCelula(id);
+        this.setState({celula, visible: true});
     }
 
-    _isCelulaOcupada = (celulaDoMapa, index) => {
-        const { confirmados } = this.state;
-        if (!confirmados || !confirmados.feirantes) return 'svg-map__location';
-        const feiranteNaCelula = confirmados.feirantes.find(feirante => feirante.celulaId === celulaDoMapa.id);
-        if (!feiranteNaCelula) return 'svg-map__location';
-        return feiranteNaCelula.periodo === 3 ? 'diaTodo' : 'meioPeriodo';
+    _findCelula = id => {
+        return this.customMap.locations.find(location => location.id === id);
+    }
+
+    _renderCelulaColor = (celulaDoMapa, index) => {
+        
+        const celula = this._findCelula(celulaDoMapa.id);
+        if (!celula || !celula.feirantes || !celula.feirantes.length) return 'celulaMapa livre';
+        if ((celula.feirantes.length === 1 && celula.feirantes[0].periodo === 3)
+            || celula.feirantes.length === 2) 
+            return 'celulaMapa diaTodo';
+        return 'celulaMapa meioPeriodo';
+
+    }
+
+    _renderPeriodo = location => {
+        const periodo = typeof location === "object" ? location.periodo : location;
+        switch(periodo) {
+            case 1:
+                return 'Manhã';
+            case 2:
+                return 'Tarde';
+            case 3:
+                return 'Manhã e tarde';
+            default:
+                return null;
+        }
+    }
+
+    handleCancel = () => {
+        console.log('handle cancel');
+        this.setState({celula: {}, visible: false});
     }
 
     render() {
-        const { confirmados } = this.state;
+        const { 
+            confirmados, loading, pointedLocation,
+            visible, celula,
+        } = this.state;
 
         return (
             <ContentComponent
                 title="Mapeamento"
+                loading={loading}
             >
                 <div style={{ height: 'auto', width: '100%' }}>
                     <SVGMap
-                        map={Map}
+                        map={this.customMap}
                         onLocationClick={this._onClick}
-                        locationClassName={this._isCelulaOcupada}
+                        locationClassName={this._renderCelulaColor}
+                        onLocationMouseOver={this.handleLocationMouseOver}
+                        onLocationMouseOut={this.handleLocationMouseOut}
+                        onLocationMouseMove={this.handleLocationMouseMove}
                     />
+                    <div className="map-tooltip" style={this.state.tooltipStyle}>
+                        {
+                            pointedLocation && pointedLocation.feirantes.length
+                                ? pointedLocation.feirantes.map(location => <p key={location.feirante.cpf}>{location.feirante.nome} - {this._renderPeriodo(location)}</p>)
+                                : 'Livre'
+                        }
+                    </div>
                 </div>
+                <h2>Feirantes confirmados</h2>
                 <Table
                     dataSource={confirmados.feirantes}
                     rowKey={row => row.feirante.cpf}
@@ -75,11 +174,36 @@ export default class MapeamentoScreen extends PureComponent {
                         dataIndex="feirante.nome"
                     />
                     <Column
+                        title="Periodo"
+                        dataIndex="periodo"
+                        render={this._renderPeriodo}
+                    />
+                    <Column
                         title="Data e hora da confirmação"
                         dataIndex="horaConfirmacao"
                         render={data => moment(data, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY [às] HH:mm:ss')}
                     />
+                    <Column
+                        title="Alocado"
+                        dataIndex="celulaId"
+                        render={celula => celula !== null ? <Tag color="#87d068">Sim</Tag> : <Tag color="#f50">Não</Tag>}
+                    />
                 </Table>
+                <Modal
+                    title={`Alocar feirante na celula #${celula.id}`}
+                    visible={visible}
+                    onCancel={this.handleCancel}
+                    width={600}
+                    footer={null}
+                    >
+                        <AlocacaoForm 
+                            celula={celula}
+                            confirmados={confirmados}
+                            loadCelulas={this._loadCelulas}
+                            onSuccess={this.handleOk}
+                            refresh={this._loadValues}
+                        />
+                </Modal>
             </ContentComponent>
         );
     }
