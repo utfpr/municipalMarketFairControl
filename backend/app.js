@@ -14,6 +14,7 @@ const subcategoria = require('./routes/subcategoria');
 const participa = require('./routes/participa');
 const aviso = require('./routes/aviso');
 const date = require('./routes/date');
+const image = require('./routes/image');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -31,6 +32,7 @@ router.use('/subcategoria', subcategoria);
 router.use('/participa', participa);
 router.use('/aviso', aviso);
 router.use('/date', date);
+router.use('/image', image);
 
 app.use('/api', router);
 

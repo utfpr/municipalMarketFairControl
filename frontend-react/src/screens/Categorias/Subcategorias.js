@@ -91,7 +91,7 @@ class Subcategorias extends PureComponent {
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <Button shape="circle" icon="edit" onClick={() => this._onEditSub(linha)} />
                             <Popconfirm
-                                title="Você quer relamente deletar esta categoria?"
+                                title="Você quer deletar esta subcategoria?"
                                 okText="Sim"
                                 cancelText="Não"
                                 onConfirm={() => this._onDeleteSubCategoria(linha.id)}

@@ -130,7 +130,7 @@ export default class AvisosScreen extends PureComponent {
                                         Detalhes
                                     </Button>
                                     <Popconfirm
-                                        title="Você quer relamente deletar esta aviso?"
+                                        title="Você quer deletar esta aviso?"
                                         okText="Sim"
                                         cancelText="Não"
                                         onConfirm={() => this._onDeleteAviso(linha.id)}

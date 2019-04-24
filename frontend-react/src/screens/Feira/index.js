@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Table, Tag, Popconfirm, Button,
-    Modal, Form, DatePicker,
+    Modal, Form, DatePicker, Upload, Icon,
 } from 'antd';
 import moment from 'moment-timezone';
 
@@ -12,6 +12,8 @@ import * as feiraAPI from '../../api/feira';
 import styles from './Feira.module.scss';
 
 const { Column } = Table;
+
+const UPLOAD_URL = "http://localhost:3000/api/image/upload";
 
 function hasErrors(fieldsError) {
     return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -24,6 +26,7 @@ class FeiraScreen extends PureComponent {
         visible: false,
         feiraAtual: {},
         loading: true,
+        fileList: [],
     };
 
     componentDidMount() {
@@ -44,12 +47,14 @@ class FeiraScreen extends PureComponent {
         e.preventDefault();
         validateFields((err, values) => {
             const data = moment(values.data).format('YYYY-MM-DD');
+            const { photo } = values;
             if (!err) {
-                return feiraAPI.post(data)
+                return feiraAPI.post(data, photo[0].response.filename)
                     .then(() => {
                         resetFields();
                         this._loadFeiras();
                         this._hideModal();
+                        this.setState({fileList: []});
                     });
             }
         });
@@ -71,7 +76,7 @@ class FeiraScreen extends PureComponent {
 
         if (!feira.status) return (
             <Popconfirm
-                title="Você quer relamente reativar esta feira?"
+                title="Você quer reativar esta feira?"
                 okText="Sim"
                 cancelText="Não"
                 onConfirm={() => this._alteraStatusFeira(feira.data)}
@@ -84,7 +89,7 @@ class FeiraScreen extends PureComponent {
 
         return (
             <Popconfirm
-                title="Você quer relamente cancelar esta feira?"
+                title="Você quer cancelar esta feira?"
                 okText="Sim"
                 cancelText="Não"
                 onConfirm={() => this._alteraStatusFeira(feira.data)}
@@ -96,8 +101,43 @@ class FeiraScreen extends PureComponent {
         );
     }
 
+    normFile = (e) => {
+        console.log('Upload event:', e);
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e && e.fileList;
+    }
+    
+    handleChange = (info) => {
+        let fileList = info.fileList;
+    
+        // // 1. Limit the number of uploaded files
+        // // Only to show two recent uploaded files, and old ones will be replaced by the new
+        // fileList = fileList.slice(-2);
+    
+        // // 2. Read from response and show file link
+        // fileList = fileList.map((file) => {
+        //   if (file.response) {
+        //     // Component will show file.url as link
+        //     file.url = file.response.url;
+        //   }
+        //   return file;
+        // });
+    
+        // // 3. Filter successfully uploaded files according to response from server
+        // fileList = fileList.filter((file) => {
+        //   if (file.response) {
+        //     return file.response.status === 'success';
+        //   }
+        //   return false;
+        // });
+    
+        this.setState({ fileList });
+    }
+
     _renderModal = () => {
-        const { visible } = this.state;
+        const { visible, fileList } = this.state;
 
         const { form } = this.props;
 
@@ -117,7 +157,7 @@ class FeiraScreen extends PureComponent {
                 onCancel={this._hideModal}
                 footer={null}
             >
-                <Form layout="inline" onSubmit={this._handleSubmit}>
+                <Form onSubmit={this._handleSubmit}>
                     <Form.Item
                         validateStatus={dataError ? 'error' : ''}
                         help={dataError || ''}
@@ -128,6 +168,31 @@ class FeiraScreen extends PureComponent {
                         }]})(
                             <DatePicker placeholder="Selecione uma data" format="DD/MM/YYYY"/>
                         )}
+                    </Form.Item>
+                    <Form.Item>
+                        Possui evento neste dia?
+                        <div className="dropbox">
+                            {getFieldDecorator('photo', {
+                                valuePropName: 'fileList',
+                                getValueFromEvent: this.normFile,
+                                fileList: fileList,
+                                onChange: this.handleChange,
+                            })(
+                                <Upload 
+                                multiple={false}
+                                name="photo"
+                                action={UPLOAD_URL}
+                                disabled={fileList.length >= 1}
+                                // showUploadList={false}
+                                listType="picture"
+                                // 
+                            >
+                                <Button disabled={fileList.length >= 1}>
+                                    <Icon type="upload" /> Enviar foto do evento
+                                </Button>
+                            </Upload>
+                            )}
+                        </div>
                     </Form.Item>
                     <Button
                         type="primary"
@@ -148,7 +213,7 @@ class FeiraScreen extends PureComponent {
     }
 
     _hideModal = () => {
-        this.setState({visible: false});
+        this.setState({visible: false, fileList: []});
     }
 
     _renderFeiraAtual = () => {
@@ -167,7 +232,7 @@ class FeiraScreen extends PureComponent {
                 </div>
                 <div>
                     <Popconfirm
-                        title={<span>Você quer relamente inativar esta feira?</span>}
+                        title={<span>Você quer inativar esta feira?</span>}
                         okText="Sim"
                         cancelText="Não"
                         onConfirm={() => this._alteraStatusFeira(feiraAtual.data)}

@@ -18,9 +18,9 @@ export async function feiraAtual() {
   return feira ? feira.data : {};
 };
 
-export async function post(data) {
+export async function post(data, photo) {
   const feira = await axios
-    .post(host, { data }, { headers: { token: localStorage.getItem('token') } })
+    .post(host, { data, photo }, { headers: { token: localStorage.getItem('token') } })
     .catch(() => null);
 
   return Boolean(feira);

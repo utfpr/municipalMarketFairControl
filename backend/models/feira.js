@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: false,
       },
+      evento_image_url: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
+      },
       status: {
         type: DataTypes.BOOLEAN(),
         allowNull: true,
