@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import ContentComponent from '../../components/ContentComponent';
 
 import { Table, Modal, Tag } from 'antd';
@@ -14,7 +14,7 @@ import 'react-svg-map/lib/index.css';
 
 const { Column } = Table;
 
-export default class MapeamentoScreen extends PureComponent {
+export default class MapeamentoScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -23,17 +23,17 @@ export default class MapeamentoScreen extends PureComponent {
             confirmados: [],
             participa: [],
             loading: true,
-			pointedLocation: null,
+            pointedLocation: null,
+            selectedCelula: undefined,
             visible: false,
             celula: {},
 			tooltipStyle: {
 				display: 'none'
             },
+            customMap: {
+                ...Map,
+            }
 		};
-    
-        this.customMap = {
-          ...Map,
-        };
 
         this.handleLocationMouseOver = this.handleLocationMouseOver.bind(this);
 		this.handleLocationMouseOut = this.handleLocationMouseOut.bind(this);
@@ -67,15 +67,14 @@ export default class MapeamentoScreen extends PureComponent {
     }
 
     _loadValues = async () => {
-        // this.setState({loading: true});
+        const { selectedCelula } = this.state;
         await this._getConfirmados();
         await this._loadCelulas();
         this.setState({loading: false});
     }
 
     _loadCelulas = () => {
-        const { confirmados } = this.state;
-        const customMap = this.customMap;
+        const { confirmados, customMap, selectedCelula } = this.state;
         const newMap = {
             ...customMap,
             locations: customMap.locations.map(location => {
@@ -88,7 +87,12 @@ export default class MapeamentoScreen extends PureComponent {
                 return newLocation;
             })
         }
-        this.customMap = newMap;
+        
+        this.setState({ customMap: newMap });
+        
+        if (selectedCelula) {
+            this._refreshCelula();
+        }
     }
 
     _getConfirmados = async () => {
@@ -96,14 +100,21 @@ export default class MapeamentoScreen extends PureComponent {
         this.setState({confirmados});
     }
 
+    _refreshCelula = () => {
+        const { selectedCelula } = this.state;
+        console.log('refrescou');
+        const celula = this._findCelula(selectedCelula);
+        this.setState({celula});
+    }
+
     _onClick = event => {
         const id = Number(event.target.id);
-        const celula = this._findCelula(id);
-        this.setState({celula, visible: true});
+        this.setState({selectedCelula: id, visible: true}, this._refreshCelula);
     }
 
     _findCelula = id => {
-        return this.customMap.locations.find(location => location.id === id);
+        const { customMap } = this.state;
+        return customMap.locations.find(location => location.id === id);
     }
 
     _renderCelulaColor = (celulaDoMapa, index) => {
@@ -133,13 +144,13 @@ export default class MapeamentoScreen extends PureComponent {
 
     handleCancel = () => {
         console.log('handle cancel');
-        this.setState({celula: {}, visible: false});
+        this.setState({celula: {}, selectedCelula: undefined, visible: false});
     }
 
     render() {
         const { 
             confirmados, loading, pointedLocation,
-            visible, celula,
+            visible, celula, customMap,
         } = this.state;
 
         return (
@@ -149,7 +160,7 @@ export default class MapeamentoScreen extends PureComponent {
             >
                 <div style={{ height: 'auto', width: '100%' }}>
                     <SVGMap
-                        map={this.customMap}
+                        map={customMap}
                         onLocationClick={this._onClick}
                         locationClassName={this._renderCelulaColor}
                         onLocationMouseOver={this.handleLocationMouseOver}
@@ -198,7 +209,7 @@ export default class MapeamentoScreen extends PureComponent {
                     >
                         <AlocacaoForm 
                             celula={celula}
-                            confirmados={confirmados}
+                            confirmados={ {...confirmados } }
                             loadCelulas={this._loadCelulas}
                             onSuccess={this.handleOk}
                             refresh={this._loadValues}

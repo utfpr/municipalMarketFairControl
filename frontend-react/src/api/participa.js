@@ -4,10 +4,11 @@ const host = 'http://localhost:3000/api/participa';
 
 export async function setPosicao(cpf, celula) {
   const res = await axios.post(`${host}/posicao`, {
-    cpf_feirante: cpf, celula_id: celula, force: 1,
+    cpf_feirante: Number(cpf), celula_id: celula, force: 1,
   }, {
     headers: { token: localStorage.getItem('token') },
   });
+  return res ? res.data : [];
 }
 
 export async function getConfirmados() {

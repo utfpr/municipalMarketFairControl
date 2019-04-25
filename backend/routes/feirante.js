@@ -186,7 +186,6 @@ router.put(
   ],
   async (req, res) => {
     const { cpf } = req.params;
-    console.log('Entrou', req);
 
     if (validationResult(req).isEmpty()) return res.status(400).send();
 

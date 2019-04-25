@@ -123,14 +123,17 @@ router.post(
   authMiddleware.isSupervisor,
   [
     body('cpf_feirante').custom(isCpf),
-    /* (body('celula_id').isInt().isJSON(), */ body('force').isBoolean(),
+    body('force').isInt(),
+    body('celula_id').isInt(),
   ],
   async (req, res) => {
-    if (!validationResult(req).isEmpty()) return res.status(400).send();
+    // const errors = validationResult(req);
+    if (!req.body) return res.status(400).send();
 
-    const cpfFeirante = req.body.cpf_feirante;
-    const celulaId = req.body.celula_id;
-    const { force } = req.body;
+    const {
+      force, celula_id: celulaId, cpf_feirante: cpfFeirante,
+    } = req.body;
+
 
     if (typeof celulaId !== 'number' && celulaId !== null) return res.status(400).send();
     const feira = await feiraController.findFeiraAtual();
@@ -148,16 +151,13 @@ router.post(
     if (celulaId !== null) {
       const celula = await celulaController.findCelulaById(celulaId);
       if (celula === null) return res.json({ msg: 'celula_invalida' });
-      console.log(celula);
-      if (celula.periodo !== confirmacao.periodo) return res.json({ msg: 'periodo_invalido' });
+      // if (celula.periodo !== confirmacao.periodo) return res.json({ msg: 'periodo_invalido' });
 
       const dadosCelula = await participaController.getDadosCelulaFeiraAtual(celulaId);
       if (dadosCelula.cpfFeirante !== null && force === false) {
         return res.json({ msg: 'celula_ocupada' });
       }
     }
-
-    console.log('Antes');
 
     const ret = await participaController.setPosicaoFeiranteFeiraAtual(
       cpfFeirante,
