@@ -42,7 +42,7 @@ router.post(
       .isLength({ min: 6, max: 100 }),
   ],
   async (req, res) => {
-    if (!validationResult(req).isEmpty()) return res.status(400).send();
+    if (!req.body) return res.status(400).send();
 
     const {
       cpf,
@@ -185,7 +185,7 @@ router.put(
       .isLength({ min: 6, max: 100 }),
   ],
   async (req, res) => {
-    if (!validationResult(req).isEmpty()) return res.status(400).send();
+    if (!req.body) return res.status(400).send();
 
     const { cpf } = req.params;
     const {

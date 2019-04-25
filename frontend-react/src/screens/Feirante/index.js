@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { 
     Button, Modal,
     Tag, Table,
+    Select,
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';
@@ -10,6 +11,7 @@ import FeirantesForm from './FeirantesForm';
 import * as feirantesAPI from '../../api/feirante';
 
 const { Column } = Table;
+const Option = Select.Option;
 
 export default class FeiranteScreen extends PureComponent {
 
@@ -93,7 +95,7 @@ export default class FeiranteScreen extends PureComponent {
             </Modal>
         );
     }
- 
+
 /* atrubutos :
   cpf,
   cnpj,
@@ -244,7 +246,10 @@ export default class FeiranteScreen extends PureComponent {
                             width={160}
                             render={ linha => (
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <Button type="primary" onClick={() => this.showModal(linha)}>
+                                    <Button 
+                                        type="primary" 
+                                        onClick={() => this.showModal(linha)}
+                                    >
                                         Detalhes
                                     </Button>
                                     

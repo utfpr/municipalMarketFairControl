@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { 
+import {
     Button, Form,
     Input,
 } from 'antd';
@@ -21,7 +21,7 @@ class UpdateSubcategoria extends PureComponent {
         this._loadValues();
     }
 
-    _loadValues = async() => {
+    _loadValues = async () => {
         const { form: { setFieldsValue }, subcategoria } = this.props;
 
         return setFieldsValue({
@@ -30,8 +30,8 @@ class UpdateSubcategoria extends PureComponent {
     }
 
     _updateSubcategoriaSubmit = event => {
-        const { 
-            form: {resetFields}, subcategoria, refresh,
+        const {
+            form: { resetFields }, subcategoria, refresh,
             onCancel,
         } = this.props;
 
@@ -41,7 +41,7 @@ class UpdateSubcategoria extends PureComponent {
                 return subcategoriasAPI.put(values.nome, subcategoria.id)
                     .then(() => {
                         resetFields(['nome']);
-                        this.setState({subcategoria: {}});
+                        this.setState({ subcategoria: {} });
                         onCancel();
                         refresh();
                     });
@@ -67,26 +67,28 @@ class UpdateSubcategoria extends PureComponent {
                     validateStatus={nomeError ? 'error' : ''}
                     help={nomeError || ''}
                 >
-                    {getFieldDecorator('nome', {rules: [{
-                        required: true,
-                        message: 'O nome da subcategoria é obrigatório!'
-                    }]})(
+                    {getFieldDecorator('nome', {
+                        rules: [{
+                            required: true,
+                            message: 'O nome da subcategoria é obrigatório!'
+                        }]
+                    })(
                         <Input
                             placeholder="Nome"
                         />
                     )}
                 </Form.Item>
                 <Form.Item>
-                <Button
-                    type="primary"
-                    htmlType="submit"
-                    block
-                    disabled={
-                        hasErrors(getFieldsError())
-                        || !getFieldValue('nome')
-                    }
-                >
-                    Atualizar
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        block
+                        disabled={
+                            hasErrors(getFieldsError())
+                            || !getFieldValue('nome')
+                        }
+                    >
+                        Atualizar
                 </Button>
                 </Form.Item>
             </Form>

@@ -81,7 +81,7 @@ export async function put(
     cnpj,
     nome, 
     rg, 
-    usa_ee, 
+    usa_ee: usa_ee ? 1 : 0, 
     nome_fantasia,
     razao_social,
     comprimento_barraca,

@@ -1,11 +1,15 @@
 import React, { PureComponent, Fragment } from 'react';
 
-import { 
+import {
     Input, Button, Form,
-    Checkbox,Radio,
+    Checkbox, Radio, Select,
+    Row, Col,
 } from 'antd';
 
 import * as feirantesAPI from '../../api/feirante';
+import * as categoriasAPI from '../../api/categoria';
+
+const Option = Select.Option;
 
 function hasErrors(fieldsError) {
     return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -13,11 +17,32 @@ function hasErrors(fieldsError) {
 
 class FeirantesForm extends PureComponent {
 
-    state = {};
+    state = {
+        categorias: [],
+        subcategorias: [],
+    };
 
-    async componentDidMount() {
+    componentDidMount() {
         this.props.form.validateFields();
-        await this._loadValues();
+        this._loadValues();
+        this._loadCategorias();
+    }
+
+    _handleChange = async (value) => {
+        const { form } = this.props;
+        const { setFieldsValue } = form;
+        await setFieldsValue({
+            subcategoria: '',
+        })
+        this._loadSubcategorias(value);
+    }
+
+    _handleBlur = () => {
+        console.log('blur');
+    }
+
+    _handleFocus = () => {
+        console.log('focus');
     }
 
     _loadValues = async cpf => {
@@ -28,41 +53,54 @@ class FeirantesForm extends PureComponent {
             await setFieldsValue({
                 cpf: feirante.cpf,
                 cnpj: feirante.cnpj,
-                nomeFantasia: feirante.nome_fantasia ,
-                nomeFeirante: feirante.nome ,
-                rg: feirante.rg ,
-                razaoSocial: feirante.razao_social ,
-                comprimentoBarraca: feirante.comprimento_barraca ,
-                larguraBarraca:feirante.largura_barraca ,
-                voltagemEE : (feirante.usa_ee==1)
-                             ?((feirante.voltagem_ee===110)
-                                 ? 1 :2)
-                             :0 ,
-                usaEE :feirante.usa_ee,
+                nomeFantasia: feirante.nome_fantasia,
+                nomeFeirante: feirante.nome,
+                rg: feirante.rg,
+                razaoSocial: feirante.razao_social,
+                comprimentoBarraca: feirante.comprimento_barraca,
+                larguraBarraca: feirante.largura_barraca,
+                voltagemEE: (feirante.usa_ee == 1)
+                    ? ((feirante.voltagem_ee === 110)
+                        ? 1 : 2)
+                    : 0,
+                usaEE: feirante.usa_ee,
+                
             });
         }
     }
 
- /*PUT já existe , POST novo
-  cpf,
-  cnpj,
-  nome,
-  rg, 
-  usa_ee, 
-  nome_fantasia,
-  razao_social,
-  comprimento_barraca,
-  largura_barraca,
-  endereco,
-  voltagem_ee,
-  sub_categoria_id,
-  POST : senha
-  */
+    _loadCategorias = async () => {
+        this.setState({ loading: true });
+        const categorias = await categoriasAPI.get();
+        this.setState({ categorias, loading: false });
+    }
+
+    _loadSubcategorias = async id => {
+        this.setState({ loading: true });
+        const subcategorias = await categoriasAPI.getSub(id);
+        this.setState({ subcategorias, loading: false });
+    }
+
+    /*PUT já existe , POST novo
+     cpf,
+     cnpj,
+     nome,
+     rg, 
+     usa_ee, 
+     nome_fantasia,
+     razao_social,
+     comprimento_barraca,
+     largura_barraca,
+     endereco,
+     voltagem_ee,
+     sub_categoria_id,
+     POST : senha
+     */
 
 
     _handleSubmit = (e) => {
-        const { 
-            refresh, onSuccess, form: {resetFields},
+        const {
+            refresh, onSuccess, form: { resetFields },
             feirante,
         } = this.props;
         e.preventDefault();
@@ -75,7 +113,7 @@ class FeirantesForm extends PureComponent {
                         .put(
                             feirante.cpf,
                             values.cnpj,
-                            values.nome,
+                            values.nomeFeirante,
                             values.rg,
                             values.usaEE,
                             values.nomeFantasia,
@@ -89,7 +127,7 @@ class FeirantesForm extends PureComponent {
                                 CEP: '87113100',
                             },
                             values.voltagemEE === 1 ? 110 : 220,
-                            1, // FALTA O SUBCATEGORIA E ENDEREÇO
+                            values.subcategoria,
                             1234506,
                         )
                         .then(() => {
@@ -114,8 +152,8 @@ class FeirantesForm extends PureComponent {
                             CEP: '87113100',
                         },
                         values.voltagemEE === 1 ? 110 : 220,
-                        1,
-                        123456,
+                        values.subcategoria,
+                        123456, // FALTA O CAMPO DA SENHA 
                     )
                         .then(() => {
                             resetFields();
@@ -127,9 +165,10 @@ class FeirantesForm extends PureComponent {
     }
 
     render() {
+        const { categorias, subcategorias } = this.state;
         const { feirante, form } = this.props;
         const RadioGroup = Radio.Group;
-        
+
         const {
             getFieldDecorator, getFieldsError, getFieldError,
             isFieldTouched, getFieldValue,
@@ -146,175 +185,277 @@ class FeirantesForm extends PureComponent {
         const larguraFeiranteError = isFieldTouched('larguraBarraca') && getFieldError('larguraBarraca');
         //const enderecoFeiranteError = isFieldTouched('endereco') && getFieldError('endereco');
         const voltagemEEFeiranteError = isFieldTouched('voltagemEE') && getFieldError('voltagemEE');
-        //const subcategoriaFeiranteError = isFieldTouched('subcategoria') && getFieldError('subcategoria');
-        
+        const subcategoriaFeiranteError = isFieldTouched('subcategoria') && getFieldError('subcategoria');
+        const categoriaFeiranteError = isFieldTouched('categoria') && getFieldError('categoria');
+
 
         return (
             <Fragment>
                 <Form onSubmit={this._handleSubmit}>
-                    
-                <Form.Item
-                    label="Nome"
-                    validateStatus={nomeFeiranteError ? 'error' : ''}
-                    help={nomeFeiranteError || ''}
+
+                    <Form.Item
+                        label="Nome"
+                        validateStatus={nomeFeiranteError ? 'error' : ''}
+                        help={nomeFeiranteError || ''}
                     >
-                        {getFieldDecorator('nomeFeirante', {rules :[{
-                            required: true,
-                            message: "O nome do feirante é obrigatório!"
-                        }]})(
-                            <Input 
-                            placeholder="Nome"
+                        {getFieldDecorator('nomeFeirante', {
+                            rules: [{
+                                required: true,
+                                message: "O nome do feirante é obrigatório!"
+                            }]
+                        })(
+                            <Input
+                                placeholder="Pedro Silva"
                             />
                         )}
                     </Form.Item>
                     <Form.Item
                         validateStatus={cpfFeiranteError ? 'error' : ''}
                         help={cpfFeiranteError || ''}
+                        label="CPF"
                     >
-                        {getFieldDecorator('cpf', {rules: [{
-                            required: true,
-                            message: 'O CPF do feirante é obrigatório!'
-                        }]})(
+                        {getFieldDecorator('cpf', {
+                            rules: [{
+                                required: true,
+                                message: 'O CPF do feirante é obrigatório!'
+                            }]
+                        })(
                             <Input
-                                placeholder="CPF"
+                                disabled={Boolean(feirante.cpf)}
+                                placeholder="123.456.789-10"
                             />
                         )}
                     </Form.Item>
                     <Form.Item
+                        label="CNPJ"
                         validateStatus={cnpjFeiranteError ? 'error' : ''}
                         help={cnpjFeiranteError || ''}
                     >
-                        {getFieldDecorator('cnpj', {rules: [{
-                            required: false,
-                            message: 'O cnpj do feirante é obrigatório!'
-                        }]})(
+                        {getFieldDecorator('cnpj', {
+                            rules: [{
+                                required: false,
+                                message: 'O cnpj do feirante é obrigatório!'
+                            }]
+                        })(
                             <Input
-                                placeholder="CNPJ"
+                                placeholder="12.456.321/1234-56"
                             />
                         )}
                     </Form.Item>
                     <Form.Item
+                        label="RG"
                         validateStatus={rgFeiranteError ? 'error' : ''}
                         help={rgFeiranteError || ''}
                     >
-                        {getFieldDecorator('rg', {rules: [{
-                            required: true,
-                            message: 'O rg do feirante é obrigatório para sua categoria!'
-                        }]})(
+                        {getFieldDecorator('rg', {
+                            rules: [{
+                                required: true,
+                                message: 'O rg do feirante é obrigatório para sua categoria!'
+                            }]
+                        })(
                             <Input
-                                placeholder="RG"
+                                disabled={Boolean(feirante.rg)}
+                                placeholder="12.345.123-1"
                             />
                         )}
                     </Form.Item>
                     <Form.Item
-                        validateStatus={usaEEFeiranteError ? 'error' : ''}
-                        help={usaEEFeiranteError || ''}
-                    >
-                        {getFieldDecorator('usaEE', {rules: [{
-                            required: true,
-                            message: 'É preciso especificar se o feirante usa energia.'
-                        }]})(
-                            <Checkbox checked={getFieldValue('usaEE')}>Usa Eletricidade</Checkbox>
-                        )}
-                    </Form.Item>
-                    <Form.Item
-                        validateStatus={voltagemEEFeiranteError ? 'error' : ''}
-                        help={voltagemEEFeiranteError || ''}
-                    >
-                        {getFieldDecorator('voltagemEE', {rules: [{
-                            required: false,
-                            message: 'se tiver energia, mostrar que é requerido'
-                        }]})(
-                            <RadioGroup onChange={this.onChange} value={this.state.value}>
-                                <Radio
-                                    disabled={(getFieldValue('usaEE'))?false:true}
-                                    value={1}
-                                >
-                                    110v
-                                </Radio>
-                                <Radio 
-                                    disabled={(getFieldValue('usaEE'))?false:true}
-                                    value={2}
-                                >
-                                    220v
-                                </Radio>
-                            </RadioGroup>
-                        )}
-                    </Form.Item>
-                    <Form.Item
+                        label="Nome Fantasia"
                         validateStatus={nomeFantasiaFeiranteError ? 'error' : ''}
                         help={nomeFantasiaFeiranteError || ''}
                     >
-                        {getFieldDecorator('nomeFantasia', {rules: [{
-                            required: false,
-                            message: 'O nome fantasia do feirante é obrigatório!'
-                        }]})(
+                        {getFieldDecorator('nomeFantasia', {
+                            rules: [{
+                                required: false,
+                                message: 'O nome fantasia do feirante é obrigatório!'
+                            }]
+                        })(
                             <Input
                                 placeholder="Nome Fantasia"
                             />
                         )}
                     </Form.Item>
                     <Form.Item
+                        label="Razão Social"
                         validateStatus={razaoSocialFeiranteError ? 'error' : ''}
                         help={razaoSocialFeiranteError || ''}
                     >
-                        {getFieldDecorator('razaoSocial', {rules: [{
-                            required: false,
-                            message: 'A razao social não é obrigatória!'
-                        }]})(
+                        {getFieldDecorator('razaoSocial', {
+                            rules: [{
+                                required: false,
+                                message: 'A razao social não é obrigatória!'
+                            }]
+                        })(
                             <Input
                                 placeholder="Razão Social"
                             />
                         )}
                     </Form.Item>
-                    
-                    <Form.Item
-                        validateStatus={comprimentoFeiranteError ? 'error' : ''}
-                        help={comprimentoFeiranteError || ''}
-                    >
-                        {getFieldDecorator('comprimentoBarraca', {rules: [{
-                            required: false,
-                            message: 'É necessário especificar o comprimento da barraca.'
-                        }]})(
-                            <Input
-                                placeholder="Comprimento da barraca (em metros)."
-                            />
-                        )}
-                    </Form.Item>
+                    <Row gutter={24}>
+                        <Col lg={12}>
+                            <Form.Item label='Categoria'>
+                                {getFieldDecorator('categoria', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'A categoria é obrigatória!'
+                                    }]
+                                })(
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder='Selecione uma categoria'
+                                        optionFilterProp='children'
+                                        onChange={this._handleChange}
+                                        //onFocus={handleFocus}
+                                        //onBlur={handleBlur}
+                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                    >
+                                        {
+                                            categorias.map(categoria => (
+                                                <Option key={categoria.id} value={categoria.id}>{categoria.nome}</Option>
+                                            ))
+                                        }
 
-                    <Form.Item
-                        validateStatus={larguraFeiranteError ? 'error' : ''}
-                        help={larguraFeiranteError || ''}
-                    >
-                        {getFieldDecorator('larguraBarraca', {rules: [{
-                            required: false,
-                            message: 'É necessário especificar a largura da barraca.'
-                        }]})(
-                            <Input
-                                placeholder="Largura da barraca (em metros)."
-                            />
-                        )}
-                    </Form.Item>                   
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col lg={12}>
+                            <Form.Item label='Subcategoria'>
+                                {getFieldDecorator('subcategoria', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'A subcategoria é obrigatória!'
+                                    }]
+                                })(
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder='Selecione uma subcategoria'
+                                        optionFilterProp='children'
+                                        //onChange={handleChange}
+                                        //onFocus={handleFocus}
+                                        //onBlur={handleBlur}
+                                        disabled={getFieldValue('categoria') ? false : true}
+                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                    >
+                                        {
+                                            subcategorias.map(subcategoria => (
+                                                <Option key={subcategoria.id} value={subcategoria.id}>{subcategoria.nome}</Option>
+                                            ))
+                                        }
+
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={24}>
+                        <Col lg={12}>
+                            <Form.Item
+                                validateStatus={usaEEFeiranteError ? 'error' : ''}
+                                help={usaEEFeiranteError || ''}
+                            >
+                                {getFieldDecorator('usaEE', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'É preciso especificar se o feirante usa energia.'
+                                    }]
+                                })(
+                                    <Checkbox checked={getFieldValue('usaEE')}>Usa Eletricidade</Checkbox>
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col lg={12}>
+                            <Form.Item
+                                validateStatus={voltagemEEFeiranteError ? 'error' : ''}
+                                help={voltagemEEFeiranteError || ''}
+                            >
+                                {getFieldDecorator('voltagemEE', {
+                                    rules: [{
+                                        required: false,
+                                        message: 'se tiver energia, mostrar que é requerido'
+                                    }]
+                                })(
+                                    <RadioGroup onChange={this.onChange} value={this.state.value}>
+                                        <Radio
+                                            disabled={(getFieldValue('usaEE')) ? false : true}
+                                            value={1}
+                                        >
+                                            110v
+                                        </Radio>
+                                        <Radio
+                                            disabled={(getFieldValue('usaEE')) ? false : true}
+                                            value={2}
+                                        >
+                                            220v
+                                        </Radio>
+                                    </RadioGroup>
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={24}>
+                        <Col lg={12}>
+                            <Form.Item
+                                label="Comprimento da barraca"
+                                validateStatus={comprimentoFeiranteError ? 'error' : ''}
+                                help={comprimentoFeiranteError || ''}
+                            >
+                                {getFieldDecorator('comprimentoBarraca', {
+                                    rules: [{
+                                        required: false,
+                                        message: 'É necessário especificar o comprimento da barraca.'
+                                    }]
+                                })(
+                                    <Input
+                                        placeholder="Comprimento da barraca (em metros)."
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col lg={12}>
+                            <Form.Item
+                                label="Largura da barraca"
+                                validateStatus={larguraFeiranteError ? 'error' : ''}
+                                help={larguraFeiranteError || ''}
+                            >
+                                {getFieldDecorator('larguraBarraca', {
+                                    rules: [{
+                                        required: false,
+                                        message: 'É necessário especificar a largura da barraca.'
+                                    }]
+                                })(
+                                    <Input
+                                        placeholder="Largura da barraca (em metros)."
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
                     <Form.Item>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        /*disabled="false"/*{
-                            hasErrors(getFieldsError())
-                            || getFieldValue('nome') === feirante.nome
-                        }*/
-                    >
-                        {
-                            feirante.cpf
-                                ? 'Atualizar'
-                                : 'Adicionar'
-                        }
-                    </Button>
+                    
+                    <Input.Password placeholder="password" />
+                    
                     </Form.Item>
 
-                    
-                </Form>
-            </Fragment>
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                        >
+                            {
+                                feirante.cpf
+                                    ? 'Atualizar'
+                                    : 'Adicionar'
+                            }
+                        </Button>
+                    </Form.Item>
+
+
+                </Form >
+            </Fragment >
         );
     }
 
