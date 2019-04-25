@@ -67,7 +67,6 @@ export default class MapeamentoScreen extends Component {
     }
 
     _loadValues = async () => {
-        const { selectedCelula } = this.state;
         await this._getConfirmados();
         await this._loadCelulas();
         this.setState({loading: false});
@@ -77,10 +76,12 @@ export default class MapeamentoScreen extends Component {
         const { confirmados, customMap, selectedCelula } = this.state;
         const newMap = {
             ...customMap,
-            locations: customMap.locations.map(location => {
-                const feirantes = confirmados.feirantes.filter(feirante => feirante.celulaId === location.id);
+            locations: customMap.locations.map((location, index) => {
+                const feirantes = confirmados.feirantes.filter(feirante => feirante.celulaId === index);
                 const newLocation = {
                     ...location,
+                    id: index,
+                    name: `Celula ${index}`,
                     feirantes,
                 }
 
@@ -114,7 +115,7 @@ export default class MapeamentoScreen extends Component {
 
     _findCelula = id => {
         const { customMap } = this.state;
-        return customMap.locations.find(location => location.id === id);
+        return customMap.locations.find((location) => location.id === id);
     }
 
     _renderCelulaColor = (celulaDoMapa, index) => {
