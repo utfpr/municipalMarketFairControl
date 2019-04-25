@@ -234,7 +234,7 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
 
   if (celulaId !== null) {
     const celula = await celulaController.findCelulaById(celulaId);
-    if (celula.periodo !== confirmacao.periodo) return null;
+    if (!celula) return null;
   }
 
   if (celulaId === null) {
@@ -248,24 +248,27 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
   const dadosCelula = await getDadosCelulaFeiraAtual(celulaId);
   if (dadosCelula.cpfFeirante === null) {
     try {
-      return await confirmacao.update({ celula_id: celulaId });
+      const confirmaCelula = await confirmacao.update({ celula_id: celulaId });
+      return confirmaCelula;
     } catch (error) {
       return null;
     }
   }
 
-  if (force) {
+  if (force && celulaId === null) {
+    console.log('force', celulaId, feira.data);
     const confirmacaoCelulaOcupada = await models.sequelize.participa.findOne({
       where: { data_feira: feira.data, celula_id: celulaId },
     });
+    console.log(confirmacaoCelulaOcupada);
     try {
       await confirmacaoCelulaOcupada.update({ celula_id: null });
-      return await confirmacao.update({ celula_id: celulaId });
     } catch (error) {
       return null;
     }
   }
-  return null;
+
+  return confirmacao.update({ celula_id: celulaId });
 };
 
 module.exports = {

@@ -8,5 +8,5 @@ export  async function get() {
       headers: { token: localStorage.getItem('token') },
     })
     .catch(() => null);
-  return info === null ? null : info.data;
+  return info ? info.data : [];
 }

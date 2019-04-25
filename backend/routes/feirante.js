@@ -185,9 +185,9 @@ router.put(
       .isLength({ min: 6, max: 100 }),
   ],
   async (req, res) => {
-    if (!validationResult(req).isEmpty()) return res.status(400).send();
-
     const { cpf } = req.params;
+
+    if (validationResult(req).isEmpty()) return res.status(400).send();
 
     const {
       cnpj,
@@ -203,6 +203,8 @@ router.put(
       voltagem_ee,
       sub_categoria_id,
     } = req.body;
+
+    // console.log('Entrou', nome);
 
     if (sub_categoria_id !== undefined) {
       const subcategoria = await subCategoriaController.findSubcategoriaById(sub_categoria_id);

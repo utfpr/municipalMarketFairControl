@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import moment from 'moment-timezone';
 import { 
     Statistic, Row, Col, Card,
-    Table, Divider,
+    Table,
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';

@@ -21,8 +21,10 @@ const findCelulaById = async (id) => {
 // Retorna celula reservada para um feirante
 const findCelulaByFeirante = async (cpfFeirante) => {
   const celula = await models.celula.findOne({
-    where: { cpf_feirante: cpfFeirante },
+    where: { cpf_feirante: String(cpfFeirante) },
   });
+
+  console.log(celula);
   if (celula === null) return null;
 
   return {
