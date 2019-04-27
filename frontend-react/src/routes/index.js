@@ -7,6 +7,11 @@ import MapeamentoScreen from '../screens/Mapeamento';
 import CategoriasScreen from '../screens/Categorias';
 import RelatorioPage from '../screens/Relatorios/RelatorioPage';
 import LoginScreen from '../screens/Login';
+import ConfirmacaoFeirante from '../screens/ConfirmacaoFeirante';
+
+const FEIRANTE = 'feirante';
+const SUPERVISOR = 'supervisor';
+const ADMINISTRADOR = 'administrador';
 
 export default [
     {
@@ -15,6 +20,7 @@ export default [
         hidden: true,
         component: LoginScreen,
         key: 'login',
+        permissions: [SUPERVISOR, ADMINISTRADOR],
     },
     {
         path: '/supervisor',
@@ -24,6 +30,7 @@ export default [
         icon: 'shop',
         key: 'feira',
         label: 'Feira',
+        permissions: [SUPERVISOR, ADMINISTRADOR],
     },
     {
         path: '/supervisor/supervisores',
@@ -33,6 +40,7 @@ export default [
         icon: 'user',
         key: 'supervisores',
         label: 'Supervisores',
+        permissions: [ADMINISTRADOR],
     },
     {
         path: '/supervisor/feirante',
@@ -42,6 +50,7 @@ export default [
         icon: 'team',
         key: 'feirante',
         label: 'Feirantes',
+        permissions: [SUPERVISOR, ADMINISTRADOR],
     },
     {
         path: '/supervisor/categorias',
@@ -51,6 +60,7 @@ export default [
         icon: 'tags',
         key: 'categorias',
         label: 'Categorias',
+        permissions: [SUPERVISOR, ADMINISTRADOR],
     },
     {
         path: '/supervisor/relatorios',
@@ -60,6 +70,7 @@ export default [
         icon: 'read',
         key: 'relatorios',
         label: 'Relatórios',
+        permissions: [SUPERVISOR, ADMINISTRADOR],
     },
     {
         path: '/supervisor/relatorios/:data',
@@ -70,6 +81,7 @@ export default [
         icon: 'read',
         key: 'relatoriopage',
         label: 'Relatórios',
+        permissions: [SUPERVISOR, ADMINISTRADOR],
     },
     {
         path: '/supervisor/mapeamento',
@@ -79,6 +91,7 @@ export default [
         icon: 'table',
         key: 'mapeamento',
         label: 'Mapeamento',
+        permissions: [SUPERVISOR, ADMINISTRADOR],
     },
     {
         path: '/supervisor/avisos',
@@ -88,5 +101,28 @@ export default [
         icon: 'info-circle',
         key: 'avisos',
         label: 'Avisos',
+        permissions: [SUPERVISOR, ADMINISTRADOR],
+    },
+    {
+        path: '/feirante',
+        exact: true,
+        private: true,
+        hidden: true,
+        component: ConfirmacaoFeirante,
+        icon: 'check',
+        key: 'confirmacao',
+        label: 'Confirmação',
+        permissions: [FEIRANTE],
+    },
+    {
+        path: '/feirante/relatorio',
+        exact: true,
+        private: true,
+        hidden: true,
+        component: ConfirmacaoFeirante,
+        icon: 'table',
+        key: 'relatorio',
+        label: 'Relatório',
+        permissions: [FEIRANTE],
     },
 ];

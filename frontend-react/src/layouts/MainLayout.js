@@ -4,6 +4,7 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 
 import routes from '../routes';
 import HomeScreen from '../screens/HomeScreen';
+import FeiranteScreen from '../screens/FeiranteScreen';
 
 class MainLayout extends Component {
 
@@ -17,6 +18,23 @@ class MainLayout extends Component {
 
     _renderPrivateRoute = (route, index) => {
         const { component: Comp, ...others } = route;
+
+        if (route.permissions.find(permission => permission === 'feirante')) {
+            return (
+                <Route
+                    key={index}
+                    render={props => {
+                        return (
+                            <FeiranteScreen>
+                                <Comp {...props} />
+                            </FeiranteScreen>
+                        );
+                    }}
+                    {...others}
+                />
+            );
+        }
+
         return (
             <Route
                 key={index}
