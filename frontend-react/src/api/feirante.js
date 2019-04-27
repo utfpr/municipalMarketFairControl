@@ -11,8 +11,8 @@ export async function get() {
   return data.map(record => ({
     ...record,
     cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4'),
-    cnpj: record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5'),
-    rg: record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4'),
+    cnpj: record.cnpj ? record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5') : null,
+    rg: record.rg ? record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4') : null,
   }));
 }
 
@@ -22,8 +22,8 @@ export async function getByCpf(cpf) {
   })).data;
   return { ...record, 
     cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4'), 
-    rg: record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4'), 
-    cnpj: record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5'), 
+    cnpj: record.cnpj ? record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5') : null,
+    rg: record.rg ? record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4') : null,
     cep: record.endereco.cep.replace(/(\d{5})(\d{3})/g, '$1-$2')};
 }
 
@@ -45,9 +45,9 @@ export async function post(
   await axios.post(
     host, {
       cpf: cpf.replace(/\D/g, ''),
-      cnpj,
+      cnpj: cnpj.replace(/\D/g, ''),
       nome,
-      rg,   
+      rg: rg.replace(/\D/g, ''),
       usa_ee, 
       nome_fantasia,
       razao_social,

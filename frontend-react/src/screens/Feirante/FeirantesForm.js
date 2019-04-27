@@ -20,6 +20,7 @@ class FeirantesForm extends PureComponent {
     state = {
         categorias: [],
         subcategorias: [],
+        needCnpj: false,
     };
 
     componentDidMount() {
@@ -31,14 +32,20 @@ class FeirantesForm extends PureComponent {
     _handleChange = async (value) => {
         const { form } = this.props;
         const { setFieldsValue } = form;
+
         await setFieldsValue({
             subcategoria: '',
-        })
+        });
         this._loadSubcategorias(value);
     }
 
-    _handleBlur = () => {
-        console.log('blur');
+    _handleBlur = async () => {
+        const { categorias } = this.state;
+        const { getFieldValue } = this.props.form;
+        const idCategoria = await getFieldValue('categoria');
+
+        const selectedCategory = await categorias.find(categoria => categoria.id === idCategoria);
+        this.setState({ needCnpj: selectedCategory.need_cnpj === 1 ? true : false });
     }
 
     _handleFocus = () => {
@@ -138,7 +145,7 @@ class FeirantesForm extends PureComponent {
                     : feirantesAPI.post(
                         values.cpf,
                         values.cnpj,
-                        values.nome,
+                        values.nomeFeirante,
                         values.rg,
                         values.usaEE,
                         values.nomeFantasia,
@@ -153,7 +160,7 @@ class FeirantesForm extends PureComponent {
                         },
                         values.voltagemEE === 1 ? 110 : 220,
                         values.subcategoria,
-                        123456, // FALTA O CAMPO DA SENHA 
+                        values.senha, // FALTA O CAMPO DA SENHA 
                     )
                         .then(() => {
                             resetFields();
@@ -165,7 +172,7 @@ class FeirantesForm extends PureComponent {
     }
 
     render() {
-        const { categorias, subcategorias } = this.state;
+        const { categorias, subcategorias, needCnpj } = this.state;
         const { feirante, form } = this.props;
         const RadioGroup = Radio.Group;
 
@@ -187,7 +194,7 @@ class FeirantesForm extends PureComponent {
         const voltagemEEFeiranteError = isFieldTouched('voltagemEE') && getFieldError('voltagemEE');
         const subcategoriaFeiranteError = isFieldTouched('subcategoria') && getFieldError('subcategoria');
         const categoriaFeiranteError = isFieldTouched('categoria') && getFieldError('categoria');
-
+        const senhaError = isFieldTouched('categoria') && getFieldError('categoria');
 
         return (
             <Fragment>
@@ -209,23 +216,109 @@ class FeirantesForm extends PureComponent {
                             />
                         )}
                     </Form.Item>
-                    <Form.Item
-                        validateStatus={cpfFeiranteError ? 'error' : ''}
-                        help={cpfFeiranteError || ''}
-                        label="CPF"
-                    >
-                        {getFieldDecorator('cpf', {
-                            rules: [{
-                                required: true,
-                                message: 'O CPF do feirante é obrigatório!'
-                            }]
-                        })(
-                            <Input
-                                disabled={Boolean(feirante.cpf)}
-                                placeholder="123.456.789-10"
-                            />
-                        )}
-                    </Form.Item>
+                    <Row gutter={24}>
+                        <Col md={12} lg={12}>
+                            <Form.Item
+                                validateStatus={cpfFeiranteError ? 'error' : ''}
+                                help={cpfFeiranteError || ''}
+                                label="CPF"
+                            >
+                                {getFieldDecorator('cpf', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'O CPF do feirante é obrigatório!'
+                                    }]
+                                })(
+                                    <Input
+                                        disabled={Boolean(feirante.cpf)}
+                                        placeholder="123.456.789-10"
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col md={12} lg={12}>
+                            <Form.Item
+                                label="RG"
+                                validateStatus={rgFeiranteError ? 'error' : ''}
+                                help={rgFeiranteError || ''}
+                            >
+                                {getFieldDecorator('rg', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'O rg do feirante é obrigatório!'
+                                    }]
+                                })(
+                                    <Input
+                                        disabled={Boolean(feirante.rg)}
+                                        placeholder="12.345.123-1"
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={24}>
+                        <Col lg={12}>
+                            <Form.Item
+                                label='Categoria'
+                                validateStatus={categoriaFeiranteError ? 'error' : ''}
+                                help={categoriaFeiranteError || ''}
+                            >
+                                {getFieldDecorator('categoria', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'A categoria é obrigatória!'
+                                    }]
+                                })(
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder='Selecione uma categoria'
+                                        optionFilterProp='children'
+                                        onChange={this._handleChange}
+                                        onBlur={this._handleBlur}
+                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                    >
+                                        {
+                                            categorias.map(categoria => (
+                                                <Option key={categoria.id} value={categoria.id}>{categoria.nome}</Option>
+                                            ))
+                                        }
+
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col lg={12}>
+                            <Form.Item
+                                label='Subcategoria'
+                                validateStatus={subcategoriaFeiranteError ? 'error' : ''}
+                                help={subcategoriaFeiranteError || ''}
+                            >
+                                {getFieldDecorator('subcategoria', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'A subcategoria é obrigatória!'
+                                    }]
+                                })(
+                                    <Select
+                                        showSearch
+                                        style={{ width: 200 }}
+                                        placeholder='Selecione uma subcategoria'
+                                        optionFilterProp='children'
+                                        disabled={getFieldValue('categoria') ? false : true}
+                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                    >
+                                        {
+                                            subcategorias.map(subcategoria => (
+                                                <Option key={subcategoria.id} value={subcategoria.id}>{subcategoria.nome}</Option>
+                                            ))
+                                        }
+
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Form.Item
                         label="CNPJ"
                         validateStatus={cnpjFeiranteError ? 'error' : ''}
@@ -233,29 +326,12 @@ class FeirantesForm extends PureComponent {
                     >
                         {getFieldDecorator('cnpj', {
                             rules: [{
-                                required: false,
+                                required: needCnpj,
                                 message: 'O cnpj do feirante é obrigatório!'
                             }]
                         })(
                             <Input
                                 placeholder="12.456.321/1234-56"
-                            />
-                        )}
-                    </Form.Item>
-                    <Form.Item
-                        label="RG"
-                        validateStatus={rgFeiranteError ? 'error' : ''}
-                        help={rgFeiranteError || ''}
-                    >
-                        {getFieldDecorator('rg', {
-                            rules: [{
-                                required: true,
-                                message: 'O rg do feirante é obrigatório para sua categoria!'
-                            }]
-                        })(
-                            <Input
-                                disabled={Boolean(feirante.rg)}
-                                placeholder="12.345.123-1"
                             />
                         )}
                     </Form.Item>
@@ -266,7 +342,7 @@ class FeirantesForm extends PureComponent {
                     >
                         {getFieldDecorator('nomeFantasia', {
                             rules: [{
-                                required: false,
+                                required: needCnpj,
                                 message: 'O nome fantasia do feirante é obrigatório!'
                             }]
                         })(
@@ -282,7 +358,7 @@ class FeirantesForm extends PureComponent {
                     >
                         {getFieldDecorator('razaoSocial', {
                             rules: [{
-                                required: false,
+                                required: needCnpj,
                                 message: 'A razao social não é obrigatória!'
                             }]
                         })(
@@ -291,65 +367,6 @@ class FeirantesForm extends PureComponent {
                             />
                         )}
                     </Form.Item>
-                    <Row gutter={24}>
-                        <Col lg={12}>
-                            <Form.Item label='Categoria'>
-                                {getFieldDecorator('categoria', {
-                                    rules: [{
-                                        required: true,
-                                        message: 'A categoria é obrigatória!'
-                                    }]
-                                })(
-                                    <Select
-                                        showSearch
-                                        style={{ width: 200 }}
-                                        placeholder='Selecione uma categoria'
-                                        optionFilterProp='children'
-                                        onChange={this._handleChange}
-                                        //onFocus={handleFocus}
-                                        //onBlur={handleBlur}
-                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                    >
-                                        {
-                                            categorias.map(categoria => (
-                                                <Option key={categoria.id} value={categoria.id}>{categoria.nome}</Option>
-                                            ))
-                                        }
-
-                                    </Select>
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col lg={12}>
-                            <Form.Item label='Subcategoria'>
-                                {getFieldDecorator('subcategoria', {
-                                    rules: [{
-                                        required: true,
-                                        message: 'A subcategoria é obrigatória!'
-                                    }]
-                                })(
-                                    <Select
-                                        showSearch
-                                        style={{ width: 200 }}
-                                        placeholder='Selecione uma subcategoria'
-                                        optionFilterProp='children'
-                                        //onChange={handleChange}
-                                        //onFocus={handleFocus}
-                                        //onBlur={handleBlur}
-                                        disabled={getFieldValue('categoria') ? false : true}
-                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                    >
-                                        {
-                                            subcategorias.map(subcategoria => (
-                                                <Option key={subcategoria.id} value={subcategoria.id}>{subcategoria.nome}</Option>
-                                            ))
-                                        }
-
-                                    </Select>
-                                )}
-                            </Form.Item>
-                        </Col>
-                    </Row>
                     <Row gutter={24}>
                         <Col lg={12}>
                             <Form.Item
@@ -404,7 +421,7 @@ class FeirantesForm extends PureComponent {
                             >
                                 {getFieldDecorator('comprimentoBarraca', {
                                     rules: [{
-                                        required: false,
+                                        required: true,
                                         message: 'É necessário especificar o comprimento da barraca.'
                                     }]
                                 })(
@@ -422,7 +439,7 @@ class FeirantesForm extends PureComponent {
                             >
                                 {getFieldDecorator('larguraBarraca', {
                                     rules: [{
-                                        required: false,
+                                        required: true,
                                         message: 'É necessário especificar a largura da barraca.'
                                     }]
                                 })(
@@ -434,16 +451,28 @@ class FeirantesForm extends PureComponent {
                         </Col>
                     </Row>
 
-                    <Form.Item>
-                    
-                    <Input.Password placeholder="password" />
-                    
+                    <Form.Item
+                        label="Senha"
+                        validateStatus={senhaError ? 'error' : ''}
+                        help={senhaError || ''}
+                    >
+                        {getFieldDecorator('senha', {
+                            rules: [{
+                                required: true,
+                                message: 'É necessário informar uma senha'
+                            }]
+                        })(
+                            <Input.Password placeholder="password" />
+                        )}
                     </Form.Item>
 
                     <Form.Item>
                         <Button
                             type="primary"
                             htmlType="submit"
+                            disabled={
+                                hasErrors(getFieldsError())
+                            }
                         >
                             {
                                 feirante.cpf

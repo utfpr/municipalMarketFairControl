@@ -20,6 +20,7 @@ const addFeirante = async (
     where: { cpf },
   });
 
+
   const hashSenha = await bcrypt.hash(senha, 10);
 
   if (feirante !== null && !feirante.status) {
