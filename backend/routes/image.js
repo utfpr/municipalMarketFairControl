@@ -5,8 +5,18 @@ const multer = require('multer');
 const url = require('url');
 const fs = require('fs');
 
+const PATH = './uploads';
+
+function checkIfDirectoryExists() {
+  if (!fs.existsSync(PATH)) {
+    fs.mkdir(PATH.replace('./', ''));
+  }
+  return PATH;
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    checkIfDirectoryExists('./uploads');
     cb(null, './uploads');
   },
   filename: (req, file, cb) => {
