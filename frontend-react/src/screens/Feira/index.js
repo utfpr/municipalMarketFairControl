@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Table, Tag, Popconfirm, Button,
-    Modal, Form, DatePicker, Upload, Icon,
+    Modal, Form, DatePicker, Upload, Icon,message,
 } from 'antd';
 import moment from 'moment-timezone';
 

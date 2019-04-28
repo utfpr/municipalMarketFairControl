@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 
 import { 
     Popconfirm, Button, Form,
-    Select, Table,
+    Select, Table,Checkbox,message,
 } from 'antd';
 import maskCPF from '../../helpers/masker';
 
@@ -46,7 +46,7 @@ class AlocacaoForm extends Component {
         // const { celula } = this.state;
         const { 
             form: {resetFields},
-            refresh, celula, loadCelulas,
+            refresh, celula, loadCelulas,onSuccess,
         } = this.props;
         e.preventDefault();
         // this.setState({loading: true});
@@ -57,6 +57,10 @@ class AlocacaoForm extends Component {
                         refresh();
                         loadCelulas();
                         resetFields();
+                        onSuccess();
+                        message.success('Feirante atualizado com sucesso', 2.5);
+                    }).catch(() => {
+                        message.error('Não foi possível atualizar,tente novamente mais tarde', 2.5);
                     });
             }
         });
@@ -70,10 +74,14 @@ class AlocacaoForm extends Component {
     // }
 
     _onRemoveFeiranteCelula = cpf => {
-        const { refresh } = this.props;
+        const { refresh,onSuccess} = this.props;
         return  participaAPI.setPosicao(cpf, null)
             .then(() => {
                 refresh();
+                onSuccess();
+                message.success('Feirante removido com sucesso', 2.5);
+            }).catch(() => {
+                message.error('Não foi possível atualizar,tente novamente mais tarde', 2.5);
             });
     }
 
