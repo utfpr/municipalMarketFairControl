@@ -82,9 +82,9 @@ router.post(
       sub_categoria_id,
     );
 
-    if (ret === null) return res.json({ msg: 'erro' });
+    if (ret === null) return res.status(200).json({ msg: 'erro' });
 
-    return res.json({ msg: 'ok' });
+    return res.status(200).json({ msg: 'ok' });
   },
 );
 
@@ -119,9 +119,9 @@ router.get('/:cpf', [param('cpf').custom(isCpf)], authMiddleware.isSupervisor, a
   const { cpf } = req.params;
 
   const feirante = await feiranteController.findFeiranteByCpf(cpf);
-  if (feirante === null) return res.json({ msg: 'cpf_nao_existente' });
+  if (feirante === null) return res.status(400).send({ msg: 'cpf_nao_existente' });
 
-  return res.json({
+  return res.status(200).send({
     cpf: feirante.cpf,
     cnpj: feirante.cnpj,
     nome: feirante.nome,
@@ -208,11 +208,11 @@ router.put(
 
     if (sub_categoria_id !== undefined) {
       const subcategoria = await subCategoriaController.findSubcategoriaById(sub_categoria_id);
-      if (subcategoria === null) return res.json({ msg: 'subcategoria_nao_existe' });
+      if (subcategoria === null) return res.status(400).send({ msg: 'subcategoria_nao_existe' });
     }
 
     const feirante = await feiranteController.findFeiranteByCpf(cpf);
-    if (feirante === null) return res.json({ msg: 'cpf_nao_existente' });
+    if (feirante === null) return res.status(400).send({ msg: 'cpf_nao_existente' });
 
     // Isso permite tornar os atributos opcionais (atualiza somente o que precisar)
     const ret = await feiranteController.updateFeirante(cpf, {
@@ -230,9 +230,9 @@ router.put(
       ...(sub_categoria_id !== undefined ? { sub_categoria_id } : {}),
     });
 
-    if (ret === null) return res.json({ msg: 'erro' });
+    if (ret === null) return res.status(400).send({ msg: 'erro' });
 
-    return res.json({ msg: 'ok' });
+    return res.status(200).send({ msg: 'ok' });
   },
 );
 
@@ -246,12 +246,12 @@ router.delete(
     const { cpf } = req.params;
 
     const feirante = await feiranteController.findFeiranteByCpf(cpf);
-    if (feirante === null) return res.json({ msg: 'cpf_nao_existente' });
+    if (feirante === null) return res.status(400).send({ msg: 'cpf_nao_existente' });
 
     const ret = await feiranteController.deleteFeirante(cpf);
-    if (ret === null) return res.json({ msg: 'erro' });
+    if (ret === null) return res.status(400).json({ msg: 'erro' });
 
-    return res.json({ msg: 'ok' });
+    return res.status(200).send({ msg: 'ok' });
   },
 );
 

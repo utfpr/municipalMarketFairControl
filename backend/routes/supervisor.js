@@ -23,7 +23,7 @@ router.get('/:cpf', authMiddleware.isAdmin, async (req, res) => {
   if (supervisor != null) {
     res.status(200).send(supervisor);
   } else {
-    res.status(200).send({
+    res.status(400).send({
       msg: 'cpf_nao_existe',
     });
   }
@@ -45,7 +45,6 @@ router.post('/', authMiddleware.isAdmin, async (req, res) => {
     // retorna null se cpf não existir
     const cpfExist = await supervisorController.findSupervisorByCpf(CPF.strip(cpfS));
 
-    let resposta = '';
     if (cpfExist == null) {
       // cpf não consta na base de dados, pode ser cadastrado
       const cadastro = await supervisorController.addSupervisor(
@@ -55,15 +54,15 @@ router.post('/', authMiddleware.isAdmin, async (req, res) => {
         isAdm,
       );
       if (cadastro != null) {
-        resposta = 'ok';
+        res.status(200).send({
+          msg: 'ok',
+        });
       }
     } else {
-      resposta = 'cpf_existente'; // Não pode cadastrar o mesmo cpf duas vezes
+      res.status(400).send({
+        msg: 'cpf_existente',
+      });
     }
-
-    res.status(200).send({
-      msg: resposta,
-    });
   }
 });
 
@@ -101,7 +100,7 @@ router.put('/:cpf', authMiddleware.isAdmin, async (req, res) => {
     }
   } else {
     // supervisor nao encotrado
-    res.status(200).send({
+    res.status(400).send({
       msg: 'cpf_nao_existente',
     });
   }
@@ -146,7 +145,7 @@ router.delete('/:cpf', authMiddleware.isAdmin, async (req, res) => {
     }
   }
   // supervisor nao encontrado
-  return res.status(200).send({
+  return res.status(400).send({
     msg: 'cpf_nao_existente',
   });
 });

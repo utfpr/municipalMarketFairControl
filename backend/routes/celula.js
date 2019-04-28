@@ -13,14 +13,14 @@ router.get('/', authMiddleware.isSupervisor, async (req, res) => {
 });
 
 router.get('/:id', authMiddleware.isSupervisor, [param('id').isInt()], async (req, res) => {
-  if (!validationResult(req).isEmpty()) return res.json({ msg: 'id_nao_existente' });
+  if (!validationResult(req).isEmpty()) return res.status(400).send({ msg: 'id_nao_existente' });
 
   const { id } = req.params;
   const celula = await celulaController.findCelulaById(id);
 
-  if (celula === null) return res.json({ msg: 'id_nao_existente' });
+  if (celula === null) return res.status(400).send({ msg: 'id_nao_existente' });
 
-  return res.json(celula);
+  return res.status(200).send(celula);
 });
 
 router.put(
@@ -43,20 +43,20 @@ router.put(
     const { id } = req.params;
 
     const celula = await celulaController.findCelulaById(id);
-    if (celula === null) return res.json({ msg: 'id_nao_existente' });
+    if (celula === null) return res.status(400).send({ msg: 'id_nao_existente' });
 
     if (cpfFeirante !== undefined) {
       const feirante = await feiranteController.findFeiranteByCpf(cpfFeirante);
-      if (feirante === null) return res.json({ msg: 'cpf_nao_existente' });
+      if (feirante === null) return res.status(400).send({ msg: 'cpf_nao_existente' });
     }
 
     const atualizado = await celulaController.updateCelula(id, {
       ...(cpfFeirante !== undefined ? { cpf_feirante: cpfFeirante } : {}),
       ...(periodo !== undefined ? { periodo } : {}),
     });
-    if (atualizado === null) return res.json({ msg: 'erro' });
+    if (atualizado === null) return res.status(400).send({ msg: 'erro' });
 
-    return res.json({ msg: 'ok' });
+    return res.status(200).send({ msg: 'ok' });
   },
 );
 module.exports = router;

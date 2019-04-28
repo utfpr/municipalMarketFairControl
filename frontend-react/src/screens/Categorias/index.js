@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Button, Popconfirm, Modal,
-    Tag, Divider,
+    Tag, Divider, message,
 } from 'antd';
 
 import CategoriasForm from './CategoriasForm';
@@ -23,17 +23,23 @@ export default class CategoriasScreen extends PureComponent {
     componentDidMount() {
         this._loadCategorias();
     }
-    
+
     _loadCategorias = async () => {
         this.setState({ loading: true });
+        
         const categorias = await categoriasAPI.get();
         this.setState({ categorias, loading: false });
     }
 
     _onDeleteCategoria = async id => {
+        message.loading('Carregando..', 0);
         await categoriasAPI.del(id)
             .then(() => {
                 this._loadCategorias();
+                message.success('Loading finished', 2.5);
+            })
+            .catch(() => {
+                message.error('Não foi possível excluir, tente novamente mais tarde!', 2.5);
             });
     }
 

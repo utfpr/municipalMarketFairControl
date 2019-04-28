@@ -46,7 +46,7 @@ export default class ContentComponent extends PureComponent {
                 {
                     loading
                         ? (
-                            <Spin>
+                            <Spin tip="Carregando...">
                                 {this._renderContent()}
                             </Spin>
                         )

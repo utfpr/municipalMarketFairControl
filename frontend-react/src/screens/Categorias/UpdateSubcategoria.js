@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 import { 
     Button, Form,
-    Input,
+    Input, message,
 } from 'antd';
 
 import * as subcategoriasAPI from '../../api/subcategoria';
@@ -38,12 +38,16 @@ class UpdateSubcategoria extends PureComponent {
         event.preventDefault();
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
+                message.loading('Carregando', 0);
                 return subcategoriasAPI.put(values.nome, subcategoria.id)
                     .then(() => {
                         resetFields(['nome']);
                         this.setState({subcategoria: {}});
                         onCancel();
                         refresh();
+                        message.loading('Subcategoria atualizada com sucesso', 2.5);
+                    }).catch(() => {
+                        message.error('Não foi possível atualizar esta subcategoria', 2.5);
                     });
             }
         });
