@@ -19,7 +19,7 @@ function hasErrors(fieldsError) {
     return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
-class FeiraScreen extends PureComponent {
+class ConfirmacaoFeirante extends PureComponent {
 
     state = {
         feiras: [],
@@ -47,9 +47,9 @@ class FeiraScreen extends PureComponent {
         e.preventDefault();
         validateFields((err, values) => {
             const data = moment(values.data).format('YYYY-MM-DD');
-            const photo = values.photo ? values.photo[0].response.filename : undefined;
+            const { photo } = values;
             if (!err) {
-                return feiraAPI.post(data, photo)
+                return feiraAPI.post(data, photo[0].response.filename)
                     .then(() => {
                         resetFields();
                         this._loadFeiras();
@@ -314,6 +314,6 @@ class FeiraScreen extends PureComponent {
 
 }
 
-const WrappedHorizontalFeirasForm = Form.create({ name: 'feiras_form' })(FeiraScreen);
+const WrappedHorizontalConfirmacaoFeiranteForm = Form.create({ name: 'feiras_form' })(ConfirmacaoFeirante);
 
-export default WrappedHorizontalFeirasForm;
+export default WrappedHorizontalConfirmacaoFeiranteForm;
