@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Input, Button, Form,
-    Checkbox,
+    Checkbox, message,
 } from 'antd';
 
 import * as categoriasAPI from '../../api/categoria';
@@ -39,20 +39,26 @@ class CategoriasForm extends PureComponent {
         } = this.props;
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            console.log(values);
             if (!err) {
+                message.loading('Carregando...', 0);
                 return categoria && categoria.id
                     ? categoriasAPI.put(categoria.id, values.nome_categoria, values.need_cnpj)
                         .then(() => {
                             resetFields();
                             refresh();
                             onSuccess();
+                            message.success('Categoria atualizada com sucesso', 2.5);
+                        }).catch(() => {
+                            message.error('Não foi possível atualizar categoria', 2.5);
                         })
                     : categoriasAPI.post(values.nome_categoria, values.need_cnpj)
                         .then(() => {
                             resetFields();
                             refresh();
                             onSuccess();
+                            message.success('Categoria adicionada com sucesso', 2.5);
+                        }).catch(() => {
+                            message.error('Não foi possível adicionar categoria', 2.5);
                         });
             }
         });
@@ -78,7 +84,7 @@ class CategoriasForm extends PureComponent {
                         {getFieldDecorator('nome_categoria', {rules: [{
                             required: true,
                             message: 'O nome da categoria é obrigatório!'
-                        }]})(
+                        }]} )(
                             <Input
                                 placeholder="Nome"
                             />

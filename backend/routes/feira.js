@@ -22,7 +22,7 @@ router.get('/info', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
   if (feira !== null) {
     res.status(200).send(feira);
   } else {
-    res.status(200).send({
+    res.status(400).send({
       msg: 'feira_invalida',
     });
   }

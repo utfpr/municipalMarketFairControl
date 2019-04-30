@@ -155,7 +155,7 @@ router.post(
 
       const dadosCelula = await participaController.getDadosCelulaFeiraAtual(celulaId);
       if (dadosCelula.cpfFeirante !== null && force === false) {
-        return res.json({ msg: 'celula_ocupada' });
+        return res.status(400).send({ msg: 'celula_ocupada' });
       }
     }
 
@@ -165,9 +165,9 @@ router.post(
       force,
     );
 
-    if (ret === null) return res.json({ msg: 'erro' });
+    if (ret === null) return res.status(400).send({ msg: 'erro' });
 
-    return res.json({ msg: 'ok' });
+    return res.status(200).json({ msg: 'ok' });
   },
 );
 

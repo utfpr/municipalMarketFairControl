@@ -16,7 +16,7 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
       msg: 'ok',
     });
   } else {
-    res.status(200).send({
+    res.status(400).send({
       msg: 'erro',
     });
   }
@@ -33,7 +33,7 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
       msg: 'ok',
     });
   } else {
-    res.status(200).send({
+    res.status(400).send({
       msg: 'erro',
     });
   }
@@ -46,7 +46,7 @@ router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
   if (byId !== null) {
     res.status(200).send(byId);
   } else {
-    res.status(200).send({
+    res.status(400).send({
       msg: 'erro',
     });
   }
@@ -61,7 +61,7 @@ router.delete('/:id', authMiddleware.isSupervisor, async (req, res) => {
       msg: 'ok',
     });
   } else {
-    res.status(200).send({
+    res.status(400).send({
       msg: 'erro',
     });
   }

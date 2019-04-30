@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Popconfirm, Button, Form,
-    Input, Modal,
+    Input, Modal, message,
 } from 'antd';
 
 import TabelaComponent from '../../components/TabelaComponent';
@@ -37,10 +37,14 @@ class Subcategorias extends PureComponent {
         this.props.form.validateFields((err, values) => {
             console.log(values);
             if (!err) {
+                message.loading('Carregando...', 0);
                 return subcategoriasAPI.post(values.nome, categoria.id)
                     .then(() => {
                         resetFields();
                         this._loadSubcategorias();
+                        message.success('Subcategoria criada com sucesso!', 2.5);
+                    }).catch(() => {
+                        message.error('Não foi possível adicionar subcategoria!', 2.5);
                     });
             }
         });
@@ -54,9 +58,13 @@ class Subcategorias extends PureComponent {
     }
 
     _onDeleteSubCategoria = id => {
+        message.loading('Carregando...', 0);
         return subcategoriasAPI.deleteSub(id)
             .then(() => {
                 this._loadSubcategorias();
+                message.success('Subcategoria excluída com sucesso!', 2.5);
+            }).catch(() => {
+                message.error('Não foi possível excluir subcategoria, tente novamente mais tarde', 2.5);
             });
     }
 
@@ -91,7 +99,7 @@ class Subcategorias extends PureComponent {
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <Button shape="circle" icon="edit" onClick={() => this._onEditSub(linha)} />
                             <Popconfirm
-                                title="Você quer deletar esta subcategoria?"
+                                title="Deseja deletar esta subcategoria?"
                                 okText="Sim"
                                 cancelText="Não"
                                 onConfirm={() => this._onDeleteSubCategoria(linha.id)}

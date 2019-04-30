@@ -15,13 +15,15 @@ router.post('/', async (req, res) => {
             nome, need_cnpj
         );
         if (categoria != null) {
-            resposta = 'ok';
+            res.status(200).send({
+                msg: 'ok',
+            });
         } else {
-            resposta = 'erro';
+            res.status(400).send({
+                msg: 'erro',
+            });
         }
-        res.status(200).send({
-            msg: resposta,
-        });
+        
     }
 });
 
@@ -40,7 +42,7 @@ router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
         res.status(200).send(categoria);
 
     } else {
-        res.status(200).send({
+        res.status(400).send({
             msg: 'id_nao_existente',
         });
     }
@@ -52,7 +54,7 @@ router.get('/:id/subcategorias', authMiddleware.isSupervisor, async (req, res) =
 
     const categoria = await categoriaController.findCategoriaById(id_cat);
     if (categoria == null) {
-        res.status(200).send({
+        res.status(400).send({
             msg: 'id_nao_existente',
         });
     } else {
@@ -71,22 +73,24 @@ router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
         res.status(400).send();
     }
     else {
-        let resposta = '';
         const categoriaValidate = await categoriaController.findCategoriaById(id_cat);
         if (categoriaValidate != null) {
             const categoria = await categoriaController.updateCategoria(id_cat, { nome, need_cnpj });
 
             if (categoria != null) {
-                resposta = 'ok';
+                res.status(200).send({
+                    msg: 'ok',
+                });
             } else {
-                resposta = 'erro';
+                res.status(400).send({
+                    msg: 'ok',
+                });
             }
         } else {
-            resposta = 'id_nao_existente';
+            res.status(400).send({
+                msg: 'id_nao_existente',
+            });
         }
-        res.status(200).send({
-            msg: resposta,
-        });
     }
 });
 
@@ -107,7 +111,7 @@ router.delete('/:id', authMiddleware.isSupervisor, async (req, res) => {
     } else {
         resposta = 'id_nao_existente';
     }
-    res.status(200).send({
+    res.status(resposta === 'ok' ? 200 : 400).send({
         msg: resposta,
     });
 });

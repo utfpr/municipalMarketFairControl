@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { BrowserRouter, matchPath } from 'react-router-dom';
+import { message } from 'antd';
 
 import routes from './routes';
 import MainLayout from './layouts/MainLayout';
@@ -14,6 +15,9 @@ class App extends Component {
 
     componentDidMount() {
         this._loadUser();
+        message.config({
+            maxCount: 1,
+        });
     }
 
     _loadUser = () => {
