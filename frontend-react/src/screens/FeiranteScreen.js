@@ -9,7 +9,7 @@ import { withRouter } from 'react-router-dom';
 import routes from '../routes';
 import styles from './FeiranteScreen.module.scss';
 
-const { Header, Content } = Layout;
+const { Header } = Layout;
 const { confirm } = Modal;
 
 class FeiranteScreen extends Component {
@@ -124,7 +124,7 @@ class FeiranteScreen extends Component {
 
     render() {
         const { children } = this.props;
-        const { selectedKey, logoutVisible } = this.state;
+        const { selectedKey } = this.state;
         return (
             <Layout className={styles.layout}>
                 <Header className={styles.header}>
@@ -146,11 +146,7 @@ class FeiranteScreen extends Component {
                         Menu
                     </Button>
                 </Header>
-                <Content style={{ padding: '0 50px' }}>
-                    <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
-                        {children}
-                    </div>
-                </Content>
+                {children}
                 <Drawer
                     title="Menu"
                     placement="right"
