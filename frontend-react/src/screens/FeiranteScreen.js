@@ -98,11 +98,7 @@ class FeiranteScreen extends Component {
                         {this._renderNavItems()}
                     </Menu>
                 </Header>
-                <Content style={{ padding: '0 50px' }}>
-                    <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
-                        {children}
-                    </div>
-                </Content>
+                {children}
             </Layout>
         );
     }
