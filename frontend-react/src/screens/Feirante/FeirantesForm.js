@@ -112,10 +112,6 @@ class FeirantesForm extends PureComponent {
         } = this.props;
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-<<<<<<< HEAD
-=======
-            // console.log(values.voltagemEE);
->>>>>>> tela_supervisisor_feirante_aviso
             if (!err) {
                 return feirante && feirante.cpf
                     //? feirantesAPI.put(feirante.cpf, values.cnpj, values.rg)
