@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/auth';
+const host = `${process.env.REACT_APP_HOST}/auth`;
 
 export function auth(userType) {
     if(!userType) return null;

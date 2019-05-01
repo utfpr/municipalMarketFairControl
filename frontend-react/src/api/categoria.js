@@ -1,5 +1,6 @@
 import axios from 'axios';
-const host = 'http://localhost:3000/api/categoria';
+
+const host = `${process.env.REACT_APP_HOST}/categoria`;
 
 export async function get() {
   const data = await axios

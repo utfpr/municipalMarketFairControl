@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/subcategoria';
+const host = `${process.env.REACT_APP_HOST}/subcategoria`;
 
 export async function post(nome, categoria_id) {
   await axios.post(

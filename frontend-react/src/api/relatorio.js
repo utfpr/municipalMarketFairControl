@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const feira = 'http://localhost:3000/api/feira';
-const participa = 'http://localhost:3000/api/participa';
+const feira = `${process.env.REACT_APP_HOST}/feira`;
+const participa = `${process.env.REACT_APP_HOST}/participa`;
 
 export async function getFeiras() {
   const feiras = (await axios.get(

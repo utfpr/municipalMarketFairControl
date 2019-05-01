@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/participa';
+const host = `${process.env.REACT_APP_HOST}/participa`;
 
 export async function setPosicao(cpf, celula) {
   const res = await axios.post(`${host}/posicao`, {

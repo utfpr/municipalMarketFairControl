@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/supervisor';
+const host = `${process.env.REACT_APP_HOST}/supervisor`;
 
 const formatCPF = cpf => {
   return cpf.replace('.', '').replace('.', '').replace('-', '');

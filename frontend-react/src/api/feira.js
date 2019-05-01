@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/feira';
+const host = `${process.env.REACT_APP_HOST}/feira`;
 
 export async function listFeiras() {
   const info = await axios

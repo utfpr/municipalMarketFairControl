@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/feirante';
+const host = `${process.env.REACT_APP_HOST}/feirante`;
 
 export async function get() {
   const data = await axios
