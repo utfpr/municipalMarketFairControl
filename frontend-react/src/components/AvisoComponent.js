@@ -10,7 +10,7 @@ export default class AvisoComponent extends PureComponent {
         const { aviso } = this.props;
 
         return (
-            <Col lg={6} md={12} sm={24}>
+            <Col sm={24} style={{marginBottom: 20}}>
                 <Card title={aviso.assunto} bordered={false}>
                     <p>{aviso.texto}</p>
                 </Card>

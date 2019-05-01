@@ -128,23 +128,25 @@ class FeiranteScreen extends Component {
         return (
             <Layout className={styles.layout}>
                 <Header className={styles.header}>
-                    <div className={styles.logo} />
-                    <Menu
-                        theme="dark"
-                        mode="horizontal"
-                        selectedKeys={selectedKey}
-                        className={styles.menuDesktop}
-                    >
-                        {this._renderNavItems()}
-                        {this._renderSairButton()}
-                    </Menu>
-                    <Button
-                        type="primary"
-                        onClick={this.showDrawer}
-                        className={styles.menuButton}
-                    >
-                        Menu
-                    </Button>
+                    <div className={styles.headerContainer}>
+                        <div className={styles.logo} />
+                        <Menu
+                            theme="dark"
+                            mode="horizontal"
+                            selectedKeys={selectedKey}
+                            className={styles.menuDesktop}
+                        >
+                            {this._renderNavItems()}
+                            {this._renderSairButton()}
+                        </Menu>
+                        <Button
+                            type="primary"
+                            onClick={this.showDrawer}
+                            className={styles.menuButton}
+                        >
+                            Menu
+                        </Button>
+                    </div>
                 </Header>
                 {children}
                 <Drawer

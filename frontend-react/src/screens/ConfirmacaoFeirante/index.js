@@ -62,6 +62,7 @@ class ConfirmacaoFeirante extends PureComponent {
             <ContentComponent
                 loading={loading}
                 title={`Próxima feira: ${moment(feiraAtual.data).format('DD/MM/YYYY')}`}
+                limitedSize
             >
                 <h3>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para confirmar presença</h3>
                 

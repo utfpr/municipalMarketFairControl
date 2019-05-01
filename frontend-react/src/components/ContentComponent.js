@@ -40,9 +40,9 @@ export default class ContentComponent extends PureComponent {
     }
 
     render() {
-        const { loading } = this.props;
+        const { loading, limitedSize } = this.props;
         return (
-            <Content className={styles.container}>
+            <Content className={limitedSize ? styles.containerMaxWidth : styles.container}>
                 {
                     loading
                         ? (

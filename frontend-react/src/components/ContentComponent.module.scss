@@ -6,6 +6,15 @@
     min-height: unset !important;
 }
 
+.containerMaxWidth {
+    margin: 16px auto;
+    width: calc(100% - 32px);
+    max-width: 1024px;
+    padding: 24px !important;
+    background: #fff;
+    min-height: unset !important;
+}
+
 .spinContainer {
     display: flex;
     align-items: center;
