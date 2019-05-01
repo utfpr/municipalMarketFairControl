@@ -15,6 +15,7 @@ const participa = require('./routes/participa');
 const aviso = require('./routes/aviso');
 const date = require('./routes/date');
 const image = require('./routes/image');
+const auth = require('./routes/testes');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,6 +34,7 @@ router.use('/participa', participa);
 router.use('/aviso', aviso);
 router.use('/date', date);
 router.use('/image', image);
+router.use('/auth', auth);
 
 app.use('/api', router);
 

@@ -5,18 +5,18 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/auth');
 
 // Rota de teste que necessita ter feirante autenticado
-router.post('/token-feirante', authMiddleware.isFeirante, (req, res) => {
-  res.send(req.cpf);
+router.post('/feirante', authMiddleware.isFeirante, (req, res) => {
+  res.status(200).send({ cpf: req.cpf });
 });
 
 // Rota de teste que necessita ter supervisor autenticado
-router.post('/token-supervisor', authMiddleware.isSupervisor, (req, res) => {
-  res.send(req.cpf);
+router.post('/supervisor', authMiddleware.isSupervisor, (req, res) => {
+  res.status(200).send({ cpf: req.cpf });
 });
 
 // Rota de teste que necessita ter administrador autenticado
-router.post('/token-admin', authMiddleware.isAdmin, (req, res) => {
-  res.send(req.cpf);
+router.post('/administrador', authMiddleware.isAdmin, (req, res) => {
+  res.status(200).send({ cpf: req.cpf });
 });
 
 module.exports = router;
