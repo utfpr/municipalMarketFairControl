@@ -113,6 +113,7 @@ export default class AvisosScreen extends PureComponent {
                         pagination={{
                             pageSize: 15,
                         }}
+                        rowKey={linha => linha.id}
                     >
                         <Column
                             key='id'

@@ -43,7 +43,6 @@ class AvisosForm extends PureComponent {
         } = this.props;
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            console.log(values);
             if (!err) {
                 message.loading('Carregando...', 0);
                 return aviso && aviso.id

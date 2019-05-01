@@ -38,9 +38,7 @@ class SupervisorForm extends PureComponent {
         } = this.props;
         e.preventDefault();
 
-        console.log('CHESQUEDELE');
         this.props.form.validateFields((err, values) => {
-            console.log(values);
             if (!err) {
                 if (supervisor && supervisor.cpf) return supervisorAPI
                     .put(supervisor.cpf, values.nome, values.isAdm )

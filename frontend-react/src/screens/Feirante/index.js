@@ -1,14 +1,17 @@
 import React, { PureComponent, Fragment } from 'react';
 import { 
     Button, Modal,
-    Tag,
+    Tag, Table,
+    Select,
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';
-//import ModalComponent from '../../components/ModalComponent'; //? precisa ?
 import TabelaComponent from '../../components/TabelaComponent';
 import FeirantesForm from './FeirantesForm';
 import * as feirantesAPI from '../../api/feirante';
+
+const { Column } = Table;
+const Option = Select.Option;
 
 export default class FeiranteScreen extends PureComponent {
 
@@ -65,7 +68,7 @@ export default class FeiranteScreen extends PureComponent {
         return (
             <Modal
                 title={ selectedFeirante && selectedFeirante.cpf
-                    ? `#${selectedFeirante.cpf} - ${selectedFeirante.nome}`
+                    ? `${selectedFeirante.nome} - ${selectedFeirante.nome_fantasia}`
                     : 'Cadastrar um novo feirante'
                 }
                 visible={visible}
@@ -92,7 +95,7 @@ export default class FeiranteScreen extends PureComponent {
             </Modal>
         );
     }
- 
+
 /* atrubutos :
   cpf,
   cnpj,
@@ -117,19 +120,24 @@ export default class FeiranteScreen extends PureComponent {
                 key: 'cpf',
                 dataIndex: 'cpf',
                 title: 'Cpf',
-                width: 60,
+                width: 120,
             },
             {
                 key: 'cnpj', 
                 dataIndex: 'cnpj',
                 title: 'Cnpj',
-                width: 60,
+                width: 120,
+                render: (cnpj) => {
+                    return cnpj
+                    ? cnpj
+                    : <Tag color='#f50'>Não usa</Tag>
+                }
             },
             {
                 key: 'rg',
                 dataIndex: 'rg',
                 title: 'RG',
-                width: 60,
+                width: 100,
             },
             {
                 key: 'nome',
@@ -151,6 +159,7 @@ export default class FeiranteScreen extends PureComponent {
                     : <Tag color="#108ee9">Não</Tag>
             }
         },
+            
             {
                 key: 'acoes',
                 title: 'Ações',
@@ -178,76 +187,82 @@ export default class FeiranteScreen extends PureComponent {
                     }}
                     title="Feirantes"
                 >
-                    <TabelaComponent
-                        linhas={feirantes} 
-                        colunas={colunas}
+                    <Table
+                        dataSource={feirantes} 
                         size="small"
                         loading={loading}
                         pagination={{
                             pageSize: 15,
                         }}
-                    />
+                    >
+                        <Column
+                            key='nome'
+                            dataIndex='nome'
+                            title='Nome'
+                        />
+                        <Column
+                            key='nome_fantasia'
+                            dataIndex='nome_fantasia'
+                            title='Nome Fantasia'
+                        />
+                        <Column
+                            key='cpf'
+                            dataIndex='cpf'
+                            title='Cpf'
+                            width={120}
+                        />
+                        
+                        <Column
+                            key='rg'
+                            dataIndex='rg'
+                            title='RG'
+                            width={100}
+                        />
+                        <Column
+                            key='cnpj' 
+                            dataIndex='cnpj'
+                            title='Cnpj'
+                            width={180}
+                            render={(cnpj) => {
+                                return cnpj
+                                ? cnpj
+                                : <Tag color='#f50'>Não usa</Tag>
+                            }}
+                        />
+                        <Column
+                            key='usa_ee'
+                            dataIndex='usa_ee'
+                            title='Usa EE'
+                            width={70}
+                            render={(usa_ee, linha) => {
+                                return usa_ee
+                                ? <Tag color={linha.voltagem_ee === 110 ? '#87d068' : '#1abc9c'}>{linha.voltagem_ee}v</Tag>
+                                : <Tag color="#f50">Não</Tag>
+                            }}
+                        />
+                        <Column
+                            key='acoes'
+                            title='Ações'
+                            width={160}
+                            render={ linha => (
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <Button 
+                                        type="primary" 
+                                        onClick={() => this.showModal(linha)}
+                                    >
+                                        Detalhes
+                                    </Button>
+                                    
+                                    
+                                </div>
+                            )}
+                        />
+                    </Table>
+
                     { this._renderModal() }
                 </ContentComponent>
             </Fragment>
            
         );
     }
-
-    /*_renderButtons = () => (
-        <Button type="primary">
-            <Icon type="plus" />
-            Adicionar
-        </Button>
-    );*/
-
-    /*render() {
-
-        const linhas = [
-            {
-                key: 1,
-                nome: 'Willian',
-                idade: 21,
-                email: 'willianbarbosa@alunos.utfpr.edu.br',
-            },
-            {
-                key: 2,
-                nome: 'Alan',
-                idade: 13,
-                email: 'alan@alunos.utfpr.edu.br',
-            },
-        ];
-
-        const colunas = [
-            {
-                title: 'Nome',
-                dataIndex: 'nome',
-                key: 'nome',
-            },
-            {
-                title: 'Idade',
-                dataIndex: 'idade',
-                key: 'idade',
-            },
-            {
-                title: 'Email',
-                dataIndex: 'email',
-                key: 'email',
-            },
-        ]
-
-        return (
-            <ContentComponent
-                title="Feirante"
-                renderExtraContents={this._renderButtons}
-            >
-                <ModalComponent titulo="Modal feirante">
-                    Hello
-                </ModalComponent>
-                <h1>Teste</h1>
-                <TabelaComponent linhas={linhas} colunas={colunas}/>
-            </ContentComponent>
-        );
-    } */
-
 }

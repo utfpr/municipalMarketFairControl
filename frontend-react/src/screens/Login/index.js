@@ -3,7 +3,10 @@ import React, { PureComponent } from 'react';
 import styles from './LoginScreen.module.scss';
 import image from '../../assets/brazao.png';
 
-import { Input, Icon, Button, Form } from 'antd';
+import { 
+    Input, Icon, Button, Form,
+    message,
+} from 'antd';
 import { validateCPF } from '../../helpers/validators';
 
 import login from '../../api/login';
@@ -32,22 +35,26 @@ class LoginScreen extends PureComponent {
     _handleSubmit = (e) => {
         const { history } = this.props;
         e.preventDefault();
+        message.loading('Carregando...', 0);
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
-                const info = await login(values.cpf, values.senha);
-                if (info === null) {
-                //   this.openNotificationWithIcon('error');
-                } else {
-                    localStorage.setItem('userID', info.userID);
-                    localStorage.setItem('token', info.token);
-                    localStorage.setItem('tag', info.tag);
-      
-                    if (info.tag === 'feirante') {
-                        history.push('/feirante');
-                    } else {
-                        history.push('/supervisor');
-                    }
-                }
+                await login(values.cpf, values.senha)
+                    .then(response => {
+                        message.success('Logado com sucesso', 2.5);
+                        localStorage.setItem('userID', response.data.userID);
+                        localStorage.setItem('token', response.data.token);
+                        localStorage.setItem('tag', response.data.tag);
+        
+                        if (response.data.tag === 'feirante') {
+                            history.push('/feirante');
+                        } else {
+                            history.push('/supervisor');
+                        }
+                    })
+                    .catch(ex => {
+                        console.warn(ex);
+                        message.error('CPF ou senha incorretos', 2.5);
+                    });
             }
         });
     }

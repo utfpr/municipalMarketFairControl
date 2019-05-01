@@ -72,8 +72,7 @@ export default class RelatorioPage extends PureComponent {
     }
 
     render() {
-        const { participantes, dataFeira, loading, faturamentoPeriodo } = this.state;
-        console.log(faturamentoPeriodo);
+        const { participantes, dataFeira, loading } = this.state;
 
         if (!participantes) return this._renderFeiraInvalida();
 

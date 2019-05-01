@@ -3,14 +3,17 @@ import React, { PureComponent, Fragment } from 'react';
 import { 
     Popconfirm, Button, Form,
     Input, Modal, message,
+    Table,
 } from 'antd';
 
-import TabelaComponent from '../../components/TabelaComponent';
+import EmptyComponent from '../../components/EmptyComponent';
 
 import UpdateSubcategoria from './UpdateSubcategoria';
 
 import * as categoriasAPI from '../../api/categoria';
 import * as subcategoriasAPI from '../../api/subcategoria';
+
+const { Column } = Table;
 
 function hasErrors(fieldsError) {
     return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -35,7 +38,6 @@ class Subcategorias extends PureComponent {
         } = this.props;
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            console.log(values);
             if (!err) {
                 message.loading('Carregando...', 0);
                 return subcategoriasAPI.post(values.nome, categoria.id)
@@ -80,48 +82,50 @@ class Subcategorias extends PureComponent {
     _renderSubcategorias = () => {
         const { subcategorias, loading } = this.state;
 
-        const colunas = [
-            {
-                key: 'SubcategoriaId',
-                dataIndex: 'id',
-                title: '#',
-                width: 50,
-            }, {
-                key: 'SubcategoriaNome',
-                dataIndex: 'nome',
-                title: 'Nome',
-            }, {
-                key: 'acoes',
-                title: 'Ações',
-                width: 90,
-                render: linha => {
-                    return (
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <Button shape="circle" icon="edit" onClick={() => this._onEditSub(linha)} />
-                            <Popconfirm
-                                title="Deseja deletar esta subcategoria?"
-                                okText="Sim"
-                                cancelText="Não"
-                                onConfirm={() => this._onDeleteSubCategoria(linha.id)}
-                            >
-                                <Button shape="circle" icon="delete" type="danger" />
-                            </Popconfirm>
-                        </div>
-                    );
-                }
-            },
-        ];
-
         return (
-            <TabelaComponent
-                linhas={subcategorias} 
-                colunas={colunas}
+            <Table
+                dataSource={subcategorias} 
                 loading={loading}
                 size="small"
                 pagination={{
                     pageSize: 15,
                 }}
-            />
+                locale={{
+                    emptyText: <EmptyComponent />
+                }}
+            >
+                <Column
+                    key="SubcategoriaId"
+                    dataIndex="id"
+                    title="#"
+                    width={50}
+                />
+                <Column
+                    key="SubcategoriaNome"
+                    dataIndex="nome"
+                    title="Nome"
+                />
+                <Column
+                    key="acoes"
+                    title="Ações"
+                    width={90}
+                    render={linha => {
+                        return (
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <Button shape="circle" icon="edit" onClick={() => this._onEditSub(linha)} />
+                                <Popconfirm
+                                    title="Você quer deletar esta subcategoria?"
+                                    okText="Sim"
+                                    cancelText="Não"
+                                    onConfirm={() => this._onDeleteSubCategoria(linha.id)}
+                                >
+                                    <Button shape="circle" icon="delete" type="danger" />
+                                </Popconfirm>
+                            </div>
+                        );
+                    }}
+                />
+            </Table>
         );
     }
 

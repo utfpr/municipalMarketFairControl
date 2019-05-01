@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Layout, Icon, Menu, Breadcrumb } from 'antd';
+import { Layout, Icon, Menu } from 'antd';
 import { withRouter } from 'react-router-dom';
 
 import routes from '../routes';
@@ -64,8 +64,6 @@ class FeiranteScreen extends Component {
 
     _renderNavItems = () => {
         return routes.map(route => {
-            const loggedUserType = localStorage.getItem('tag');
-
             if(route.permissions.find(permission => permission === "feirante")) {
                 return (
                     <Menu.Item
@@ -79,6 +77,7 @@ class FeiranteScreen extends Component {
                     </Menu.Item>
                 );
             }
+            return null;
         });
     }
 
