@@ -3,13 +3,16 @@ import React, { PureComponent, Fragment } from 'react';
 import { 
     Button, Popconfirm, Modal,
     Tag, Divider, message,
+    Table,
 } from 'antd';
 
 import CategoriasForm from './CategoriasForm';
 import Subcategorias from './Subcategorias';
 import ContentComponent from '../../components/ContentComponent';
-import TabelaComponent from '../../components/TabelaComponent';
+import EmptyComponent from '../../components/EmptyComponent';
 import * as categoriasAPI from '../../api/categoria';
+
+const { Column } = Table;
 
 export default class CategoriasScreen extends PureComponent {
 
@@ -36,7 +39,7 @@ export default class CategoriasScreen extends PureComponent {
         await categoriasAPI.del(id)
             .then(() => {
                 this._loadCategorias();
-                message.success('Loading finished', 2.5);
+                message.success('Categoria excluida com sucesso', 2.5);
             })
             .catch(() => {
                 message.error('Não foi possível excluir, tente novamente mais tarde!', 2.5);
@@ -102,51 +105,6 @@ export default class CategoriasScreen extends PureComponent {
     render() {
         const { categorias, loading } = this.state;
 
-        const colunas = [
-            {
-                key: 'id',
-                dataIndex: 'id',
-                title: '#',
-                width: 60,
-            },
-            {
-                key: 'nome',
-                dataIndex: 'nome',
-                title: 'Nome',
-            },
-            {
-                key: 'cnpj',
-                dataIndex: 'need_cnpj',
-                title: 'Requer CNPJ',
-                width: 120,
-                render: need_cnpj => {
-                    return need_cnpj === 1
-                        ? <Tag color="#87d068">Sim</Tag>
-                        : <Tag color="#2db7f5">Não</Tag>
-                }
-            },
-            {
-                key: 'acoes',
-                title: 'Ações',
-                render: linha => (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button type="primary" onClick={() => this.showModal(linha)}>
-                            Detalhes
-                        </Button>
-                        <Popconfirm
-                            title="Você quer deletar esta categoria?"
-                            okText="Sim"
-                            cancelText="Não"
-                            onConfirm={() => this._onDeleteCategoria(linha.id)}
-                        >
-                            <Button shape="circle" icon="delete" type="danger" />
-                        </Popconfirm>
-                    </div>
-                ),
-                width: 160,
-            },
-        ];
-
         return (
             <ContentComponent
                 buttonProps={{
@@ -157,17 +115,59 @@ export default class CategoriasScreen extends PureComponent {
                 }}
                 title="Categorias"
             >
-                <TabelaComponent
-                    linhas={categorias} 
-                    colunas={colunas}
+                <Table
+                    dataSource={categorias}
                     loading={loading}
                     pagination={{
                         pageSize: 15,
                     }}
                     locale={{
-                        emptyText: 'Nenhum registro'
+                        emptyText: <EmptyComponent onButtonClick={this.showModal} />
                     }}
-                />
+                >
+                    <Column
+                        key="id"
+                        dataIndex="id"
+                        title="#"
+                        width={60}
+                    />
+                    <Column
+                        key="nome"
+                        dataIndex="nome"
+                        title="Nome"
+                    />
+                    <Column
+                        key="cnpj"
+                        dataIndex="need_cnpj"
+                        title="Requer CNPJ"
+                        width={120}
+                        render={need_cnpj => {
+                            return need_cnpj === 1
+                                ? <Tag color="#87d068">Sim</Tag>
+                                : <Tag color="#2db7f5">Não</Tag>
+                        }}
+                    />
+                    <Column
+                        key="acoes"
+                        title="Ações"
+                        render={linha => (
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Button type="primary" onClick={() => this.showModal(linha)}>
+                                    Detalhes
+                                </Button>
+                                <Popconfirm
+                                    title="Você quer deletar esta categoria?"
+                                    okText="Sim"
+                                    cancelText="Não"
+                                    onConfirm={() => this._onDeleteCategoria(linha.id)}
+                                >
+                                    <Button shape="circle" icon="delete" type="danger" />
+                                </Popconfirm>
+                            </div>
+                        )}
+                        width={160}
+                    />
+                </Table>
                 { this._renderModal() }
             </ContentComponent>
 
