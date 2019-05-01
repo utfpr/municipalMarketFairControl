@@ -38,7 +38,7 @@ class UpdateSubcategoria extends PureComponent {
         event.preventDefault();
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
-                message.loading('Carregando', 0);
+                message.loading('Carregando...', 0);
                 return subcategoriasAPI.put(values.nome, subcategoria.id)
                     .then(() => {
                         resetFields(['nome']);
@@ -47,7 +47,7 @@ class UpdateSubcategoria extends PureComponent {
                         refresh();
                         message.loading('Subcategoria atualizada com sucesso', 2.5);
                     }).catch(() => {
-                        message.error('Não foi possível atualizar esta subcategoria', 2.5);
+                        message.error('Não foi possível atualizar esta subcategoria,tente novamente mais tarde', 2.5);
                     });
             }
         });

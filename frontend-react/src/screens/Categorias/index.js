@@ -35,11 +35,11 @@ export default class CategoriasScreen extends PureComponent {
     }
 
     _onDeleteCategoria = async id => {
-        message.loading('Carregando..', 0);
+        message.loading('Carregando...', 0);
         await categoriasAPI.del(id)
             .then(() => {
                 this._loadCategorias();
-                message.success('Categoria excluida com sucesso', 2.5);
+                message.success('Categoria deletada com sucesso.', 2.5);
             })
             .catch(() => {
                 message.error('Não foi possível excluir, tente novamente mais tarde!', 2.5);
@@ -76,7 +76,7 @@ export default class CategoriasScreen extends PureComponent {
             <Modal
                 title={ selectedCategoria && selectedCategoria.id
                     ? `#${selectedCategoria.id} - ${selectedCategoria.nome}`
-                    : 'Adicionar uma nova categoria'
+                    : 'Adicionar nova categoria'
                 }
                 visible={visible}
                 onCancel={this.handleCancel}
@@ -86,6 +86,7 @@ export default class CategoriasScreen extends PureComponent {
                         categoria={selectedCategoria}
                         onSuccess={this.handleOk}
                         refresh={this._loadCategorias}
+                        
                     />
                     {
                         selectedCategoria && selectedCategoria.id

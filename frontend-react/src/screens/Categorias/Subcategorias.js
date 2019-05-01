@@ -66,7 +66,7 @@ class Subcategorias extends PureComponent {
                 this._loadSubcategorias();
                 message.success('Subcategoria excluída com sucesso!', 2.5);
             }).catch(() => {
-                message.error('Não foi possível excluir subcategoria!', 2.5);
+                message.error('Não foi possível excluir subcategoria, tente novamente mais tarde', 2.5);
             });
     }
 

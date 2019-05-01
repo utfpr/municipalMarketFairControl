@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Input, Button, Form,
+    Checkbox, message,
 } from 'antd';
 
 import * as avisosAPI from '../../api/aviso';
@@ -43,18 +44,25 @@ class AvisosForm extends PureComponent {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
+                message.loading('Carregando...', 0);
                 return aviso && aviso.id
                     ? avisosAPI.put(aviso.id, values.assunto_aviso, values.texto_aviso)
                         .then(() => {
                             resetFields();
                             refresh();
-                            onSuccess();
+                            onSuccess()
+                            message.success('Aviso atualizado com sucesso', 2.5);
+                        }).catch(() => {
+                            message.error('Não foi possível atualizar este aviso, tente novamente mais tarde', 2.5);
                         })
                     : avisosAPI.post(values.assunto_aviso, values.texto_aviso)
                         .then(() => {
                             resetFields();
                             refresh();
                             onSuccess();
+                            message.success('Aviso adicionado com sucesso', 2.5);
+                        }).catch(() => {
+                            message.error('Não foi possível adicionar novos avisos, tente novamente mais tarde', 2.5);
                         });
             }
         });
@@ -78,8 +86,10 @@ class AvisosForm extends PureComponent {
                         validateStatus={assuntoAvisoError ? 'error' : ''}
                         help={assuntoAvisoError || ''}
                     >
-                        {getFieldDecorator('assunto_aviso', 
-                        )(
+                        {getFieldDecorator('assunto_aviso',{rules: [{
+                            required: true,
+                            message: 'O assunto é obrigatório!'
+                        }]} )(
                             <Input
                                 placeholder="Assunto"
                             />

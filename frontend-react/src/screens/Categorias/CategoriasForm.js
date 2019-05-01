@@ -84,7 +84,7 @@ class CategoriasForm extends PureComponent {
                         {getFieldDecorator('nome_categoria', {rules: [{
                             required: true,
                             message: 'O nome da categoria é obrigatório!'
-                        }]})(
+                        }]} )(
                             <Input
                                 placeholder="Nome"
                             />

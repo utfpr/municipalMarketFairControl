@@ -77,7 +77,9 @@ export default class MapeamentoScreen extends Component {
         const newMap = {
             ...customMap,
             locations: customMap.locations.map((location, index) => {
-                const feirantes = confirmados.feirantes.filter(feirante => feirante.celulaId === index);
+                const feirantes = confirmados.feirantes 
+                    ? confirmados.feirantes.filter(feirante => feirante.celulaId === index)
+                    : [];
                 const newLocation = {
                     ...location,
                     id: index,

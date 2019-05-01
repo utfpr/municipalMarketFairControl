@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Button, Popconfirm, Modal,
-    Table,
+    Table,message,
 } from 'antd';
 
 import AvisosForm from './AvisosForm';
@@ -35,9 +35,14 @@ export default class AvisosScreen extends PureComponent {
     }
 
     _onDeleteAviso = async id => {
+        message.loading('Carregando..', 0);
         await avisosAPI.del(id)
             .then(() => {
                 this._loadAvisos();
+                message.success('Aviso excluído com sucesso', 2.5);
+            })
+            .catch(() => {
+                message.error('Não foi possível excluir, tente novamente mais tarde!', 2.5);
             });
     }
 
@@ -131,7 +136,7 @@ export default class AvisosScreen extends PureComponent {
                                         Detalhes
                                     </Button>
                                     <Popconfirm
-                                        title="Você quer deletar esta aviso?"
+                                        title="Deseja deletar este aviso?"
                                         okText="Sim"
                                         cancelText="Não"
                                         onConfirm={() => this._onDeleteAviso(linha.id)}
