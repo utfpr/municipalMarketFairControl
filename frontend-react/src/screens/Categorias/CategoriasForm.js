@@ -40,7 +40,7 @@ class CategoriasForm extends PureComponent {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                message.loading('Carregando...', 0);
+                message.loading('Carregando.', 0);
                 return categoria && categoria.id
                     ? categoriasAPI.put(categoria.id, values.nome_categoria, values.need_cnpj)
                         .then(() => {
@@ -49,7 +49,7 @@ class CategoriasForm extends PureComponent {
                             onSuccess();
                             message.success('Categoria atualizada com sucesso', 2.5);
                         }).catch(() => {
-                            message.error('Não foi possível atualizar categoria', 2.5);
+                            message.error('Não foi possível atualizar categoria, tente novamente mais tarde.', 2.5);
                         })
                     : categoriasAPI.post(values.nome_categoria, values.need_cnpj)
                         .then(() => {
@@ -58,7 +58,7 @@ class CategoriasForm extends PureComponent {
                             onSuccess();
                             message.success('Categoria adicionada com sucesso', 2.5);
                         }).catch(() => {
-                            message.error('Não foi possível adicionar categoria', 2.5);
+                            message.error('Não foi possível adicionar categoria, tente novamente mais tarde.', 2.5);
                         });
             }
         });

@@ -8,6 +8,7 @@ import {
 import AvisosForm from './AvisosForm';
 import ContentComponent from '../../components/ContentComponent';
 import * as avisosAPI from '../../api/aviso';
+import EmptyComponent from '../../components/EmptyComponent';
 
 const { Column } = Table;
 /* Campos no BD
@@ -112,6 +113,9 @@ export default class AvisosScreen extends PureComponent {
                         loading={loading}
                         pagination={{
                             pageSize: 15,
+                        }}
+                        locale={{
+                            emptyText: <EmptyComponent onButtonClick={this.showModal} />
                         }}
                         rowKey={linha => linha.id}
                     >

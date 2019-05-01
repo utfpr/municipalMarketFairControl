@@ -35,7 +35,7 @@ export default class CategoriasScreen extends PureComponent {
     }
 
     _onDeleteCategoria = async id => {
-        message.loading('Carregando...', 0);
+        message.loading('Deletando.', 0);
         await categoriasAPI.del(id)
             .then(() => {
                 this._loadCategorias();

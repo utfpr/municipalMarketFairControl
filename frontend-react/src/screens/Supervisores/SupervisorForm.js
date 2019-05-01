@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 
 import { 
-    Input, Button, Form, Checkbox,
+    Input, Button, Form, Checkbox,message,
 } from 'antd';
 
 import * as supervisorAPI from '../../api/supervisor';
@@ -40,18 +40,25 @@ class SupervisorForm extends PureComponent {
 
         this.props.form.validateFields((err, values) => {
             if (!err) {
+                message.loading('Carregando.', 0);
                 if (supervisor && supervisor.cpf) return supervisorAPI
                     .put(supervisor.cpf, values.nome, values.isAdm )
                     .then(() => {
                         resetFields();
                         refresh();
                         onSuccess();
+                        message.success('Supervisor atualizado com sucesso', 2.5);
+                    }).catch(() => {
+                        message.error('Não foi possível atualizar o supervisor, tente novamente mais tarde.', 2.5);
                     })
                 return supervisorAPI.post(values.cpf, values.nome, values.senha, values.isAdm )
                     .then(() => {
                         resetFields();
                         refresh();
                         onSuccess();
+                        message.success('Supervisor adicionado com sucesso', 2.5);
+                    }).catch(() => {
+                        message.error('Não foi possível Adicionar o supervisor, tente novamente mais tarde.', 2.5);
                     })
             }
         });

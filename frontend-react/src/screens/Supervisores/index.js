@@ -1,12 +1,13 @@
 import React, { PureComponent, Fragment } from 'react';
 import { 
     Button, Popconfirm, Modal,
-    Tag, Table, Empty,
+    Tag, Table, Empty, message,
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';
 import SupervisorForm from './SupervisorForm';
 import * as SupervisorAPI from '../../api/supervisor';
+import EmptyComponent from '../../components/EmptyComponent';
 
 const { Column } = Table;
 
@@ -30,9 +31,14 @@ export default class SupervisorScreen extends PureComponent {
     }
     
     _onDeleteSupervisor = async cpf => {
+        message.loading('Carregando.', 0);
         await SupervisorAPI.del(cpf)
             .then(() => {
+                message.success('Supervisor deletado com sucesso.', 2.5);
                 this._loadSupervisor();
+            })
+            .catch(() => {
+                message.error('Não foi possível excluir, tente novamente mais tarde!', 2.5);
             });
     }
 
@@ -66,7 +72,7 @@ export default class SupervisorScreen extends PureComponent {
             <Modal
                 title={ selectedSupervisor && selectedSupervisor.cpf
                     ? selectedSupervisor.nome
-                    : 'Cadastrar um novo supervisor'
+                    : 'Cadastrar novo supervisor'
                 }
                 visible={visible}
                 onCancel={this.handleCancel}
@@ -149,6 +155,7 @@ export default class SupervisorScreen extends PureComponent {
                         pagination={{
                             pageSize: 15,
                         }}
+                        
                         locale={(
                             <Empty
                                 image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"

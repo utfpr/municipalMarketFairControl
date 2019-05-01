@@ -53,6 +53,7 @@ class FeiraScreen extends PureComponent {
                     .then(() => {
                         resetFields();
                         this._loadFeiras();
+                        message.success('Feira adicionada com sucesso.', 2.5);
                         this._hideModal();
                         this.setState({fileList: []});
                     });
@@ -63,6 +64,7 @@ class FeiraScreen extends PureComponent {
     _alteraStatusFeira = data => {
         return feiraAPI.alteraStatusFeira(data).then(() => {
             this._loadFeiras();
+            message.success('Mudança de Status', 2.5);
         });
     }
 
@@ -79,7 +81,9 @@ class FeiraScreen extends PureComponent {
                 title="Você quer reativar esta feira?"
                 okText="Sim"
                 cancelText="Não"
-                onConfirm={() => this._alteraStatusFeira(feira.data)}
+                onConfirm={
+                    () => this._alteraStatusFeira(feira.data)
+                }
             >
                 <Button icon="check">
                     Reativar
@@ -92,7 +96,9 @@ class FeiraScreen extends PureComponent {
                 title="Você quer cancelar esta feira?"
                 okText="Sim"
                 cancelText="Não"
-                onConfirm={() => this._alteraStatusFeira(feira.data)}
+                onConfirm={
+                    () => this._alteraStatusFeira(feira.data)
+                }
             >
                 <Button icon="close" type="danger">
                     Inativar
@@ -163,7 +169,7 @@ class FeiraScreen extends PureComponent {
                     >
                         {getFieldDecorator('data', {rules: [{
                             required: true,
-                            message: 'O data é obrigatória!'
+                            message: 'A data é obrigatória!'
                         }]})(
                             <DatePicker placeholder="Selecione uma data" format="DD/MM/YYYY"/>
                         )}
@@ -235,6 +241,7 @@ class FeiraScreen extends PureComponent {
                         okText="Sim"
                         cancelText="Não"
                         onConfirm={() => this._alteraStatusFeira(feiraAtual.data)}
+                       
                     >
                         <Button icon="close" type="danger">Inativar</Button>
                     </Popconfirm>
@@ -273,7 +280,9 @@ class FeiraScreen extends PureComponent {
                     }}
                 >
                     {this._renderFeiraAtual()}
-                    <Table dataSource={novaFeiras} loading={loading}>
+                    <Table dataSource={novaFeiras}
+                           loading={loading}>
+                           
                         <Column
                             title="Data"
                             dataIndex="data"

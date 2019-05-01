@@ -9,6 +9,7 @@ import ContentComponent from '../../components/ContentComponent';
 import TabelaComponent from '../../components/TabelaComponent';
 import FeirantesForm from './FeirantesForm';
 import * as feirantesAPI from '../../api/feirante';
+import EmptyComponent from '../../components/EmptyComponent';
 
 const { Column } = Table;
 const Option = Select.Option;
@@ -193,6 +194,9 @@ export default class FeiranteScreen extends PureComponent {
                         loading={loading}
                         pagination={{
                             pageSize: 15,
+                        }}
+                        locale={{
+                            emptyText: <EmptyComponent onButtonClick={this.showModal} />
                         }}
                     >
                         <Column
