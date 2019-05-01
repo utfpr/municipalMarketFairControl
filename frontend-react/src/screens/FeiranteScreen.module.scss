@@ -2,6 +2,40 @@
     width: 120px;
     height: 31px;
     background: rgba(255,255,255,.2);
-    margin: 16px 24px 16px 0;
+    margin: 7px 24px 7.5px 0;
     float: left;
+}
+
+.header {
+    height: 46px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.drawer {
+    :global {
+        .ant-drawer-body {
+            padding: 0 !important;
+        } 
+    }
+}
+
+.menuButton {
+    display: none !important;
+}
+
+.menuDesktop {
+    display: block !important;
+}
+
+@media only screen and (max-width: 768px) {
+    .menuButton {
+        display: flex !important;
+        align-items: center;
+    }
+    
+    .menuDesktop {
+        display: none !important;
+    }
 }

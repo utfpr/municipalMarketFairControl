@@ -251,28 +251,28 @@ class ConfirmacaoFeirante extends PureComponent {
         
     }
     render() {
-        const { feiras, loading } = this.state;
+        // const { feiras, loading } = this.state;
 
-        const novaFeiras = feiras.map(feira => {
-            return {
-                key: feira.data,
-                ...feira,
-            }
-        });
+        // const novaFeiras = feiras.map(feira => {
+        //     return {
+        //         key: feira.data,
+        //         ...feira,
+        //     }
+        // });
 
 
         return (
             <Fragment>
                 <ContentComponent
                     title="Feira"
-                    buttonProps={{
-                        text: 'Adicionar',
-                        onClick: this._showModal,
-                        type: 'primary',
-                        icon: 'plus',
-                    }}
+                    // buttonProps={{
+                    //     text: 'Adicionar',
+                    //     onClick: this._showModal,
+                    //     type: 'primary',
+                    //     icon: 'plus',
+                    // }}
                 >
-                    {this._renderFeiraAtual()}
+                    {/* {this._renderFeiraAtual()}
                     <Table dataSource={novaFeiras} loading={loading}>
                         <Column
                             title="Data"
@@ -304,9 +304,9 @@ class ConfirmacaoFeirante extends PureComponent {
                             render={this._renderAcoes}
                             width={105}
                         />
-                    </Table>
+                    </Table> */}
                 </ContentComponent>
-                {this._renderModal()}
+                {/* {this._renderModal()} */}
             </Fragment>
         );
     }

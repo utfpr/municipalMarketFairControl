@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 
-import { Layout, Icon, Menu, Popconfirm } from 'antd';
+import {
+    Layout, Icon, Menu, Popconfirm,
+    Modal,
+} from 'antd';
 import { withRouter } from 'react-router-dom';
 
 import routes from '../routes';
 import styles from './HomeScreen.module.scss';
 
-
+const { confirm } = Modal;
 const { Header, Sider } = Layout;
 
 class HomeScreen extends Component {
@@ -40,8 +43,15 @@ class HomeScreen extends Component {
     }
 
     _onLogout = () => {
-        localStorage.clear();
-        window.location = '/';
+        confirm({
+            title: 'Você deseja realmente sair da aplicação?',
+            okText: 'Sim',
+            cancelText: 'Cancelar',
+            onOk: () => {
+              localStorage.clear();
+              window.location = '/';
+            },
+        });
     }
 
     _toggle = () => {
@@ -108,15 +118,7 @@ class HomeScreen extends Component {
                         >
                             Sistema de Controle da Feira Criativa
                         </h1>
-                        <Popconfirm
-                            title="Você quer sair da aplicação?"
-                            placement="bottomRight"
-                            okText="Sim"
-                            cancelText="Não"
-                            onConfirm={this._onLogout}
-                        >
-                            <Icon className={styles.logoutButton} type="logout" />
-                        </Popconfirm>
+                        <Icon onClick={this._onLogout} className={styles.logoutButton} type="logout" />
                     </Header>
                     {children}
                 </Layout>

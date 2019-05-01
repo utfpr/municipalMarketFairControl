@@ -1,23 +1,40 @@
 import React, { Component } from 'react';
 
-import { Layout, Icon, Menu } from 'antd';
+import {
+    Layout, Icon, Menu, Button,
+    Drawer, Modal,
+} from 'antd';
 import { withRouter } from 'react-router-dom';
 
 import routes from '../routes';
 import styles from './FeiranteScreen.module.scss';
 
 const { Header, Content } = Layout;
+const { confirm } = Modal;
 
 class FeiranteScreen extends Component {
 
     state = {
         collapsed: false,
         selectedKey: [],
+        visible: false,
     };
 
     componentDidMount() {
         this._setPath();
     }
+
+    showDrawer = () => {
+        this.setState({
+            visible: true,
+        });
+    };
+    
+    onClose = () => {
+        this.setState({
+            visible: false,
+        });
+    };
 
     _setPath = () => {
         const { pathname } = this.props.location;
@@ -81,27 +98,77 @@ class FeiranteScreen extends Component {
         });
     }
 
+    _onAskToLogout = () => {
+        confirm({
+            title: 'Você deseja realmente sair da aplicação?',
+            okText: 'Sim',
+            cancelText: 'Cancelar',
+            onOk: () => {
+              this._onLogout();
+            },
+        });
+    }
+
+    _renderSairButton = () => {
+        return (
+            <Menu.Item
+                key="sair"
+                name="sair"
+                onClick={this._onAskToLogout}
+            >
+                <Icon type="logout" />
+                <span>Sair</span>
+            </Menu.Item>
+        )
+    }
+
     render() {
         const { children } = this.props;
-        const { selectedKey } = this.state;
+        const { selectedKey, logoutVisible } = this.state;
         return (
-            <Layout className="layout">
-                <Header>
+            <Layout className={styles.layout}>
+                <Header className={styles.header}>
                     <div className={styles.logo} />
                     <Menu
                         theme="dark"
                         mode="horizontal"
                         selectedKeys={selectedKey}
-                        style={{ lineHeight: '64px' }}
+                        className={styles.menuDesktop}
                     >
                         {this._renderNavItems()}
+                        {this._renderSairButton()}
                     </Menu>
+                    <Button
+                        type="primary"
+                        onClick={this.showDrawer}
+                        className={styles.menuButton}
+                    >
+                        Menu
+                    </Button>
                 </Header>
                 <Content style={{ padding: '0 50px' }}>
                     <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
                         {children}
                     </div>
                 </Content>
+                <Drawer
+                    title="Menu"
+                    placement="right"
+                    closable
+                    className={styles.drawer}
+                    onClose={this.onClose}
+                    visible={this.state.visible}
+                >
+                    <Menu
+                        theme="light"
+                        mode="vertical"
+                        selectedKeys={selectedKey}
+                    >
+                        {this._renderNavItems()}
+                        {this._renderSairButton()}
+                    </Menu>
+                   
+                </Drawer>
             </Layout>
         );
     }
