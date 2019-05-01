@@ -45,9 +45,9 @@ export async function getSub(id) {
   const data = await axios
   .get(`${host}/${id}/subcategorias`, { headers: { token: localStorage.getItem('token') } })
   .catch(() => null)
-  .then(record => record.data);
-
-  return data.map(record => ({
-    ...record,
-  }));
+  // .then(record => record.data);
+  return data ? data.data : [];
+  // return data.map(record => ({
+  //   ...record,
+  // }));
 }

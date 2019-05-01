@@ -1,73 +1,73 @@
 /* jshint indent: 2 */
 module.exports = (sequelize, DataTypes) => {
   const Feirante = sequelize.define(
-    "feirante",
+    'feirante',
     {
       cpf: {
         type: DataTypes.STRING(15),
         allowNull: false,
-        defaultValue: "",
-        primaryKey: true
+        defaultValue: '',
+        primaryKey: true,
       },
       rg: {
         type: DataTypes.STRING(15),
-        allowNull: false
+        allowNull: false,
       },
       nome: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: false,
       },
       cnpj: {
         type: DataTypes.STRING(15),
-        allowNull: true
+        allowNull: true,
       },
       usa_ee: {
         type: DataTypes.BOOLEAN(),
-        allowNull: false
+        allowNull: false,
       },
       nome_fantasia: {
         type: DataTypes.STRING(100),
-        allowNull: true
+        allowNull: true,
       },
       razao_social: {
         type: DataTypes.STRING(100),
-        allowNull: true
+        allowNull: true,
       },
       comprimento_barraca: {
-        type: "DOUBLE",
-        allowNull: false
+        type: DataTypes.INTEGER(),
+        allowNull: false,
       },
       largura_barraca: {
-        type: "DOUBLE",
-        allowNull: false
+        type: DataTypes.INTEGER(),
+        allowNull: false,
       },
       voltagem_ee: {
-        type: DataTypes.INTEGER(11),
-        allowNull: true
+        type: DataTypes.INTEGER(),
+        allowNull: true,
       },
       status: {
         type: DataTypes.BOOLEAN(),
         allowNull: true,
-        defaultValue: 1
+        defaultValue: true,
       },
       sub_categoria_id: {
-        type: DataTypes.INTEGER(11),
+        type: DataTypes.INTEGER(),
         allowNull: false,
         references: {
-          model: "subcategoria",
-          key: "id"
-        }
+          model: 'subcategoria',
+          key: 'id',
+        },
       },
       senha: {
         type: DataTypes.STRING(500),
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
-      tableName: "feirante",
+      tableName: 'feirante',
       timestamps: false,
-      createdAt: false
-    }
+      createdAt: false,
+    },
   );
 
   Feirante.associate = models => {
