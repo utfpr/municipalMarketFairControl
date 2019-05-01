@@ -2,7 +2,6 @@ import React, { PureComponent, Fragment } from 'react';
 
 import { 
     Input, Button, Form,
-    Checkbox,
 } from 'antd';
 
 import * as feirantesAPI from '../../api/feirante';
@@ -40,7 +39,6 @@ class FeirantesForm extends PureComponent {
         } = this.props;
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            console.log(values);
             if (!err) {
                 return feirante && feirante.cpf
                     ? feirantesAPI.put(feirante.cpf, values.nome_feirante, values.nome_fantasia_feirante)

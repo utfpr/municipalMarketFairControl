@@ -56,7 +56,7 @@ class HomeScreen extends Component {
             const loggedUserType = localStorage.getItem('tag');
             if (route.hidden) return null;
 
-            if(loggedUserType === 'supervisor' && route.key === 'supervisores') return null;
+            if(!route.permissions.find(permission => permission === loggedUserType)) return null;
             
             return (
                 <Menu.Item

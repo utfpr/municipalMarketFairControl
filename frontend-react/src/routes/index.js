@@ -18,6 +18,7 @@ export default [
         path: '/',
         exact: true,
         hidden: true,
+        public: true,
         component: LoginScreen,
         key: 'login',
         permissions: [SUPERVISOR, ADMINISTRADOR],
@@ -25,7 +26,6 @@ export default [
     {
         path: '/supervisor',
         exact: true,
-        private: true,
         component: FeiraScreen,
         icon: 'shop',
         key: 'feira',
@@ -35,7 +35,6 @@ export default [
     {
         path: '/supervisor/supervisores',
         exact: true,
-        private: true,
         component: SupervisoresScreen,
         icon: 'user',
         key: 'supervisores',
@@ -45,7 +44,6 @@ export default [
     {
         path: '/supervisor/feirante',
         exact: true,
-        private: true,
         component: FeiranteScreen,
         icon: 'team',
         key: 'feirante',
@@ -55,7 +53,6 @@ export default [
     {
         path: '/supervisor/categorias',
         exact: true,
-        private: true,
         component: CategoriasScreen,
         icon: 'tags',
         key: 'categorias',
@@ -65,7 +62,6 @@ export default [
     {
         path: '/supervisor/relatorios',
         exact: true,
-        private: true,
         component: RelatoriosScreen,
         icon: 'read',
         key: 'relatorios',
@@ -75,7 +71,6 @@ export default [
     {
         path: '/supervisor/relatorios/:data',
         exact: true,
-        private: true,
         hidden: true,
         component: RelatorioPage,
         icon: 'read',
@@ -86,7 +81,6 @@ export default [
     {
         path: '/supervisor/mapeamento',
         exact: true,
-        private: true,
         component: MapeamentoScreen,
         icon: 'table',
         key: 'mapeamento',
@@ -96,7 +90,6 @@ export default [
     {
         path: '/supervisor/avisos',
         exact: true,
-        private: true,
         component: AvisosScreen,
         icon: 'info-circle',
         key: 'avisos',
@@ -106,7 +99,6 @@ export default [
     {
         path: '/feirante',
         exact: true,
-        private: true,
         hidden: true,
         component: ConfirmacaoFeirante,
         icon: 'check',
@@ -117,7 +109,6 @@ export default [
     {
         path: '/feirante/relatorio',
         exact: true,
-        private: true,
         hidden: true,
         component: ConfirmacaoFeirante,
         icon: 'table',

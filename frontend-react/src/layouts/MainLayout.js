@@ -52,9 +52,9 @@ class MainLayout extends Component {
 
     _renderContent = () => {
         return routes.map((route, index) => (
-            route.private
-                ? this._renderPrivateRoute(route, index)
-                : this._renderRoute(route, index)
+            route.public
+                ? this._renderRoute(route, index)
+                : this._renderPrivateRoute(route, index)
         ));
     }
 
