@@ -8,7 +8,7 @@ export default async function getDate() {
     .then(res =>{
         r = res.data
     })
-    .catch(e => console.log(e));
+    .catch(e => console.warn(e));
     
     return r;
   }

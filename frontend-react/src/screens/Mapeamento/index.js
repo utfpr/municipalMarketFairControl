@@ -81,6 +81,7 @@ export default class MapeamentoScreen extends Component {
                 const newLocation = {
                     ...location,
                     id: index,
+                    key: index,
                     name: `Celula ${index}`,
                     feirantes,
                 }
@@ -103,7 +104,6 @@ export default class MapeamentoScreen extends Component {
 
     _refreshCelula = () => {
         const { selectedCelula } = this.state;
-        console.log('refrescou');
         const celula = this._findCelula(selectedCelula);
         this.setState({celula});
     }
@@ -144,7 +144,6 @@ export default class MapeamentoScreen extends Component {
     }
 
     handleCancel = () => {
-        console.log('handle cancel');
         this.setState({celula: {}, selectedCelula: undefined, visible: false});
     }
 

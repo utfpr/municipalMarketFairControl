@@ -6,6 +6,7 @@ import {
 import moment from 'moment-timezone';
 
 import ContentComponent from '../../components/ContentComponent';
+import EmptyComponent from '../../components/EmptyComponent';
 
 import * as relatorioAPI from '../../api/relatorio';
 
@@ -57,11 +58,11 @@ export default class RelatoriosScreen extends PureComponent {
                     title="Relatórios"
                 >
                     <Table 
-                        rowKey={linha => linha.id}
                         dataSource={feiras}
                         loading={loading}
+                        rowKey={linha => linha.data}
                         locale={{
-                            emptyText: 'Nenhum registro'
+                            emptyText: <EmptyComponent />
                         }}
                     >
                         <Column

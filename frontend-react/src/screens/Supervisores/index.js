@@ -1,14 +1,14 @@
 import React, { PureComponent, Fragment } from 'react';
 import { 
     Button, Popconfirm, Modal,
-    Tag,
+    Tag, Table, Empty,
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';
-//import ModalComponent from '../../components/ModalComponent';
-import TabelaComponent from '../../components/TabelaComponent';
 import SupervisorForm from './SupervisorForm';
 import * as SupervisorAPI from '../../api/supervisor';
+
+const { Column } = Table;
 
 export default class SupervisorScreen extends PureComponent {
 
@@ -130,37 +130,6 @@ export default class SupervisorScreen extends PureComponent {
     render() {
         const { Supervisor, loading } = this.state;
 
-        const colunas = [
-            {
-                key: 'cpf',
-                dataIndex: 'cpf',
-                title: 'CPF',
-                width: 150,
-            },
-            {
-                key: 'nome',
-                dataIndex: 'nome',
-                title: 'Nome',
-            },
-            {
-                key: 'isAdm',
-                dataIndex: 'is_adm',
-                title: 'Administrador',
-                width: 50,
-                render: isAdm => {
-                    return isAdm
-                        ? <Tag color="#87d068">Sim</Tag>
-                        : <Tag color="#2db7f5">Não</Tag>
-                }
-            },
-            {
-                key: 'acoes',
-                title: 'Ações',
-                render: linha => this._renderAcoes(linha),
-                width: 130,
-            },
-        ];
-
         return (
             <Fragment>
                 <ContentComponent
@@ -172,15 +141,59 @@ export default class SupervisorScreen extends PureComponent {
                     }}
                     title="Supervisores"
                 >
-                    <TabelaComponent
-                        linhas={Supervisor} 
-                        colunas={colunas}
+                    <Table
+                        dataSource={Supervisor} 
                         size="small"
                         loading={loading}
+                        rowKey={linha => linha.cpf}
                         pagination={{
                             pageSize: 15,
                         }}
-                    />
+                        locale={(
+                            <Empty
+                                image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"
+                                imageStyle={{
+                                height: 60,
+                                }}
+                                description={
+                                <span>
+                                    Customize <a href="#API">Description</a>
+                                </span>
+                                }
+                            >
+                                <Button type="primary">Create Now</Button>
+                            </Empty>
+                        )}
+                    >
+                        <Column
+                            key="cpf"
+                            dataIndex="cpf"
+                            title="CPF"
+                            width={150}
+                        />
+                        <Column
+                            key="nome"
+                            dataIndex="nome"
+                            title="Nome"
+                        />
+                        <Column
+                            key="isAdm"
+                            dataIndex="is_adm"
+                            title="Administrador"
+                            width={50}
+                            render={isAdm => {
+                                return isAdm
+                                    ? <Tag color="#87d068">Sim</Tag>
+                                    : <Tag color="#2db7f5">Não</Tag>
+                            }}
+                        />
+                        <Column
+                            key="acoes"
+                            title="Ações"
+                            render={linha => this._renderAcoes(linha)}
+                            width={130}
+                        />
+                    </Table>
                     { this._renderModal() }
                 </ContentComponent>
             </Fragment>

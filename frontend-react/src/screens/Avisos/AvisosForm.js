@@ -42,7 +42,6 @@ class AvisosForm extends PureComponent {
         } = this.props;
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            console.log(values);
             if (!err) {
                 return aviso && aviso.id
                     ? avisosAPI.put(aviso.id, values.assunto_aviso, values.texto_aviso)

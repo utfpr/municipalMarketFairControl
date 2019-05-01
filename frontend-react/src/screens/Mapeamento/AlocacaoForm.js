@@ -94,6 +94,8 @@ class AlocacaoForm extends Component {
                 return 'Tarde';
             case 3:
                 return 'Manhã e tarde';
+            default:
+                return '';
         }
     }
 
