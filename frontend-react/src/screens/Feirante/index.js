@@ -11,6 +11,7 @@ import FeirantesForm from './FeirantesForm';
 import * as feirantesAPI from '../../api/feirante';
 import EmptyComponent from '../../components/EmptyComponent';
 
+
 const { Column } = Table;
 const Option = Select.Option;
 
