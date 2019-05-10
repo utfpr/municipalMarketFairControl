@@ -5,14 +5,14 @@ const subcategoriaController = require('../controllers/subcategoria');
 
 // Adiciona categoria
 router.post('/', async (req, res) => {
-    const nome = req.body.nome;
-    const need_cnpj = req.body.need_cnpj;
-    
+    const { nome } = req.body;
+    const { need_cnpj } = req.body;
+
     if ((nome == null) || (need_cnpj == null) || (need_cnpj !== 0 && !need_cnpj)) {
         res.status(400).send();
     } else {
         const categoria = await categoriaController.addCategoria(
-            nome, need_cnpj
+            nome, need_cnpj,
         );
         if (categoria != null) {
             res.status(200).send({
@@ -23,18 +23,18 @@ router.post('/', async (req, res) => {
                 msg: 'erro',
             });
         }
-        
+
     }
 });
 
 // Lista categorias
-router.get('/', authMiddleware.isSupervisor, async (req, res) => {
+router.get('/', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
     const categorias = await categoriaController.listCategoria();
     res.status(200).send(categorias);
 });
 
 // Retorna informações de uma categoria pelo ID
-router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
+router.get('/:id', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
     const categoria = await categoriaController.findCategoriaById(id_cat);

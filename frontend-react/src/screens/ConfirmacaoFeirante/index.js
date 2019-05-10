@@ -1,7 +1,7 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 
 import { 
-    Row, Button, Form, Steps,
+    Row, Form, Steps,
 } from 'antd';
 import moment from 'moment-timezone';
 
@@ -36,11 +36,11 @@ class ConfirmacaoFeirante extends PureComponent {
     }
 
     _renderCurrentStep = () => {
-        const { current } = this.state;
+        const { current, feiraAtual } = this.state;
 
         if (current === 0) {
             return (
-                <p>Teste 01</p>
+                <h3>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para confirmar presença</h3>
             );
         }
 
@@ -63,9 +63,7 @@ class ConfirmacaoFeirante extends PureComponent {
                 loading={loading}
                 title={`Próxima feira: ${moment(feiraAtual.data).format('DD/MM/YYYY')}`}
                 limitedSize
-            >
-                <h3>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para confirmar presença</h3>
-                
+            >                
                 <div className={styles.avisosContainer}>
                     <h1>Avisos</h1>
                     <Row gutter={24}>

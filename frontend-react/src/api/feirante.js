@@ -27,6 +27,17 @@ export async function getByCpf(cpf) {
     cep: record.endereco.cep.replace(/(\d{5})(\d{3})/g, '$1-$2')};
 }
 
+export async function getProfile(cpf) {
+  const record = (await axios.get(`${host}/profile/${cpf}`, {
+    headers: { token: localStorage.getItem('token') },  
+  })).data;
+  return { ...record, 
+    cpf: record.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4'), 
+    cnpj: record.cnpj ? record.cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5') : null,
+    rg: record.rg ? record.rg.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/g, '$1.$2.$3-$4') : null,
+    cep: record.endereco.cep.replace(/(\d{5})(\d{3})/g, '$1-$2')};
+}
+
 export async function post(
   cpf,
   cnpj,

@@ -8,6 +8,7 @@ import CategoriasScreen from '../screens/Categorias';
 import RelatorioPage from '../screens/Relatorios/RelatorioPage';
 import LoginScreen from '../screens/Login';
 import ConfirmacaoFeirante from '../screens/ConfirmacaoFeirante';
+import PerfilFeirante from '../screens/PerfilFeirante';
 
 const FEIRANTE = 'feirante';
 const SUPERVISOR = 'supervisor';
@@ -99,7 +100,6 @@ export default [
     {
         path: '/feirante',
         exact: true,
-        hidden: true,
         component: ConfirmacaoFeirante,
         icon: 'check',
         key: 'confirmacao',
@@ -109,11 +109,19 @@ export default [
     {
         path: '/feirante/relatorio',
         exact: true,
-        hidden: true,
         component: ConfirmacaoFeirante,
         icon: 'table',
         key: 'relatorio',
         label: 'Relatório',
+        permissions: [FEIRANTE],
+    },
+    {
+        path: '/feirante/perfil',
+        exact: true,
+        component: PerfilFeirante,
+        icon: 'user',
+        key: 'perfil',
+        label: 'Perfil',
         permissions: [FEIRANTE],
     },
 ];

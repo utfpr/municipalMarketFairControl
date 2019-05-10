@@ -113,6 +113,41 @@ router.get('/', authMiddleware.isSupervisor, async (req, res) => {
   );
 });
 
+router.get('/profile/:cpf', [param('cpf').custom(isCpf)], authMiddleware.isFeirante, async (req, res) => {
+  if (!validationResult(req).isEmpty()) return res.status(400).send();
+
+  const { cpf } = req.params;
+
+  if (req.cpf !== cpf) {
+    res.status(401).send({
+      msg: 'nao_autorizado',
+    });
+  }
+
+  const feirante = await feiranteController.findFeiranteByCpf(cpf);
+  if (feirante === null) return res.json({ msg: 'cpf_nao_existente' });
+
+  return res.json({
+    cpf: feirante.cpf,
+    cnpj: feirante.cnpj,
+    nome: feirante.nome,
+    rg: feirante.rg,
+    usa_ee: feirante.usaEe,
+    nome_fantasia: feirante.nomeFantasia,
+    razao_social: feirante.razaoSocial,
+    comprimento_barraca: feirante.comprimentoBarraca,
+    largura_barraca: feirante.larguraBarraca,
+    endereco: {
+      logradouro: feirante.endereco.logradouro,
+      bairro: feirante.endereco.bairro,
+      numero: feirante.endereco.numero,
+      cep: feirante.endereco.CEP,
+    },
+    voltagem_ee: feirante.voltagemEe,
+    sub_categoria_id: feirante.subCategoriaId,
+  });
+});
+
 router.get('/:cpf', [param('cpf').custom(isCpf)], authMiddleware.isSupervisor, async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.status(400).send();
 
@@ -203,8 +238,6 @@ router.put(
       sub_categoria_id,
     } = req.body;
 
-    console.log('Validacoes', cpf);
-
     if (sub_categoria_id !== undefined) {
       const subcategoria = await subCategoriaController.findSubcategoriaById(sub_categoria_id);
       if (subcategoria === null) return res.json({ msg: 'subcategoria_nao_existe' });
@@ -215,7 +248,7 @@ router.put(
 
     // Isso permite tornar os atributos opcionais (atualiza somente o que precisar)
     const ret = await feiranteController.updateFeirante(cpf, {
-      ...(cnpj !== undefined ? { cnpj } : {}), 
+      ...(cnpj !== undefined ? { cnpj } : {}),
       ...(nome !== undefined ? { nome } : {}),
       ...(rg !== undefined ? { rg } : {}),
       ...(senha !== undefined ? { senha } : {}),
