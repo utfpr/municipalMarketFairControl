@@ -8,6 +8,7 @@ import {
 
 import * as feirantesAPI from '../../api/feirante';
 import * as categoriasAPI from '../../api/categoria';
+import * as subcategoriasAPI from '../../api/subcategoria';
 
 const Option = Select.Option;
 
@@ -55,6 +56,10 @@ class FeirantesForm extends PureComponent {
     _loadValues = async cpf => {
         const { feirante, form } = this.props;
         const { setFieldsValue, resetFields } = form;
+        const { data: categoria } = await subcategoriasAPI.getCatBySub(feirante.sub_categoria_id);
+
+        await this._loadSubcategorias(categoria.id);
+
         if (feirante) {
             resetFields();
             await setFieldsValue({
@@ -71,7 +76,15 @@ class FeirantesForm extends PureComponent {
                         ? 1 : 2)
                     : 0,
                 usaEE: feirante.usa_ee,
-                
+                categoria: categoria.id,
+                subcategoria: feirante.sub_categoria_id,
+                logradouro :feirante.endereco.logradouro,
+                numero:feirante.endereco.numero,
+                cep:feirante.endereco.cep,
+                bairro:feirante.endereco.bairro,
+                senha:feirante.senha
+
+
             });
         }
     }
@@ -127,14 +140,14 @@ class FeirantesForm extends PureComponent {
                             values.comprimentoBarraca,
                             values.larguraBarraca,
                             {
-                                logradouro: 'Rua Carlos gomes',
-                                bairro: 'Jd. Independencia',
-                                numero: 1461,
-                                CEP: '87113100',
+                                logradouro: values.logradouro,
+                                bairro: values.bairro,
+                                numero: Number(values.numero),
+                                CEP: values.cep,
                             },
                             values.voltagemEE === 1 ? 110 : 220,
                             values.subcategoria,
-                            1234506,
+                            values.senha,
                         )
                         .then(() => {
                             resetFields();
@@ -152,14 +165,14 @@ class FeirantesForm extends PureComponent {
                         values.comprimentoBarraca,
                         values.larguraBarraca,
                         {
-                            logradouro: 'Rua Carlos gomes',
-                            bairro: 'Jd. Independencia',
-                            numero: 1461,
-                            CEP: '87113100',
+                            logradouro: values.logradouro,
+                            bairro: values.bairro,
+                            numero: values.numero,
+                            CEP: values.cep,
                         },
                         values.voltagemEE === 1 ? 110 : 220,
                         values.subcategoria,
-                        values.senha, // FALTA O CAMPO DA SENHA 
+                        values.senha, // FALTA O CAMPO DA SENHA
                     )
                         .then(() => {
                             resetFields();
@@ -169,6 +182,14 @@ class FeirantesForm extends PureComponent {
             }
         });
     }
+    /*{
+        logradouro: 'Rua Carlos gomes',
+        bairro: 'Jd. Independencia',
+        numero: 1461,
+        CEP: '87113100',
+
+        BAIRRO NUMERO E CEP N REQUERIDOS
+    }*/
 
     render() {
         const { categorias, subcategorias, needCnpj } = this.state;
@@ -189,11 +210,15 @@ class FeirantesForm extends PureComponent {
         const razaoSocialFeiranteError = isFieldTouched('razaoSocial') && getFieldError('razaoSocial');
         const comprimentoFeiranteError = isFieldTouched('comprimentoBarraca') && getFieldError('comprimentoBarraca');
         const larguraFeiranteError = isFieldTouched('larguraBarraca') && getFieldError('larguraBarraca');
-        //const enderecoFeiranteError = isFieldTouched('endereco') && getFieldError('endereco');
+        const logradouroFeiranteError = isFieldTouched('logradouro') && getFieldError('logradouro');
+        const bairroFeiranteError = isFieldTouched('bairro') && getFieldError('bairro');
+        const cepFeiranteError = isFieldTouched('cep') && getFieldError('cep');
+        const numeroFeiranteError = isFieldTouched('numero') && getFieldError('numero');
         const voltagemEEFeiranteError = isFieldTouched('voltagemEE') && getFieldError('voltagemEE');
         const subcategoriaFeiranteError = isFieldTouched('subcategoria') && getFieldError('subcategoria');
         const categoriaFeiranteError = isFieldTouched('categoria') && getFieldError('categoria');
         const senhaError = isFieldTouched('categoria') && getFieldError('categoria');
+
 
         return (
             <Fragment>
@@ -451,6 +476,74 @@ class FeirantesForm extends PureComponent {
                     </Row>
 
                     <Form.Item
+                        label="Bairro"
+                        validateStatus={bairroFeiranteError ? 'error' : ''}
+                        help={bairroFeiranteError || ''}
+                    
+                    >
+                        {getFieldDecorator('bairro', {
+                            rules: [{
+                                required: false,
+                                message: 'O bairro'
+                            }]
+                        })(
+                            <Input
+                                placeholder="Ex: Jd. Alvorada"
+                            />
+                        )}
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Logradouro"
+                        validateStatus={logradouroFeiranteError ? 'error' : ''}
+                        help={logradouroFeiranteError || ''}
+                    >
+                        {getFieldDecorator('logradouro', {
+                            rules: [{
+                                required: true,
+                                message: 'O Logradouro'
+                            }]
+                        })(
+                            <Input
+                                placeholder="Ex: Rua das Palmeiras"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        label="Numero"
+                        validateStatus={numeroFeiranteError ? 'error' : ''}
+                        help={numeroFeiranteError || ''}
+                    >
+                        {getFieldDecorator('numero', {
+                            rules: [{
+                                required: false,
+                                message: 'O numero'
+                            }]
+                        })(
+                            <Input
+                                placeholder="123"
+                            />
+                        )}
+                    </Form.Item>
+
+                    <Form.Item
+                        label="cep"
+                        validateStatus={cepFeiranteError ? 'error' : ''}
+                        help={cepFeiranteError || ''}
+                    >
+                        {getFieldDecorator('cep', {
+                            rules: [{
+                                required:false,
+                                message: 'O cep'
+                            }]
+                        })(
+                            <Input
+                                placeholder="87301000"
+                            />
+                        )}
+                    </Form.Item>
+
+                    <Form.Item
                         label="Senha"
                         validateStatus={senhaError ? 'error' : ''}
                         help={senhaError || ''}
@@ -486,16 +579,14 @@ class FeirantesForm extends PureComponent {
             </Fragment >
         );
     }
-
 }
-
 const WrappedHorizontalFeirantesForm = Form.create({ name: 'feirantes_form' })(FeirantesForm);
 
 export default WrappedHorizontalFeirantesForm;
-/*
-                Endereço:
-                  logradouro: values.logradouro,
-                  bairro: values.bairro,
-                  numero: parseInt(values.numero),
-                  CEP: cep
+                /*
+Endereço:
+logradouro: values.logradouro,
+bairro: values.bairro,
+numero: parseInt(values.numero),
+CEP: cep
 */

@@ -160,6 +160,8 @@ const updateFeirante = async (cpf, dados) => {
     obj.senha = await bcrypt.hash(obj.senha, 10);
   }
 
+  console.log(dados);
+
   if (endereco !== undefined) {
     const enderecoTmp = await models.endereco.findOne({ where: { cpf_feirante: cpf } });
     try {
