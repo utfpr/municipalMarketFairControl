@@ -254,7 +254,6 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
-                                        disabled={Boolean(feirante.cpf)}
                                         placeholder="123.456.789-10"
                                     />
                                 )}
@@ -273,7 +272,6 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
-                                        disabled={Boolean(feirante.rg)}
                                         placeholder="12.345.123-1"
                                     />
                                 )}
@@ -527,7 +525,7 @@ class FeirantesForm extends PureComponent {
                     </Form.Item>
 
                     <Form.Item
-                        label="cep"
+                        label="CEP"
                         validateStatus={cepFeiranteError ? 'error' : ''}
                         help={cepFeiranteError || ''}
                     >
@@ -550,7 +548,7 @@ class FeirantesForm extends PureComponent {
                     >
                         {getFieldDecorator('senha', {
                             rules: [{
-                                required: true,
+                                required: !Boolean(feirante.cpf),
                                 message: 'É necessário informar uma senha'
                             }]
                         })(
