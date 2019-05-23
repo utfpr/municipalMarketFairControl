@@ -35,7 +35,7 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
 });
 
 // Retorna informações de uma subcategoria pelo ID
-router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
+router.get('/:id', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
     const id_sub = req.params.id;
 
     const subcategoria = await subcategoriaController.findSubcategoriaById(id_sub);
@@ -49,7 +49,7 @@ router.get('/:id', authMiddleware.isSupervisor, async (req, res) => {
 });
 
 // Retorna categoria pelo ID da subcategoria
-router.get('/:id/categoria', authMiddleware.isSupervisor, async (req, res) => {
+router.get('/:id/categoria', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
     const id_sub = req.params.id;
 
     const categoria = await subcategoriaController.findCategoriaBySubcategoria(id_sub);

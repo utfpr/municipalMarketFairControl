@@ -184,7 +184,7 @@ class AlocacaoForm extends Component {
 
         const nomeError = isFieldTouched('nome') && getFieldError('nome');
 
-        const naoAlocados = confirmados.feirantes.filter(feirante => feirante.celulaId === null);
+        const naoAlocados = confirmados.feirantes ? confirmados.feirantes.filter(feirante => feirante.celulaId === null) : [];
 
         return (
             <Fragment>

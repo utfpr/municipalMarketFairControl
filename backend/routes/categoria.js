@@ -49,7 +49,7 @@ router.get('/:id', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
 });
 
 // Lista subcategorias de uma categoria pelo ID
-router.get('/:id/subcategorias', authMiddleware.isSupervisor, async (req, res) => {
+router.get('/:id/subcategorias', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
     const id_cat = req.params.id;
 
     const categoria = await categoriaController.findCategoriaById(id_cat);

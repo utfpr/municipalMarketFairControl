@@ -71,7 +71,7 @@ class FeirantesForm extends PureComponent {
                 razaoSocial: feirante.razao_social,
                 comprimentoBarraca: feirante.comprimento_barraca,
                 larguraBarraca: feirante.largura_barraca,
-                voltagemEE: (feirante.usa_ee == 1)
+                voltagemEE: (feirante.usa_ee === 1)
                     ? ((feirante.voltagem_ee === 110)
                         ? 1 : 2)
                     : 0,
@@ -115,7 +115,7 @@ class FeirantesForm extends PureComponent {
      voltagem_ee,
      sub_categoria_id,
      POST : senha
-     */
+    */
 
 
     _handleSubmit = (e) => {
@@ -193,7 +193,7 @@ class FeirantesForm extends PureComponent {
 
     render() {
         const { categorias, subcategorias, needCnpj } = this.state;
-        const { feirante, form } = this.props;
+        const { feirante, form, readOnly } = this.props;
         const RadioGroup = Radio.Group;
 
         const {
@@ -236,6 +236,7 @@ class FeirantesForm extends PureComponent {
                             }]
                         })(
                             <Input
+                                disabled={readOnly}
                                 placeholder="Pedro Silva"
                             />
                         )}
@@ -254,7 +255,7 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
-                                        disabled={Boolean(feirante.cpf)}
+                                        disabled={Boolean(feirante.cpf) || readOnly}
                                         placeholder="123.456.789-10"
                                     />
                                 )}
@@ -273,7 +274,7 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
-                                        disabled={Boolean(feirante.rg)}
+                                        disabled={Boolean(feirante.rg) || readOnly}
                                         placeholder="12.345.123-1"
                                     />
                                 )}
@@ -300,6 +301,7 @@ class FeirantesForm extends PureComponent {
                                         optionFilterProp='children'
                                         onChange={this._handleChange}
                                         onBlur={this._handleBlur}
+                                        disabled={readOnly}
                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                     >
                                         {
@@ -329,7 +331,7 @@ class FeirantesForm extends PureComponent {
                                         style={{ width: 200 }}
                                         placeholder='Selecione uma subcategoria'
                                         optionFilterProp='children'
-                                        disabled={getFieldValue('categoria') ? false : true}
+                                        disabled={!getFieldValue('categoria') || readOnly}
                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                     >
                                         {
@@ -355,6 +357,7 @@ class FeirantesForm extends PureComponent {
                             }]
                         })(
                             <Input
+                                disabled={readOnly}
                                 placeholder="12.456.321/1234-56"
                             />
                         )}
@@ -371,6 +374,7 @@ class FeirantesForm extends PureComponent {
                             }]
                         })(
                             <Input
+                                disabled={readOnly}
                                 placeholder="Nome Fantasia"
                             />
                         )}
@@ -387,6 +391,7 @@ class FeirantesForm extends PureComponent {
                             }]
                         })(
                             <Input
+                                disabled={readOnly}
                                 placeholder="Razão Social"
                             />
                         )}
@@ -403,7 +408,7 @@ class FeirantesForm extends PureComponent {
                                         message: 'É preciso especificar se o feirante usa energia.'
                                     }]
                                 })(
-                                    <Checkbox checked={getFieldValue('usaEE')}>Usa Eletricidade</Checkbox>
+                                    <Checkbox disabled={readOnly} checked={getFieldValue('usaEE')}>Usa Eletricidade</Checkbox>
                                 )}
                             </Form.Item>
                         </Col>
@@ -418,7 +423,7 @@ class FeirantesForm extends PureComponent {
                                         message: 'se tiver energia, mostrar que é requerido'
                                     }]
                                 })(
-                                    <RadioGroup onChange={this.onChange} value={this.state.value}>
+                                    <RadioGroup disabled={readOnly} onChange={this.onChange} value={this.state.value}>
                                         <Radio
                                             disabled={(getFieldValue('usaEE')) ? false : true}
                                             value={1}
@@ -450,6 +455,7 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
+                                        disabled={readOnly}
                                         placeholder="Comprimento da barraca (em metros)."
                                     />
                                 )}
@@ -468,6 +474,7 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
+                                        disabled={readOnly}
                                         placeholder="Largura da barraca (em metros)."
                                     />
                                 )}
@@ -488,6 +495,7 @@ class FeirantesForm extends PureComponent {
                             }]
                         })(
                             <Input
+                                disabled={readOnly}
                                 placeholder="Ex: Jd. Alvorada"
                             />
                         )}
@@ -505,6 +513,7 @@ class FeirantesForm extends PureComponent {
                             }]
                         })(
                             <Input
+                                disabled={readOnly}
                                 placeholder="Ex: Rua das Palmeiras"
                             />
                         )}
@@ -521,6 +530,7 @@ class FeirantesForm extends PureComponent {
                             }]
                         })(
                             <Input
+                                disabled={readOnly}
                                 placeholder="123"
                             />
                         )}
@@ -538,42 +548,47 @@ class FeirantesForm extends PureComponent {
                             }]
                         })(
                             <Input
+                                disabled={readOnly}
                                 placeholder="87301000"
                             />
                         )}
                     </Form.Item>
-
-                    <Form.Item
-                        label="Senha"
-                        validateStatus={senhaError ? 'error' : ''}
-                        help={senhaError || ''}
-                    >
-                        {getFieldDecorator('senha', {
-                            rules: [{
-                                required: true,
-                                message: 'É necessário informar uma senha'
-                            }]
-                        })(
-                            <Input.Password placeholder="password" />
-                        )}
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            disabled={
-                                hasErrors(getFieldsError())
-                            }
-                        >
-                            {
-                                feirante.cpf
-                                    ? 'Atualizar'
-                                    : 'Adicionar'
-                            }
-                        </Button>
-                    </Form.Item>
-
+                    {
+                        !readOnly
+                        ? (
+                            <>
+                                <Form.Item
+                                    label="Senha"
+                                    validateStatus={senhaError ? 'error' : ''}
+                                    help={senhaError || ''}
+                                >
+                                    {getFieldDecorator('senha', {
+                                        rules: [{
+                                            required: true,
+                                            message: 'É necessário informar uma senha'
+                                        }]
+                                    })(
+                                        <Input.Password placeholder="password" />
+                                    )}
+                                </Form.Item>
+                                <Form.Item>
+                                    <Button
+                                        type="primary"
+                                        htmlType="submit"
+                                        disabled={
+                                            hasErrors(getFieldsError())
+                                        }
+                                    >
+                                        {
+                                            feirante.cpf
+                                                ? 'Atualizar'
+                                                : 'Adicionar'
+                                        }
+                                    </Button>
+                                </Form.Item>
+                            </>
+                        ) : null
+                    }
 
                 </Form >
             </Fragment >

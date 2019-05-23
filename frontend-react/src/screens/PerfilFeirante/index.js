@@ -39,7 +39,7 @@ class PerfilFeirante extends PureComponent {
                 title="Perfil"
                 limitedSize
             >
-                <WrappedHorizontalFeirantesForm feirante={feirante} />
+                <WrappedHorizontalFeirantesForm readOnly feirante={feirante} />
             </ContentComponent>
         );
     }
