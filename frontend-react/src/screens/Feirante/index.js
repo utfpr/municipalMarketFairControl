@@ -65,8 +65,6 @@ export default class FeiranteScreen extends PureComponent {
     _renderModal = () => {
         const { visible, selectedFeirante} = this.state;
 
-        if (!visible) return null;
-
         return (
             <Modal
                 title={ selectedFeirante && selectedFeirante.cpf
@@ -76,6 +74,8 @@ export default class FeiranteScreen extends PureComponent {
                 visible={visible}
                 onCancel={this.handleCancel}
                 footer={null}
+                destroyOnClose
+                maskClosable={false}
                 >
                     <FeirantesForm 
                         feirante={selectedFeirante}

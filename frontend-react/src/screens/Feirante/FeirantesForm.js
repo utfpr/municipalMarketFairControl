@@ -9,6 +9,7 @@ import {
 import * as feirantesAPI from '../../api/feirante';
 import * as categoriasAPI from '../../api/categoria';
 import * as subcategoriasAPI from '../../api/subcategoria';
+import styles from './FeirantesForm.module.scss';
 
 const Option = Select.Option;
 
@@ -78,11 +79,11 @@ class FeirantesForm extends PureComponent {
                 usaEE: feirante.usa_ee,
                 categoria: categoria.id,
                 subcategoria: feirante.sub_categoria_id,
-                logradouro :feirante.endereco.logradouro,
-                numero:feirante.endereco.numero,
-                cep:feirante.endereco.cep,
-                bairro:feirante.endereco.bairro,
-                senha:feirante.senha
+                logradouro: feirante.endereco.logradouro,
+                numero: feirante.endereco.numero,
+                cep: feirante.endereco.cep,
+                bairro: feirante.endereco.bairro,
+                senha: feirante.senha
 
 
             });
@@ -254,6 +255,7 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
+                                        disabled={Boolean(feirante.cpf)}
                                         placeholder="123.456.789-10"
                                     />
                                 )}
@@ -272,6 +274,7 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
+                                        disabled={Boolean(feirante.rg)}
                                         placeholder="12.345.123-1"
                                     />
                                 )}
@@ -477,7 +480,7 @@ class FeirantesForm extends PureComponent {
                         label="Bairro"
                         validateStatus={bairroFeiranteError ? 'error' : ''}
                         help={bairroFeiranteError || ''}
-                    
+
                     >
                         {getFieldDecorator('bairro', {
                             rules: [{
@@ -490,40 +493,44 @@ class FeirantesForm extends PureComponent {
                             />
                         )}
                     </Form.Item>
-
-                    <Form.Item
-                        label="Logradouro"
-                        validateStatus={logradouroFeiranteError ? 'error' : ''}
-                        help={logradouroFeiranteError || ''}
-                    >
-                        {getFieldDecorator('logradouro', {
-                            rules: [{
-                                required: true,
-                                message: 'O Logradouro'
-                            }]
-                        })(
-                            <Input
-                                placeholder="Ex: Rua das Palmeiras"
-                            />
-                        )}
-                    </Form.Item>
-                    <Form.Item
-                        label="Numero"
-                        validateStatus={numeroFeiranteError ? 'error' : ''}
-                        help={numeroFeiranteError || ''}
-                    >
-                        {getFieldDecorator('numero', {
-                            rules: [{
-                                required: false,
-                                message: 'O numero'
-                            }]
-                        })(
-                            <Input
-                                placeholder="123"
-                            />
-                        )}
-                    </Form.Item>
-
+                    <Row gutter={24}>
+                        <Col lg={18}>
+                            <Form.Item
+                                label="Logradouro"
+                                validateStatus={logradouroFeiranteError ? 'error' : ''}
+                                help={logradouroFeiranteError || ''}
+                            >
+                                {getFieldDecorator('logradouro', {
+                                    rules: [{
+                                        required: true,
+                                        message: 'O Logradouro'
+                                    }]
+                                })(
+                                    <Input
+                                        placeholder="Ex: Rua das Palmeiras"
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col lg={6}>
+                            <Form.Item
+                                label="Numero"
+                                validateStatus={numeroFeiranteError ? 'error' : ''}
+                                help={numeroFeiranteError || ''}
+                            >
+                                {getFieldDecorator('numero', {
+                                    rules: [{
+                                        required: false,
+                                        message: 'O numero'
+                                    }]
+                                })(
+                                    <Input
+                                        placeholder="123"
+                                    />
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Form.Item
                         label="CEP"
                         validateStatus={cepFeiranteError ? 'error' : ''}
@@ -531,7 +538,7 @@ class FeirantesForm extends PureComponent {
                     >
                         {getFieldDecorator('cep', {
                             rules: [{
-                                required:false,
+                                required: false,
                                 message: 'O cep'
                             }]
                         })(
@@ -552,7 +559,7 @@ class FeirantesForm extends PureComponent {
                                 message: 'É necessário informar uma senha'
                             }]
                         })(
-                            <Input.Password placeholder="password" />
+                            <Input.Password placeholder="Password" />
                         )}
                     </Form.Item>
 
