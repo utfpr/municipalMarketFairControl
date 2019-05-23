@@ -66,8 +66,6 @@ export default class SupervisorScreen extends PureComponent {
     _renderModal = () => {
         const { visible, selectedSupervisor} = this.state;
 
-        if (!visible) return null;
-
         return (
             <Modal
                 title={ selectedSupervisor && selectedSupervisor.cpf
@@ -77,6 +75,8 @@ export default class SupervisorScreen extends PureComponent {
                 visible={visible}
                 onCancel={this.handleCancel}
                 footer={null}
+                destroyOnClose
+                maskClosable={false}
                 >
                     <SupervisorForm 
                         supervisor={selectedSupervisor}

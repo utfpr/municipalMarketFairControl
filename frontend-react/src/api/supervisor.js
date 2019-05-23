@@ -38,13 +38,14 @@ export async function post(cpf, nome, senha, isAdm) {
   );
 }
 
-export async function put(cpf, nome, isAdm) {
+export async function put(cpf, nome, isAdm, senha) {
   const cleanedCPF = formatCPF(cpf);
   await axios.put(
     `${host}/${cleanedCPF}`,
     {
       nome,
       is_adm: isAdm,
+      senha,
     },
     { headers: { token: localStorage.getItem('token') } },
   );

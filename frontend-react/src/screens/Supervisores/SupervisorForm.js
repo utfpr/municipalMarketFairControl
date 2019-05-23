@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 
-import { 
-    Input, Button, Form, Checkbox,message,
+import {
+    Input, Button, Form, Checkbox, message,
 } from 'antd';
 
 import * as supervisorAPI from '../../api/supervisor';
@@ -22,18 +22,20 @@ class SupervisorForm extends PureComponent {
     _loadValues = async cpf => {
         const { supervisor, form } = this.props;
         const { setFieldsValue, resetFields } = form;
+        console.log(supervisor)
         if (supervisor) {
             resetFields();
             await setFieldsValue({
                 cpf: supervisor.cpf,
-                nome: supervisor.nome
+                nome: supervisor.nome,
+                isAdm: supervisor.is_adm
             });
         }
     }
 
     _handleSubmit = (e) => {
-        const { 
-            refresh, onSuccess, form: {resetFields},
+        const {
+            refresh, onSuccess, form: { resetFields },
             supervisor,
         } = this.props;
         e.preventDefault();
@@ -42,7 +44,7 @@ class SupervisorForm extends PureComponent {
             if (!err) {
                 message.loading('Carregando.', 0);
                 if (supervisor && supervisor.cpf) return supervisorAPI
-                    .put(supervisor.cpf, values.nome, values.isAdm )
+                    .put(supervisor.cpf, values.nome, values.isAdm, values.senha)
                     .then(() => {
                         resetFields();
                         refresh();
@@ -51,7 +53,7 @@ class SupervisorForm extends PureComponent {
                     }).catch(() => {
                         message.error('Não foi possível atualizar o supervisor, tente novamente mais tarde.', 2.5);
                     })
-                return supervisorAPI.post(values.cpf, values.nome, values.senha, values.isAdm )
+                return supervisorAPI.post(values.cpf, values.nome, values.senha, values.isAdm)
                     .then(() => {
                         resetFields();
                         refresh();
@@ -66,7 +68,7 @@ class SupervisorForm extends PureComponent {
 
     render() {
         const { supervisor, form } = this.props;
-        
+
         const {
             getFieldDecorator, getFieldsError, getFieldError,
             isFieldTouched, getFieldValue,
@@ -79,55 +81,57 @@ class SupervisorForm extends PureComponent {
         return (
             <Fragment>
                 <Form onSubmit={this._handleSubmit}>
+
                     <Form.Item
-                        validateStatus={cpfError ? 'error' : ''}
-                        help={cpfError || ''}
-                    >
-                        {getFieldDecorator('cpf', {rules :[{
-                            required: true,
-                            message: "O CPF do supervisor é obrigatório!"
-                        }]})(
-                            <Input
-                                disabled={supervisor && supervisor.cpf}
-                                placeholder="CPF"
-                            />
-                        )}
-                    </Form.Item>
-                    <Form.Item
+                        label="Nome"
                         validateStatus={nomeSupervisorError ? 'error' : ''}
                         help={nomeSupervisorError || ''}
                     >
-                        {getFieldDecorator('nome', {rules: [{
-                            required: true,
-                            message: 'O nome do supervisor é obrigatório!'
-                        }]})(
+                        {getFieldDecorator('nome', {
+                            rules: [{
+                                required: true,
+                                message: 'O nome do supervisor é obrigatório!'
+                            }]
+                        })(
                             <Input
-                                placeholder="Nome"
+                                placeholder="Pedro Silva"
                             />
                         )}
                     </Form.Item>
-                    {
-                        supervisor && supervisor.cpf
-                            ? null
-                            : (
-                                <Form.Item
-                                    validateStatus={senhaError ? 'error' : ''}
-                                    help={senhaError || ''}
-                                >
-                                    {getFieldDecorator('senha', {rules :[{
-                                        required: true,
-                                        message: "A senha do supervisor é obrigatória!"
-                                    }]})(
-                                        <Input 
-                                            placeholder="senha"
-                                            type="password"
-                                        />
-                                    )}
-                                </Form.Item>
-                            )
-                        
-                    }
-                    
+
+                    <Form.Item
+                        label="CPF"
+                        validateStatus={cpfError ? 'error' : ''}
+                        help={cpfError || ''}
+                    >
+                        {getFieldDecorator('cpf', {
+                            rules: [{
+                                required: true,
+                                message: "O CPF do supervisor é obrigatório!"
+                            }]
+                        })(
+                            <Input
+                                disabled={supervisor && supervisor.cpf}
+                                placeholder="123.456.789-10"
+                            />
+                        )}
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Senha"
+                        validateStatus={senhaError ? 'error' : ''}
+                        help={senhaError || ''}
+                    >
+                        {getFieldDecorator('senha', {
+                            rules: [{
+                                required: !Boolean(supervisor.cpf),
+                                message: "A senha do supervisor é obrigatória!"
+                            }]
+                        })(
+                            <Input.Password placeholder="Password" />
+                        )}
+                    </Form.Item>
+
                     <Form.Item
                         validateStatus={isAdmError ? 'error' : ''}
                         help={isAdmError || ''}
@@ -137,19 +141,19 @@ class SupervisorForm extends PureComponent {
                         )}
                     </Form.Item>
                     <Form.Item>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        disabled={
-                            hasErrors(getFieldsError())
-                        }
-                    >
-                        {
-                            supervisor.cpf
-                                ? 'Atualizar'
-                                : 'Adicionar'
-                        }
-                    </Button>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            disabled={
+                                hasErrors(getFieldsError())
+                            }
+                        >
+                            {
+                                supervisor.cpf
+                                    ? 'Atualizar'
+                                    : 'Adicionar'
+                            }
+                        </Button>
                     </Form.Item>
                 </Form>
             </Fragment>

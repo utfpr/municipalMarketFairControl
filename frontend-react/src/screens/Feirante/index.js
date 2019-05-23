@@ -65,8 +65,6 @@ export default class FeiranteScreen extends PureComponent {
     _renderModal = () => {
         const { visible, selectedFeirante} = this.state;
 
-        if (!visible) return null;
-
         return (
             <Modal
                 title={ selectedFeirante && selectedFeirante.cpf
@@ -76,6 +74,8 @@ export default class FeiranteScreen extends PureComponent {
                 visible={visible}
                 onCancel={this.handleCancel}
                 footer={null}
+                destroyOnClose
+                maskClosable={false}
                 >
                     <FeirantesForm 
                         feirante={selectedFeirante}
@@ -117,67 +117,6 @@ export default class FeiranteScreen extends PureComponent {
     render() {
         const { feirantes, loading } = this.state;
 
-        const colunas = [
-            {
-                key: 'cpf',
-                dataIndex: 'cpf',
-                title: 'Cpf',
-                width: 120,
-            },
-            {
-                key: 'cnpj', 
-                dataIndex: 'cnpj',
-                title: 'Cnpj',
-                width: 120,
-                render: (cnpj) => {
-                    return cnpj
-                    ? cnpj
-                    : <Tag color='#f50'>Não usa</Tag>
-                }
-            },
-            {
-                key: 'rg',
-                dataIndex: 'rg',
-                title: 'RG',
-                width: 100,
-            },
-            {
-                key: 'nome',
-                dataIndex: 'nome',
-                title: 'Nome',
-            },
-            {
-                key: 'nome_fantasia',
-                dataIndex: 'nome_fantasia',
-                title: 'Nome Fantasia',
-            },
-            { key: 'usa_ee',
-            dataIndex: 'usa_ee',
-            title: 'Usa EE',
-            width: 70,
-            render: (usa_ee, linha) => {
-                return usa_ee
-                    ? <Tag color={linha.voltagem_ee === 110 ? '#87d068' : '#1abc9c'}>{linha.voltagem_ee}v</Tag>
-                    : <Tag color="#108ee9">Não</Tag>
-            }
-        },
-            
-            {
-                key: 'acoes',
-                title: 'Ações',
-                render: linha => (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button type="primary" onClick={() => this.showModal(linha)}>
-                            Detalhes
-                        </Button>
-                        
-                        
-                    </div>
-                ),
-                width: 160,
-            },
-        ];
-
         return (
             <Fragment>
                 <ContentComponent
@@ -213,7 +152,7 @@ export default class FeiranteScreen extends PureComponent {
                         <Column
                             key='cpf'
                             dataIndex='cpf'
-                            title='Cpf'
+                            title='CPF'
                             width={120}
                         />
                         
@@ -226,7 +165,7 @@ export default class FeiranteScreen extends PureComponent {
                         <Column
                             key='cnpj' 
                             dataIndex='cnpj'
-                            title='Cnpj'
+                            title='CNPJ'
                             width={180}
                             render={(cnpj) => {
                                 return cnpj
@@ -237,7 +176,7 @@ export default class FeiranteScreen extends PureComponent {
                         <Column
                             key='usa_ee'
                             dataIndex='usa_ee'
-                            title='Usa EE'
+                            title='Voltagem'
                             width={70}
                             render={(usa_ee, linha) => {
                                 return usa_ee
