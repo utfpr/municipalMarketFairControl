@@ -534,6 +534,7 @@ class FeirantesForm extends PureComponent {
                                     }]
                                 })(
                                     <Input
+                                        disabled={readOnly}
                                         placeholder="123"
                                     />
                                 )}
