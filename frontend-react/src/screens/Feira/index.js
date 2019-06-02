@@ -13,7 +13,7 @@ import styles from './Feira.module.scss';
 
 const { Column } = Table;
 
-const UPLOAD_URL = "http://localhost:3000/api/image/upload";
+const UPLOAD_URL = `${process.env.REACT_APP_HOST}/image/upload`;
 
 function hasErrors(fieldsError) {
     return Object.keys(fieldsError).some(field => fieldsError[field]);
