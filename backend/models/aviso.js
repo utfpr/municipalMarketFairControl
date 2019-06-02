@@ -16,6 +16,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(100),
         allowNull: true,
       },
+      data_feira: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        defaultValue: "0000-00-00",
+        primaryKey: true,
+        references: {
+          model: "feira",
+          key: "data",
+        },
+      },
     },
     {
       tableName: 'aviso',

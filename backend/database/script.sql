@@ -17,8 +17,10 @@ CREATE TABLE aviso (
 	id INTEGER AUTO_INCREMENT,
 	assunto VARCHAR(100),
 	texto VARCHAR(1000),
-	
-	PRIMARY KEY (id)
+	data_feira DATE NULL DEFAULT NULL,
+	PRIMARY KEY (id),
+	INDEX data_feira_fk (data_feira),
+	CONSTRAINT data_feira_fk FOREIGN KEY (data_feira) REFERENCES feira (data)
 );
 
 

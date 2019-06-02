@@ -60,6 +60,7 @@ const feiraAtualInfo = async () => {
       data: feira.data,
       data_limite: feira.data_limite,
       status: feira.status,
+      evento_image_url: feira.evento_image_url,
     };
   }
 

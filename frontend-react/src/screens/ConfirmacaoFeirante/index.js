@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { 
-    Row, Form, Steps,
+    Row, Form, Steps, Modal,
 } from 'antd';
 import moment from 'moment-timezone';
 
@@ -20,6 +20,7 @@ class ConfirmacaoFeirante extends PureComponent {
         avisos: [],
         feiraAtual: {},
         loading: true,
+        visible: false,
         current: 0,
     };
 
@@ -33,6 +34,14 @@ class ConfirmacaoFeirante extends PureComponent {
         const avisos = await avisoAPI.get();
         const feiraAtual = await feiraAPI.feiraAtual();
         this.setState({ avisos, feiraAtual, loading: false });
+    }
+
+    _showModal = () => {
+        this.setState({visible: true});
+    }
+
+    _hideModal = () => {
+        this.setState({visible: false});
     }
 
     _renderCurrentStep = () => {
@@ -52,10 +61,50 @@ class ConfirmacaoFeirante extends PureComponent {
 
     }
 
+    _renderAvisos = () => {
+        const { avisos } = this.state;
+
+        return (
+            <div className={styles.avisosContainer}>
+                <h1>Avisos</h1>
+                {
+                    avisos.length
+                        ? (
+                            <Row gutter={24}>
+                                {
+                                    avisos.map(aviso => {
+                                        return <AvisoComponent key={aviso.id} aviso={aviso} />;
+                                    })
+                                }
+                            </Row>
+                        ) : (
+                            <p>Sem avisos para a próxima feira</p>
+                        )
+                }
+            </div>
+        );
+    }
+
+    _renderFotoEventoFeira = () => {
+        const { feiraAtual } = this.state;
+        
+        const feiraEventoImagem = feiraAtual.evento_image_url;
+        if (!feiraEventoImagem) return null;
+        return (
+            <div
+                className={styles.eventoImage}
+                onClick={this._showModal}
+                style={{
+                    backgroundImage: `url(${process.env.REACT_APP_HOST}/image/${feiraEventoImagem})` 
+                }}
+            />
+        )
+    }
+
     render() {
         const {
-            loading, avisos, feiraAtual,
-            current,
+            loading, feiraAtual,
+            current, visible,
         } = this.state;
 
         return (
@@ -63,17 +112,9 @@ class ConfirmacaoFeirante extends PureComponent {
                 loading={loading}
                 title={`Próxima feira: ${moment(feiraAtual.data).format('DD/MM/YYYY')}`}
                 limitedSize
-            >                
-                <div className={styles.avisosContainer}>
-                    <h1>Avisos</h1>
-                    <Row gutter={24}>
-                        {
-                            avisos.map(aviso=>{
-                                return <AvisoComponent key={aviso.id} aviso={aviso} />
-                            }) 
-                        }
-                    </Row>
-                </div>
+            >
+                {this._renderFotoEventoFeira()}
+                {this._renderAvisos()}
                 
                 <Steps current={current}>
                     <Step title="Confirmar Presença"/>
@@ -85,6 +126,13 @@ class ConfirmacaoFeirante extends PureComponent {
                 {/* <div className={styles.alignCenter} >
                     <Button type="danger">Cancelar Feira</Button>
                 </div> */}
+                <Modal
+                    visible={visible}
+                    onCancel={this._hideModal}
+                    footer={null}
+                    >
+                        <img src={`${process.env.REACT_APP_HOST}/image/${feiraAtual.evento_image_url}`} alt="evento" />
+                </Modal>
             </ContentComponent>
         );
     }

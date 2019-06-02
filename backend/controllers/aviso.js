@@ -1,4 +1,5 @@
 const models = require('../models');
+const feiraController = require('../controllers/feira');
 
 const addAviso = async (assunto, texto) => {
   try {
@@ -39,7 +40,15 @@ const updateAviso = async (id, assunto, texto) => {
   return null;
 };
 
-const getAvisos = () => models.aviso.findAll();
+const getAvisos = async () => {
+  const feiraAtual = await feiraController.findFeiraAtual();
+  const avisos = await models.aviso.findAll({
+    where: {
+      data_feira: feiraAtual.data,
+    },
+  });
+  return avisos || [];
+};
 
 const getById = async (id) => {
   try {
@@ -52,11 +61,11 @@ const getById = async (id) => {
       id,
       assunto: one.assunto,
       texto: one.texto,
-    }
+    };
   } catch (error) {
     return null;
   }
-}
+};
 
 module.exports = {
   addAviso,
