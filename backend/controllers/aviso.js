@@ -1,11 +1,14 @@
 const models = require('../models');
 const feiraController = require('../controllers/feira');
 
-const addAviso = async (assunto, texto) => {
+const addAviso = async (assunto, texto, data_feira) => {
   try {
-    return await models.aviso.create({
+    const feira = await feiraController.findFeira(data_feira);
+    if (!feira) return {};
+    return models.aviso.create({
       assunto,
       texto,
+      data_feira,
     });
   } catch (error) {
     return null;
@@ -14,30 +17,31 @@ const addAviso = async (assunto, texto) => {
 
 const removeAviso = async (id) => {
   try {
-    return await models.aviso.destroy({ where: { id } });
+    return models.aviso.destroy({ where: { id } });
   } catch (error) {
     return null;
   }
 };
 
-const updateAviso = async (id, assunto, texto) => {
+const updateAviso = async (id, assunto, texto, data_feira) => {
+  const feira = await feiraController.findFeira(data_feira);
   const aviso = await models.aviso.findOne({
     where: {
       id,
     },
   });
-  if (aviso !== null) {
-    try {
-      return await aviso.update({
-        assunto,
-        texto,
-      });
-    } catch (error) {
-      return null;
-    }
-  }
 
-  return null;
+  if (!feira || !aviso) return null;
+
+  try {
+    return await aviso.update({
+      assunto,
+      texto,
+      data_feira,
+    });
+  } catch (error) {
+    return null;
+  }
 };
 
 const getAvisos = async () => {
@@ -52,16 +56,12 @@ const getAvisos = async () => {
 
 const getById = async (id) => {
   try {
-    const one = await models.aviso.findOne({
+    const aviso = await models.aviso.findOne({
       where: {
         id,
       },
     });
-    return {
-      id,
-      assunto: one.assunto,
-      texto: one.texto,
-    };
+    return aviso;
   } catch (error) {
     return null;
   }

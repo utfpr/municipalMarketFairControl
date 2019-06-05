@@ -24,7 +24,6 @@ const findCelulaByFeirante = async (cpfFeirante) => {
     where: { cpf_feirante: String(cpfFeirante) },
   });
 
-  console.log(celula);
   if (celula === null) return null;
 
   return {

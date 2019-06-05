@@ -19,11 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       data_feira: {
         type: DataTypes.DATEONLY,
         allowNull: false,
-        defaultValue: "0000-00-00",
+        defaultValue: '0000-00-00',
         primaryKey: true,
         references: {
-          model: "feira",
-          key: "data",
+          model: 'feira',
+          key: 'data',
         },
       },
     },

@@ -256,7 +256,6 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
   }
 
   if (force && celulaId === null) {
-    console.log('force', celulaId, feira.data);
     const confirmacaoCelulaOcupada = await models.sequelize.participa.findOne({
       where: { data_feira: feira.data, celula_id: celulaId },
     });

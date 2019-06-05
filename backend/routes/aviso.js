@@ -8,9 +8,9 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', authMiddleware.isSupervisor, async (req, res) => {
-  const { assunto, texto } = req.body;
+  const { assunto, texto, data_feira } = req.body;
 
-  const add = await avisoController.addAviso(assunto, texto);
+  const add = await avisoController.addAviso(assunto, texto, data_feira);
   if (add !== null) {
     res.status(200).send({
       msg: 'ok',
@@ -24,9 +24,9 @@ router.post('/', authMiddleware.isSupervisor, async (req, res) => {
 
 router.put('/:id', authMiddleware.isSupervisor, async (req, res) => {
   const { id } = req.params;
-  const { assunto, texto } = req.body;
+  const { assunto, texto, data_feira } = req.body;
 
-  const update = await avisoController.updateAviso(id, assunto, texto);
+  const update = await avisoController.updateAviso(id, assunto, texto, data_feira);
 
   if (update !== null) {
     res.status(200).send({
