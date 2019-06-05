@@ -13,17 +13,6 @@ DROP TABLE IF EXISTS endereco;
 DROP TABLE IF EXISTS aviso;
 
 
-CREATE TABLE aviso (
-	id INTEGER AUTO_INCREMENT,
-	assunto VARCHAR(100),
-	texto VARCHAR(1000),
-	data_feira DATE NULL DEFAULT NULL,
-	PRIMARY KEY (id),
-	INDEX data_feira_fk (data_feira),
-	CONSTRAINT data_feira_fk FOREIGN KEY (data_feira) REFERENCES feira (data)
-);
-
-
 CREATE TABLE categoria (
 	id INTEGER AUTO_INCREMENT,
 	nome VARCHAR(200) NOT NULL,
@@ -48,6 +37,15 @@ CREATE TABLE feira (
 	evento_image_url VARCHAR(200),
 	
 	PRIMARY KEY (data)
+);
+
+CREATE TABLE aviso (
+	id INTEGER AUTO_INCREMENT,
+	assunto VARCHAR(100) NOT NULL,
+	texto VARCHAR(1000) NOT NULL,
+	data_feira DATE NULL DEFAULT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (data_feira) REFERENCES feira (data) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE feirante (
