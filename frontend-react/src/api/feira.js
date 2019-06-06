@@ -3,41 +3,41 @@ import axios from 'axios';
 const host = `${process.env.REACT_APP_HOST}/feira`;
 
 export async function listFeiras() {
-  const info = await axios
-    .get(host, { headers: { token: localStorage.getItem('token') } })
-    .catch(() => null);
+    const info = await axios
+        .get(host, { headers: { token: localStorage.getItem('token') } })
+        .catch(() => null);
 
-  return info === null ? null : info.data;
+    return info === null ? null : info.data;
 };
 
 export async function feiraAtual() {
-  const feira = await axios
-    .get(`${host}/info`, { headers: { token: localStorage.getItem('token') } })
-    .catch(() => null);
+    const feira = await axios
+        .get(`${host}/info`, { headers: { token: localStorage.getItem('token') } })
+        .catch(() => null);
 
-  return feira ? feira.data : {};
+    return feira ? feira.data : {};
 };
 
 export async function post(data, photo) {
-  const feira = await axios
-    .post(host, { data, photo }, { headers: { token: localStorage.getItem('token') } })
-    .catch(() => null);
+    const feira = await axios
+        .post(host, { data, photo }, { headers: { token: localStorage.getItem('token') } })
+        .catch(() => null);
 
-  return Boolean(feira);
+    return Boolean(feira);
 };
 
 export async function deletaUltimaFeira() {
-  const feira = await axios
-    .delete(host, { headers: { token: localStorage.getItem('token') } })
-    .catch(() => null);
+    const feira = await axios
+        .delete(host, { headers: { token: localStorage.getItem('token') } })
+        .catch(() => null);
 
-  return feira;
+    return feira;
 };
 
 export async function alteraStatusFeira(data) {
-  const feira = await axios
-    .put(`${host}/altera-status`, { data }, { headers: { token: localStorage.getItem('token') } })
-    .catch(() => null);
+    const feira = await axios
+        .put(`${host}/altera-status`, { data }, { headers: { token: localStorage.getItem('token') } })
+        .catch(() => null);
 
-  return feira;
+    return feira;
 };

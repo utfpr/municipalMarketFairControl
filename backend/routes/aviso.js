@@ -7,6 +7,11 @@ router.get('/', async (req, res) => {
   res.status(200).send(aviso);
 });
 
+router.get('/proxima', async (req, res) => {
+  const aviso = await avisoController.getAvisosProximaFeira();
+  res.status(200).send(aviso);
+});
+
 router.post('/', authMiddleware.isSupervisor, async (req, res) => {
   const { assunto, texto, data_feira } = req.body;
 

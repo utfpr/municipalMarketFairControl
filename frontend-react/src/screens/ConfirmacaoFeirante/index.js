@@ -31,7 +31,7 @@ class ConfirmacaoFeirante extends PureComponent {
 
     _loadValues = async () => {
         this.setState({loading: true});
-        const avisos = await avisoAPI.get();
+        const avisos = await avisoAPI.getProximaFeira();
         const feiraAtual = await feiraAPI.feiraAtual();
         this.setState({ avisos, feiraAtual, loading: false });
     }

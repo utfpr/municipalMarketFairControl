@@ -4,6 +4,7 @@ import {
     Button, Popconfirm, Modal,
     Table,message,
 } from 'antd';
+import moment from 'moment-timezone';
 
 import AvisosForm from './AvisosForm';
 import ContentComponent from '../../components/ContentComponent';
@@ -129,6 +130,12 @@ export default class AvisosScreen extends PureComponent {
                             key='assunto'
                             dataIndex='assunto'
                             title='Assunto'
+                        />
+                        <Column
+                            key='data_feira'
+                            dataIndex='data_feira'
+                            title='Data'
+                            render={data => moment(data).format('DD/MM/YYYY')}
                         />
                         <Column
                             key='acoes'
