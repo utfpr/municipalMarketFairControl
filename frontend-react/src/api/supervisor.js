@@ -9,8 +9,11 @@ const formatCPF = cpf => {
 export async function get() {
   const data = await axios
     .get(host, { headers: { token: localStorage.getItem('token') } })
-    .catch(() => null)
-    .then(record => record.data);
+    .then(record => {
+      if (!record.data) return [];
+      return record.data;
+    })
+    .catch(ex => console.warn(ex));
 
   return data.map(record => ({
     ...record,

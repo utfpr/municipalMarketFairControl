@@ -1,28 +1,22 @@
-const amanha = () => {
-  const tmp = new Date();
-  tmp.setDate(tmp.getDate() + 1);
-  return tmp;
-};
+const moment = require('moment');
 
-const proximaSexta = () => {
-  const tmp = new Date();
-  tmp.setDate(tmp.getDate() + ((((7 - tmp.getDay()) % 7) + 4) % 7));
-  tmp.setHours(18);
-  tmp.setMinutes(0);
-  tmp.setSeconds(0);
-  tmp.setMilliseconds(0);
-  return tmp;
-};
+const amanha = () => moment()
+  .utc()
+  .add(1, 'day');
 
-const proximoDomingo = () => {
-  const tmp = new Date();
-  tmp.setDate(tmp.getDate() + ((((7 - tmp.getDay()) % 7) + 6) % 7));
-  tmp.setHours(18);
-  tmp.setMinutes(0);
-  tmp.setSeconds(0);
-  tmp.setMilliseconds(0);
-  return tmp;
-};
+const proximaSexta = () => moment()
+  .utc()
+  .startOf('isoWeek')
+  .add(4, 'day')
+  .hour(18)
+  .toISOString();
+
+const proximoDomingo = () => moment()
+  .utc()
+  .startOf('isoWeek')
+  .add(6, 'day')
+  .hour(18)
+  .toISOString();
 
 module.exports = {
   amanha,

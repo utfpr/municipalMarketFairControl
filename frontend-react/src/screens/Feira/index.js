@@ -1,8 +1,10 @@
 import React, { PureComponent, Fragment } from 'react';
 
-import { 
+import {
     Table, Tag, Popconfirm, Button,
-    Modal, Form, DatePicker, Upload, Icon,message,
+    Modal, Form, DatePicker,
+    Upload, Icon, message,
+    Menu, Dropdown,
 } from 'antd';
 import moment from 'moment-timezone';
 
@@ -27,6 +29,7 @@ class FeiraScreen extends PureComponent {
         feiraAtual: {},
         loading: true,
         fileList: [],
+        selectedFeira: {},
     };
 
     componentDidMount() {
@@ -35,27 +38,38 @@ class FeiraScreen extends PureComponent {
     }
 
     _loadFeiras = async () => {
-        this.setState({loading: true});
+        this.setState({ loading: true });
         const feiras = await feiraAPI.listFeiras();
         const feiraAtual = await feiraAPI.feiraAtual();
         this.setState({ feiras, feiraAtual, loading: false });
     }
 
     _handleSubmit = (e) => {
-        const { form: {resetFields, validateFields} } = this.props;
+        const { form: { resetFields, validateFields } } = this.props;
 
         e.preventDefault();
         validateFields((err, values) => {
             const data = moment(values.data).format('YYYY-MM-DD');
             const photo = values.photo ? values.photo[0].response.filename : undefined;
             if (!err) {
-                return feiraAPI.post(data, photo)
+                const { selectedFeira } = this.state;
+                if (!selectedFeira.data) {
+                    return feiraAPI.post(data, photo)
+                        .then(() => {
+                            resetFields();
+                            this._loadFeiras();
+                            message.success('Feira adicionada com sucesso.', 2.5);
+                            this._hideModal();
+                            this.setState({ fileList: [] });
+                        });
+                }
+                return feiraAPI.atualizaFoto(selectedFeira.data, photo)
                     .then(() => {
                         resetFields();
                         this._loadFeiras();
-                        message.success('Feira adicionada com sucesso.', 2.5);
+                        message.success('Feira atualizada com sucesso.', 2.5);
                         this._hideModal();
-                        this.setState({fileList: []});
+                        this.setState({ fileList: [] });
                     });
             }
         });
@@ -65,46 +79,55 @@ class FeiraScreen extends PureComponent {
         return feiraAPI.alteraStatusFeira(data).then(() => {
             this._loadFeiras();
             message.success('Mudança de Status', 2.5);
+            this._hideModal();
         });
     }
 
-    _renderAcoes = feira => {
-        
-        if (moment(feira.data).isBefore(moment())) return (
-            <Button icon="close" disabled type="danger">
-                Inativar
-            </Button>
-        )
+    _setSelectedFeira = feira => {
+        this.setState({ selectedFeira: feira, visible: true });
+    }
 
-        if (!feira.status) return (
-            <Popconfirm
-                title="Você quer reativar esta feira?"
-                okText="Sim"
-                cancelText="Não"
-                onConfirm={
-                    () => this._alteraStatusFeira(feira.data)
+    _renderAcoes = item => {
+        const menuItens = (
+            <Menu>
+                {
+                    item.status
+                        ? (
+                            <Menu.Item key="1" onClick={() => this._alteraStatusFeira(item.data)} >
+                                <Icon type="close" />
+                                Inativar
+                            </Menu.Item>
+                        )
+                        : (
+                            <Menu.Item key="2" onClick={() => this._alteraStatusFeira(item.data)} >
+                                <Icon type="check" />
+                                Reativar
+                            </Menu.Item>
+                        )
                 }
-            >
-                <Button icon="check">
-                    Reativar
-                </Button>
-            </Popconfirm>
+            </Menu>
         );
 
         return (
-            <Popconfirm
-                title="Você quer cancelar esta feira?"
-                okText="Sim"
-                cancelText="Não"
-                onConfirm={
-                    () => this._alteraStatusFeira(feira.data)
-                }
-            >
-                <Button icon="close" type="danger">
-                    Inativar
-                </Button>
-            </Popconfirm>
+            <Dropdown.Button onClick={() => this._setSelectedFeira(item)} overlay={menuItens}>
+                <Icon type="eye" />
+                Visualizar
+            </Dropdown.Button>
         );
+        // return (
+        //     <>
+        //     <Button icon="eye" onClick={() => this._setSelectedFeira(item)}>
+        //         Visualizar
+        //     </Button>
+        //     {this._renderButtonAtivaInativa(item)}
+        //     </>
+        // );
+
+        // if (moment(feira.data).isBefore(moment())) return (
+        //     <Button icon="close" disabled type="danger">
+        //         Inativar
+        //     </Button>
+        // )
     }
 
     normFile = (e) => {
@@ -113,14 +136,14 @@ class FeiraScreen extends PureComponent {
         }
         return e && e.fileList;
     }
-    
+
     handleChange = (info) => {
         let fileList = info.fileList;
-    
+
         // // 1. Limit the number of uploaded files
         // // Only to show two recent uploaded files, and old ones will be replaced by the new
         // fileList = fileList.slice(-2);
-    
+
         // // 2. Read from response and show file link
         // fileList = fileList.map((file) => {
         //   if (file.response) {
@@ -129,7 +152,7 @@ class FeiraScreen extends PureComponent {
         //   }
         //   return file;
         // });
-    
+
         // // 3. Filter successfully uploaded files according to response from server
         // fileList = fileList.filter((file) => {
         //   if (file.response) {
@@ -137,12 +160,12 @@ class FeiraScreen extends PureComponent {
         //   }
         //   return false;
         // });
-    
+
         this.setState({ fileList });
     }
 
     _renderModal = () => {
-        const { visible, fileList } = this.state;
+        const { visible, fileList, selectedFeira } = this.state;
 
         const { form } = this.props;
 
@@ -155,27 +178,44 @@ class FeiraScreen extends PureComponent {
 
         const dataError = isFieldTouched('data') && getFieldError('data');
 
+        const isEditing = Boolean(selectedFeira.data);
+
         return (
             <Modal
-                title="Adicionar uma nova feira"
+                title={isEditing ? `Editar feira do dia ${moment(selectedFeira.data).format('DD/MM/YYYY')}` : "Adicionar uma feira"}
                 visible={visible}
                 onCancel={this._hideModal}
                 footer={null}
             >
+                {
+                    selectedFeira.evento_image_url
+                        ? (
+                            <div
+                                style={{
+                                    backgroundImage: `url(${process.env.REACT_APP_HOST}/image/${selectedFeira.evento_image_url})`
+                                }}
+                                className={styles.eventoImage}
+                            />
+                        ) : null
+                }
                 <Form onSubmit={this._handleSubmit}>
                     <Form.Item
                         validateStatus={dataError ? 'error' : ''}
                         help={dataError || ''}
                     >
-                        {getFieldDecorator('data', {rules: [{
-                            required: true,
-                            message: 'A data é obrigatória!'
-                        }]})(
-                            <DatePicker placeholder="Selecione uma data" format="DD/MM/YYYY"/>
+                        {isEditing ? (<span>Não é possível alterar a data de uma feira<br /></span>) : null}
+
+                        {getFieldDecorator('data', {
+                            rules: [{
+                                required: !isEditing,
+                                message: 'A data é obrigatória!'
+                            }]
+                        })(
+                            <DatePicker disabled={isEditing} placeholder="Selecione uma data" format="DD/MM/YYYY" />
                         )}
                     </Form.Item>
                     <Form.Item>
-                        Possui evento neste dia?
+                        Enviar imagem do evento:
                         <div className="dropbox">
                             {getFieldDecorator('photo', {
                                 valuePropName: 'fileList',
@@ -183,19 +223,17 @@ class FeiraScreen extends PureComponent {
                                 fileList: fileList,
                                 onChange: this.handleChange,
                             })(
-                                <Upload 
-                                multiple={false}
-                                name="photo"
-                                action={UPLOAD_URL}
-                                disabled={fileList.length >= 1}
-                                // showUploadList={false}
-                                listType="picture"
-                                // 
-                            >
-                                <Button disabled={fileList.length >= 1}>
-                                    <Icon type="upload" /> Enviar foto do evento
+                                <Upload
+                                    multiple={false}
+                                    name="photo"
+                                    action={UPLOAD_URL}
+                                    disabled={fileList.length >= 1}
+                                    listType="picture"
+                                >
+                                    <Button disabled={fileList.length >= 1}>
+                                        <Icon type="upload" /> Enviar foto do evento
                                 </Button>
-                            </Upload>
+                                </Upload>
                             )}
                         </div>
                     </Form.Item>
@@ -212,13 +250,13 @@ class FeiraScreen extends PureComponent {
             </Modal>
         );
     }
-    
+
     _showModal = () => {
-        this.setState({visible: true});
+        this.setState({ visible: true });
     }
 
     _hideModal = () => {
-        this.setState({visible: false, fileList: []});
+        this.setState({ visible: false, fileList: [], selectedFeira: {} });
     }
 
     _renderFeiraAtual = () => {
@@ -241,7 +279,7 @@ class FeiraScreen extends PureComponent {
                         okText="Sim"
                         cancelText="Não"
                         onConfirm={() => this._alteraStatusFeira(feiraAtual.data)}
-                       
+
                     >
                         <Button icon="close" type="danger">Inativar</Button>
                     </Popconfirm>
@@ -255,7 +293,7 @@ class FeiraScreen extends PureComponent {
             .then(() => {
                 this._loadFeiras()
             });
-        
+
     }
     render() {
         const { feiras, loading } = this.state;
@@ -266,7 +304,6 @@ class FeiraScreen extends PureComponent {
                 ...feira,
             }
         });
-
 
         return (
             <Fragment>
@@ -280,9 +317,11 @@ class FeiraScreen extends PureComponent {
                     }}
                 >
                     {this._renderFeiraAtual()}
-                    <Table dataSource={novaFeiras}
-                           loading={loading}>
-                           
+                    <Table
+                        dataSource={novaFeiras}
+                        loading={loading}
+                    >
+
                         <Column
                             title="Data"
                             dataIndex="data"
@@ -302,16 +341,16 @@ class FeiraScreen extends PureComponent {
                             key="status"
                             render={status => {
                                 return status
-                                ? <Tag color="#87d068">Ativo</Tag>
-                                : <Tag color="#f50">Inativo</Tag>
+                                    ? <Tag color="#87d068">Ativo</Tag>
+                                    : <Tag color="#f50">Inativo</Tag>
                             }}
-                            width={110}
+                            width={80}
                         />
                         <Column
                             title="Ações"
                             key="acoes"
                             render={this._renderAcoes}
-                            width={105}
+                            width={200}
                         />
                     </Table>
                 </ContentComponent>

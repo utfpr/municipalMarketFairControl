@@ -81,4 +81,26 @@ router.put('/altera-status', authMiddleware.isSupervisor, async (req, res) => {
   });
 });
 
+router.put('/', authMiddleware.isSupervisor, async (req, res) => {
+  const { data, photo } = req.body;
+
+  if (!photo) {
+    return res.status(400).send({
+      msg: 'foto_nao_informada',
+    });
+  }
+
+  const feira = await constrollerFeira.alteraFotoFeira(data, photo);
+
+  if (feira === null) {
+    return res.status(400).send({
+      msg: 'foto_nao_alterada',
+    });
+  }
+
+  return res.status(200).send({
+    msg: 'ok',
+  });
+});
+
 module.exports = router;

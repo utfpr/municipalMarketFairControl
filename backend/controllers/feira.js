@@ -7,11 +7,7 @@ const op = Sequelize.Op;
 const listFeiras = async () => {
   const feiras = await models.feira.findAll({ order: [['data', 'DESC']] });
 
-  return feiras.map(el => ({
-    data: el.data,
-    data_limite: el.data_limite,
-    status: el.status,
-  }));
+  return feiras;
 };
 
 const findFeira = async (dataFeira) => {
@@ -102,11 +98,12 @@ const addFeira = async (dataFeira, eventoImageUrl) => {
   try {
     return await models.feira.create({
       data: dataFeira.toISOString().split('T')[0],
-      data_limite: proximaSexta().toISOString(),
+      data_limite: proximaSexta(),
       evento_image_url: eventoImageUrl,
       status: true,
     });
   } catch (error) {
+    console.error(error); // eslint-disable-line
     return null;
   }
   // adiciona uma feira no banco
@@ -124,6 +121,16 @@ const alteraFeiraStatus = async (data) => {
   return null;
   // altera o status de uma feira
   // retorna null se der errado
+};
+
+const alteraFotoFeira = async (data, photo) => {
+  const feira = await findFeira(data);
+
+  if (feira) {
+    return feira.update({ evento_image_url: photo });
+  }
+
+  return null;
 };
 
 const cancelaFeiraAtual = async () => {
@@ -147,6 +154,7 @@ module.exports = {
   setDataLimiteFeiraAtual,
   addFeira,
   alteraFeiraStatus,
+  alteraFotoFeira,
   cancelaFeiraAtual,
   listFeiras,
 };

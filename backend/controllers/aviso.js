@@ -45,7 +45,6 @@ const updateAviso = async (id, assunto, texto, data_feira) => {
 };
 
 const getAvisos = async () => {
-  const feiraAtual = await feiraController.findFeiraAtual();
   const avisos = await models.aviso.findAll({
     where: {},
   });

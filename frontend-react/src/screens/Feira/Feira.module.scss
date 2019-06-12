@@ -7,3 +7,19 @@
 .descricao {
     flex: 1 0;
 }
+
+.eventoImage {
+    max-height: 300px;
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    text-align: center;
+    cursor: pointer;
+    
+    img {
+        max-height: 300px;
+        height: 100%;
+        width: 300px;
+    }
+}
