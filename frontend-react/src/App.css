@@ -55,7 +55,8 @@
 }
 
 .ant-layout {
-    overflow: auto;
+    overflow: auto !important;
+    background: white !important;
 }
 
 .ant-form-item-label{

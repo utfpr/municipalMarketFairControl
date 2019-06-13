@@ -1,14 +1,17 @@
 import React, { PureComponent } from 'react';
 
-import { 
-    Row, Form, Steps, Modal,
+import {
+    Row, Form, Steps,
+    Modal, Button, Radio,
 } from 'antd';
 import moment from 'moment-timezone';
+import * as feiraAPI from '../../api/feira';
+import classNames from 'classnames';
 
 import ContentComponent from '../../components/ContentComponent';
 
 import * as avisoAPI from '../../api/aviso';
-import * as feiraAPI from '../../api/feira';
+import * as participaAPI from '../../api/participa';
 import styles from './ConfirmacaoFeirante.module.scss';
 import AvisoComponent from '../../components/AvisoComponent';
 
@@ -22,6 +25,7 @@ class ConfirmacaoFeirante extends PureComponent {
         loading: true,
         visible: false,
         current: 0,
+        selectedPeriodo: null,
     };
 
     componentDidMount() {
@@ -30,33 +34,97 @@ class ConfirmacaoFeirante extends PureComponent {
     }
 
     _loadValues = async () => {
-        this.setState({loading: true});
+        this.setState({ loading: true });
         const avisos = await avisoAPI.getProximaFeira();
         const feiraAtual = await feiraAPI.feiraAtual();
         this.setState({ avisos, feiraAtual, loading: false });
     }
 
     _showModal = () => {
-        this.setState({visible: true});
+        this.setState({ visible: true });
+    }
+
+    _onChangePeriodo = event => {
+        const { value } = event.target;
+        this.setState({ selectedPeriodo: value });
     }
 
     _hideModal = () => {
-        this.setState({visible: false});
+        this.setState({ visible: false });
+    }
+
+    _confirmaFeirante = () => {
+        const { selectedPeriodo } = this.state;
+        return participaAPI.setPeriodo(selectedPeriodo)
+            .then(response => {
+                this.setState({ current: 1, selectedPeriodo: null });
+            }).catch(ex => {
+                console.error(ex);
+            });
+    }
+
+    _cancelaParticipacao = () => {
+        return participaAPI.cancelaParticipacao()
+            .then(() => {
+                this.setState({ current: 0});
+            }).catch(ex => {
+                console.error(ex);
+            });
     }
 
     _renderCurrentStep = () => {
-        const { current, feiraAtual } = this.state;
+        // const { current, feiraAtual } = this.state;
+        const { current, feiraAtual = {}, selectedPeriodo } = this.state;
 
         if (current === 0) {
+            const radioStyle = {
+                display: 'block',
+                height: '30px',
+                lineHeight: '30px',
+                cursor: 'pointer',
+            };
             return (
-                <h3>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para confirmar presença</h3>
+                <>
+                    <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para confirmar presença</h4>
+                    <div className={classNames([styles.alignCenter, styles.presenca])}>
+                        <Radio.Group
+                            onChange={this._onChangePeriodo}
+                            style={{ display: 'block' }}
+                            value={selectedPeriodo}
+                        >
+                            <Radio style={radioStyle} value={1}>
+                                Manhã
+                            </Radio>
+                            <Radio style={radioStyle} value={2}>
+                                Tarde
+                            </Radio>
+                            <Radio style={radioStyle} value={3}>
+                                Dia Todo
+                            </Radio>
+                        </Radio.Group>
+
+                        <Button
+                            type="primary"
+                            onClick={this._confirmaFeirante}
+                            disabled={!selectedPeriodo}
+                        >
+                            Confirmar Presença
+                        </Button>
+
+                    </div>
+                </>
             );
         }
-
-        if(current === 1) {
+        if (current === 1) {
             return (
-                <p>Teste 02</p>
-            )
+                <>
+                    <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para cancelar presença</h4>
+                    <div  className={classNames([styles.alignCenter, styles.presenca])}>
+                        <Button onClick={this._cancelaParticipacao} type="danger">Cancelar Presença</Button>
+                        
+                    </div>
+                </>
+            );
         }
 
     }
@@ -87,7 +155,7 @@ class ConfirmacaoFeirante extends PureComponent {
 
     _renderFotoEventoFeira = () => {
         const { feiraAtual } = this.state;
-        
+
         const feiraEventoImagem = feiraAtual.evento_image_url;
         if (!feiraEventoImagem) return null;
         return (
@@ -95,7 +163,7 @@ class ConfirmacaoFeirante extends PureComponent {
                 className={styles.eventoImage}
                 onClick={this._showModal}
                 style={{
-                    backgroundImage: `url(${process.env.REACT_APP_HOST}/image/${feiraEventoImagem})` 
+                    backgroundImage: `url(${process.env.REACT_APP_HOST}/image/${feiraEventoImagem})`
                 }}
             />
         )
@@ -104,7 +172,7 @@ class ConfirmacaoFeirante extends PureComponent {
     render() {
         const {
             loading, feiraAtual,
-            current, visible,
+            current, visible, step,
         } = this.state;
 
         return (
@@ -115,23 +183,21 @@ class ConfirmacaoFeirante extends PureComponent {
             >
                 {this._renderFotoEventoFeira()}
                 {this._renderAvisos()}
-                
+
+
                 <Steps current={current}>
-                    <Step title="Confirmar Presença"/>
-                    <Step title="Cancelar"/>
+                    <Step title="Confirmar Presença" />
+                    <Step title="Presença Confirmada" />
                 </Steps>
 
                 {this._renderCurrentStep()}
 
-                {/* <div className={styles.alignCenter} >
-                    <Button type="danger">Cancelar Feira</Button>
-                </div> */}
                 <Modal
                     visible={visible}
                     onCancel={this._hideModal}
                     footer={null}
-                    >
-                        <img src={`${process.env.REACT_APP_HOST}/image/${feiraAtual.evento_image_url}`} alt="evento" />
+                >
+                    <img src={`${process.env.REACT_APP_HOST}/image/${feiraAtual.evento_image_url}`} alt="evento" />
                 </Modal>
             </ContentComponent>
         );

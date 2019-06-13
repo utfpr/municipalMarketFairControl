@@ -18,6 +18,22 @@ export async function getConfirmados() {
   return info ? info.data : [];
 }
 
+export async function setPeriodo(periodo) {
+  const info = await axios.post(`${host}/confirma`, {
+    periodo,
+  }, {
+    headers: { token: localStorage.getItem('token') },
+  });
+  return info ? info.data : {};
+}
+
+export async function cancelaParticipacao() {
+  const info = await axios.post(`${host}/cancela`, {}, {
+    headers: { token: localStorage.getItem('token') },
+  });
+  return info ? info.data : {};
+}
+
 export default async function getParticipa(data){
   const feirantes = await axios.get(`${host}/${data}`).catch(e => console.log(`Erro ${e}`));
   return feirantes;
