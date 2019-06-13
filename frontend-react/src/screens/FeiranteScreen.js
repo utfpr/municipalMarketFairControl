@@ -100,7 +100,7 @@ class FeiranteScreen extends Component {
 
     _onAskToLogout = () => {
         confirm({
-            title: 'Você deseja realmente sair da aplicação?',
+            title: 'Você deseja sair da aplicação ?',
             okText: 'Sim',
             cancelText: 'Cancelar',
             onOk: () => {

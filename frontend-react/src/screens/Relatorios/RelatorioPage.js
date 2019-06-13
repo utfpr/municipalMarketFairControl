@@ -72,14 +72,14 @@ export default class RelatorioPage extends PureComponent {
     }
 
     render() {
+
         const { participantes, dataFeira, loading } = this.state;
 
         if (!participantes) return this._renderFeiraInvalida();
 
         const presentes = participantes.participaram ? participantes.participaram.length : 0;
         const ausentes = participantes.naoParticiparam ? participantes.naoParticiparam.length : 0;
-        
-        
+    
         return (
             <ContentComponent
                 loading={loading}

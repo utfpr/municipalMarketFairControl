@@ -1,0 +1,26 @@
+.proximaFeiraContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.descricao {
+    flex: 1 0;
+}
+
+.errorContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100% !important;
+    flex-direction: column;
+    h2 {
+        margin-bottom: 0px;
+    }
+}
+
+.titulo {
+    margin-top: 14px !important;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}

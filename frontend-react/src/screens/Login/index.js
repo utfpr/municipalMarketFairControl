@@ -40,7 +40,7 @@ class LoginScreen extends PureComponent {
             if (!err) {
                 await login(values.cpf, values.senha)
                     .then(response => {
-                        message.success('Logado com sucesso', 2.5);
+                        message.success('Logado com sucesso', 1.0);
                         localStorage.setItem('userID', response.data.userID);
                         localStorage.setItem('token', response.data.token);
                         localStorage.setItem('tag', response.data.tag);
