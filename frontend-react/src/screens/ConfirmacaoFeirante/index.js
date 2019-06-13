@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import {
     Row, Form, Steps,
     Modal, Button, Radio,
+    Select,
 } from 'antd';
 import moment from 'moment-timezone';
 import * as feiraAPI from '../../api/feira';
@@ -16,6 +17,7 @@ import styles from './ConfirmacaoFeirante.module.scss';
 import AvisoComponent from '../../components/AvisoComponent';
 
 const { Step } = Steps;
+const Option = Select.Option;
 
 class ConfirmacaoFeirante extends PureComponent {
 
@@ -44,8 +46,7 @@ class ConfirmacaoFeirante extends PureComponent {
         this.setState({ visible: true });
     }
 
-    _onChangePeriodo = event => {
-        const { value } = event.target;
+    _onChangePeriodo =  value => {
         this.setState({ selectedPeriodo: value });
     }
 
@@ -73,35 +74,35 @@ class ConfirmacaoFeirante extends PureComponent {
     }
 
     _renderCurrentStep = () => {
-        // const { current, feiraAtual } = this.state;
         const { current, feiraAtual = {}, selectedPeriodo } = this.state;
+          
+          function onBlur() {
+            console.log('blur');
+          }
+          
+          function onFocus() {
+            console.log('focus');
+          }
 
         if (current === 0) {
-            const radioStyle = {
-                display: 'block',
-                height: '30px',
-                lineHeight: '30px',
-                cursor: 'pointer',
-            };
+           
             return (
                 <>
                     <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para confirmar presença</h4>
                     <div className={classNames([styles.alignCenter, styles.presenca])}>
-                        <Radio.Group
+                        <Select
+                            style={{ width: 200 }}
+                            placeholder="Selecione o Periodo"
+                            optionFilterProp="children"
                             onChange={this._onChangePeriodo}
-                            style={{ display: 'block' }}
-                            value={selectedPeriodo}
+                            onFocus={onFocus}
+                            onBlur={onBlur}
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         >
-                            <Radio style={radioStyle} value={1}>
-                                Manhã
-                            </Radio>
-                            <Radio style={radioStyle} value={2}>
-                                Tarde
-                            </Radio>
-                            <Radio style={radioStyle} value={3}>
-                                Dia Todo
-                            </Radio>
-                        </Radio.Group>
+                        <Option value={1} >Manhã </Option>
+                        <Option value={2}>Tarde</Option>
+                        <Option value={3}>Dia Todo</Option>
+                        </Select>,
 
                         <Button
                             type="primary"
