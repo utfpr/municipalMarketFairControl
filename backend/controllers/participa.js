@@ -16,6 +16,27 @@ const getFaturamento = async (cpfFeirante, dataFeira) => {
   return feirante.faturamento;
 };
 
+const getParticipacaoUltimaFeira = async (cpfFeirante) => {
+  const participacao = await models.participa.findAll({
+    limit: 1,
+    where: {
+      cpf_feirante: cpfFeirante,
+    },
+    order: [['data_feira', 'DESC']],
+  });
+  return participacao;
+};
+
+const getParticipacoes = async (cpfFeirante) => {
+  const participacao = await models.participa.findAll({
+    where: {
+      cpf_feirante: cpfFeirante,
+    },
+    order: [['data_feira', 'DESC']],
+  });
+  return participacao;
+};
+
 const getFaturamentoPorPeriodo = async (dataFeira) => {
   const faturamentoPorPeriodo = await models.participa.findAll({
     where: {
@@ -281,4 +302,6 @@ module.exports = {
   getDadosCelulaFeiraAtual,
   setPosicaoFeiranteFeiraAtual,
   isFeiranteConfirmadoFeiraAtual,
+  getParticipacaoUltimaFeira,
+  getParticipacoes,
 };

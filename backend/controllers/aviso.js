@@ -53,6 +53,7 @@ const getAvisos = async () => {
 
 const getAvisosProximaFeira = async () => {
   const feiraAtual = await feiraController.findFeiraAtual();
+  if (!feiraAtual) return [];
   const avisos = await models.aviso.findAll({
     where: {
       data_feira: feiraAtual.data,

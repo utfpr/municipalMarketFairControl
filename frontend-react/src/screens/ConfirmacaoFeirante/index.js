@@ -36,17 +36,22 @@ class ConfirmacaoFeirante extends PureComponent {
     }
 
     _loadValues = async () => {
-        this.setState({ loading: true });
-        const avisos = await avisoAPI.getProximaFeira();
-        const feiraAtual = await feiraAPI.feiraAtual();
-        this.setState({ avisos, feiraAtual, loading: false });
+        try {
+            this.setState({ loading: true });
+            const avisos = await avisoAPI.getAvisosProximaFeira();
+            const feiraAtual = await feiraAPI.feiraAtual();
+            this.setState({ avisos, feiraAtual, loading: false });
+        } catch (ex) {
+            console.warn(ex);
+            this.setState({ loading: false });
+        }
     }
 
     _showModal = () => {
         this.setState({ visible: true });
     }
 
-    _onChangePeriodo =  value => {
+    _onChangePeriodo = value => {
         this.setState({ selectedPeriodo: value });
     }
 
@@ -67,7 +72,7 @@ class ConfirmacaoFeirante extends PureComponent {
     _cancelaParticipacao = () => {
         return participaAPI.cancelaParticipacao()
             .then(() => {
-                this.setState({ current: 0});
+                this.setState({ current: 0 });
             }).catch(ex => {
                 console.error(ex);
             });
@@ -75,17 +80,17 @@ class ConfirmacaoFeirante extends PureComponent {
 
     _renderCurrentStep = () => {
         const { current, feiraAtual = {}, selectedPeriodo } = this.state;
-          
-          function onBlur() {
+
+        function onBlur() {
             console.log('blur');
-          }
-          
-          function onFocus() {
+        }
+
+        function onFocus() {
             console.log('focus');
-          }
+        }
 
         if (current === 0) {
-           
+
             return (
                 <>
                     <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para confirmar presença</h4>
@@ -99,10 +104,10 @@ class ConfirmacaoFeirante extends PureComponent {
                             onBlur={onBlur}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         >
-                        <Option value={1} >Manhã </Option>
-                        <Option value={2}>Tarde</Option>
-                        <Option value={3}>Dia Todo</Option>
-                        </Select>,
+                            <Option value={1} >Manhã </Option>
+                            <Option value={2}>Tarde</Option>
+                            <Option value={3}>Dia Todo</Option>
+                        </Select>
 
                         <Button
                             type="primary"
@@ -120,9 +125,9 @@ class ConfirmacaoFeirante extends PureComponent {
             return (
                 <>
                     <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para cancelar presença</h4>
-                    <div  className={classNames([styles.alignCenter, styles.presenca])}>
+                    <div className={classNames([styles.alignCenter, styles.presenca])}>
                         <Button onClick={this._cancelaParticipacao} type="danger">Cancelar Presença</Button>
-                        
+
                     </div>
                 </>
             );
@@ -173,7 +178,7 @@ class ConfirmacaoFeirante extends PureComponent {
     render() {
         const {
             loading, feiraAtual,
-            current, visible, step,
+            current, visible,
         } = this.state;
 
         return (

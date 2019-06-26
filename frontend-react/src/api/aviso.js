@@ -6,7 +6,7 @@ export async function get() {
     return (await axios.get(host)).data;
 }
 
-export async function getProximaFeira() {
+export async function getAvisosProximaFeira() {
     return (await axios.get(`${host}/proxima`)).data;
 }
 

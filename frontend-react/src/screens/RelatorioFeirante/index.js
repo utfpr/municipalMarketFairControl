@@ -20,7 +20,7 @@ export default class RelatorioFeirante extends PureComponent {
     state = {
         participantes: [],
         faturamentoPeriodo: [],
-        //loading: true,
+        loading: true,
         dataFeira: '',
     };
     componentDidMount() {
@@ -28,13 +28,14 @@ export default class RelatorioFeirante extends PureComponent {
     }
     
     _loadValues = async () => {
+        this.setState({loading: true});
         try {
             const { data } = this.props.match.params;
             const newDate = data.split('-');
             const dataFeira = `${newDate[2]}-${newDate[1]}-${newDate[0]}`;
-            await this.setState({dataFeira});
             await this._getParticipantes();
             await this._getFaturamento();
+            this.setState({dataFeira, loading: false});
         } catch(ex) {
             console.warn(ex);
         }

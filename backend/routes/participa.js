@@ -64,6 +64,24 @@ router.get('/confirmados', authMiddleware.isSupervisor, async (req, res) => {
   return res.json(confirmados);
 });
 
+router.get('/participacao', authMiddleware.isFeirante, async (req, res) => {
+  const { cpf } = req;
+  const participacao = await participaController.getParticipacaoUltimaFeira(cpf);
+  if (!participacao) {
+    return res.json({ msg: 'participacao_nao_encontrada' });
+  }
+  return res.json(participacao);
+});
+
+router.get('/participacoes', authMiddleware.isFeirante, async (req, res) => {
+  const { cpf } = req;
+  const participacao = await participaController.getParticipacoes(cpf);
+  if (!participacao) {
+    return res.json({ msg: 'participacao_nao_encontrada' });
+  }
+  return res.json(participacao);
+});
+
 router.post(
   '/confirma',
   authMiddleware.isFeirante,
