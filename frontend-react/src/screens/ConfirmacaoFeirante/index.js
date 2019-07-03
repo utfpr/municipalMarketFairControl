@@ -15,6 +15,7 @@ import * as avisoAPI from '../../api/aviso';
 import * as participaAPI from '../../api/participa';
 import styles from './ConfirmacaoFeirante.module.scss';
 import AvisoComponent from '../../components/AvisoComponent';
+import MapeamentoComponent from '../../screens/Mapeamento/index';
 
 const { Step } = Steps;
 const Option = Select.Option;
@@ -145,6 +146,8 @@ class ConfirmacaoFeirante extends PureComponent {
                 <>
                     <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para cancelar presença</h4>
                     <div className={classNames([styles.alignCenter, styles.presenca])}>
+                        <MapeamentoComponent/>
+
                         <Button onClick={this._cancelaParticipacao} type="danger">Cancelar Presença</Button>
 
                     </div>
