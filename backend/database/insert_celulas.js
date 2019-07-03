@@ -235,8 +235,8 @@ const celulas = [
 ];
 
 const insert_celulas = async () => {
-  celulas.forEach((celula) => {
-    models.celula.create(celula);
+  await celulas.forEach(async (celula) => {
+    await models.celula.create(celula);
   });
 };
 

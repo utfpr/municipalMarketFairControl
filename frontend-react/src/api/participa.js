@@ -4,7 +4,7 @@ const host = `${process.env.REACT_APP_HOST}/participa`;
 
 export async function setPosicao(cpf, celula) {
   const res = await axios.post(`${host}/posicao`, {
-    cpf_feirante: Number(cpf), celula_id: celula, force: 1,
+    cpf_feirante: Number(cpf), celula_id: celula, force: 0,
   }, {
     headers: { token: localStorage.getItem('token') },
   });
@@ -34,7 +34,14 @@ export async function cancelaParticipacao() {
   return info ? info.data : {};
 }
 
-export default async function getParticipa(data){
+export async function getParticipa(data){
   const feirantes = await axios.get(`${host}/${data}`).catch(e => console.log(`Erro ${e}`));
   return feirantes;
+}
+
+export async function getParticipacaoUltimaFeira(){
+  const participacao = await axios.get(`${host}/participacao`, {}, {
+    headers: { token: localStorage.getItem('token') },
+  }).catch(e => console.log(`Erro ${e}`));
+  return participacao;
 }

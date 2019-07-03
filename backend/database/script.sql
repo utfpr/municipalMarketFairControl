@@ -102,12 +102,9 @@ CREATE TABLE participa (
 	hora_confirmacao DATETIME,
 	celula_id INTEGER,
 
-
 	PRIMARY KEY (cpf_feirante, data_feira),
-	FOREIGN KEY (celula_id) REFERENCES celula (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (cpf_feirante) REFERENCES feirante (cpf) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (data_feira) REFERENCES feira (data) ON DELETE CASCADE ON UPDATE CASCADE
-
 );
 
 CREATE TABLE supervisor (

@@ -64,7 +64,7 @@ router.get('/confirmados', authMiddleware.isSupervisor, async (req, res) => {
   return res.json(confirmados);
 });
 
-router.get('/participacao', authMiddleware.isFeirante, async (req, res) => {
+router.get('/participacao', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
   const { cpf } = req;
   const participacao = await participaController.getParticipacaoUltimaFeira(cpf);
   if (!participacao) {
@@ -167,12 +167,9 @@ router.post(
     if (confirmacao === null) return res.json({ msg: 'feirante_invalido' });
 
     if (celulaId !== null) {
-      const celula = await celulaController.findCelulaById(celulaId);
-      if (celula === null) return res.json({ msg: 'celula_invalida' });
-      // if (celula.periodo !== confirmacao.periodo) return res.json({ msg: 'periodo_invalido' });
-
       const dadosCelula = await participaController.getDadosCelulaFeiraAtual(celulaId);
-      if (dadosCelula.cpfFeirante !== null && force === false) {
+      console.log(dadosCelula);
+      if ((dadosCelula.length === 2 || dadosCelula[0].periodo === 3) && !force) {
         return res.status(400).send({ msg: 'celula_ocupada' });
       }
     }

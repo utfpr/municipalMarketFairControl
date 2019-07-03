@@ -40,11 +40,17 @@ class ConfirmacaoFeirante extends PureComponent {
             this.setState({ loading: true });
             const avisos = await avisoAPI.getAvisosProximaFeira();
             const feiraAtual = await feiraAPI.feiraAtual();
+            this._getUltimaFeira();
             this.setState({ avisos, feiraAtual, loading: false });
         } catch (ex) {
             console.warn(ex);
             this.setState({ loading: false });
         }
+    }
+
+    _getUltimaFeira = async () => {
+        const participacao = await participaAPI.getParticipacaoUltimaFeira();
+        console.log(participacao);
     }
 
     _showModal = () => {

@@ -155,7 +155,7 @@ const confirmaPresencaFeiraAtual = async (cpfFeirante, periodo) => {
   const feira = await feiraController.findFeiraAtual();
   if (feira === null) return null;
 
-  const dataLimite = feira.data_limite;
+  const { data_limite: dataLimite } = feira;
   const agora = new Date();
 
   if (agora > dataLimite) return null;
@@ -216,25 +216,14 @@ const getDadosCelulaFeiraAtual = async (celulaId) => {
   const feira = await feiraController.findFeiraAtual();
   if (feira === null) return null;
 
-  const celula = await celulaController.findCelulaById(celulaId);
-  if (celula === null) return null;
-
-  const celulaFeira = await models.participa.findOne({
+  const feirantesNaCelula = await models.participa.findAll({
     where: {
       data_feira: feira.data,
       celula_id: celulaId,
     },
   });
 
-  if (celulaFeira === null) {
-    return {
-      cpfFeirante: null,
-    };
-  }
-
-  return {
-    cpfFeirante: celulaFeira.cpf_feirante,
-  };
+  return feirantesNaCelula || {};
 };
 
 const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false) => {
@@ -253,11 +242,6 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
 
   if (confirmacao === null) return null;
 
-  if (celulaId !== null) {
-    const celula = await celulaController.findCelulaById(celulaId);
-    if (!celula) return null;
-  }
-
   if (celulaId === null) {
     try {
       return await confirmacao.update({ celula_id: null });
@@ -267,7 +251,7 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
   }
 
   const dadosCelula = await getDadosCelulaFeiraAtual(celulaId);
-  if (dadosCelula.cpfFeirante === null) {
+  if (!dadosCelula) {
     try {
       const confirmaCelula = await confirmacao.update({ celula_id: celulaId });
       return confirmaCelula;

@@ -41,10 +41,6 @@ module.exports = function(sequelize, DataTypes) {
       celula_id: {
         type: DataTypes.INTEGER(11),
         allowNull: true,
-        references: {
-          model: "celula",
-          key: "id"
-        }
       }
     },
     {
@@ -63,11 +59,6 @@ module.exports = function(sequelize, DataTypes) {
       through: models.participa,
       as: "Feiras",
       foreignKey: "cpf_feirante"
-    });
-    models.participa.belongsTo(models.celula, {
-      foreignKey: "celula_id",
-      targetKey: "id",
-      as: "Celula"
     });
   };
   return Participa;
