@@ -15,7 +15,9 @@ import * as avisoAPI from '../../api/aviso';
 import * as participaAPI from '../../api/participa';
 import styles from './ConfirmacaoFeirante.module.scss';
 import AvisoComponent from '../../components/AvisoComponent';
-import MapeamentoComponent from '../../screens/Mapeamento/index';
+
+import { SVGMap } from 'react-svg-map';
+import Map from '../Mapeamento/Mapa';
 
 const { Step } = Steps;
 const Option = Select.Option;
@@ -29,6 +31,10 @@ class ConfirmacaoFeirante extends PureComponent {
         visible: false,
         current: 0,
         selectedPeriodo: null,
+
+        customMap: {
+            ...Map,
+        }
     };
 
     componentDidMount() {
@@ -85,8 +91,40 @@ class ConfirmacaoFeirante extends PureComponent {
             });
     }
 
+    _loadCelulas = () => {
+        const { confirmados, customMap, selectedCelula } = this.state;
+        const newMap = {
+            ...customMap,
+            locations: customMap.locations.map((location, index) => {
+                const feirantes = confirmados.feirantes
+                    ? confirmados.feirantes.filter(feirante => feirante.celulaId === index)
+                    : [];
+                const newLocation = {
+                    ...location,
+                    id: index,
+                    key: index,
+                    name: `Celula ${index}`,
+                    feirantes,
+                }
+
+                return newLocation;
+            })
+        }
+
+        this.setState({ customMap: newMap });
+
+        if (selectedCelula) {
+            this._refreshCelula();
+        }
+    }
+
+    _findCelula = id => {
+        const { customMap } = this.state;
+        return customMap.locations.find((location) => location.id === id);
+    }
+
     _renderCurrentStep = () => {
-        const { current, feiraAtual = {}, selectedPeriodo } = this.state;
+        const { current, feiraAtual = {}, selectedPeriodo, customMap } = this.state;
 
         function onBlur() {
             console.log('blur');
@@ -144,12 +182,19 @@ class ConfirmacaoFeirante extends PureComponent {
         if (current === 2) {
             return (
                 <>
-                    <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para cancelar presença</h4>
                     <div className={classNames([styles.alignCenter, styles.presenca])}>
-                        <MapeamentoComponent/>
 
+                        <SVGMap
+                            map={customMap}
+                            onLocationClick={this._onClick}
+                            locationClassName={this._renderCelulaColor}
+                            onLocationMouseOver={this.handleLocationMouseOver}
+                            onLocationMouseOut={this.handleLocationMouseOut}
+                            onLocationMouseMove={this.handleLocationMouseMove}
+                        />
+
+                        <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para cancelar presença</h4>
                         <Button onClick={this._cancelaParticipacao} type="danger">Cancelar Presença</Button>
-
                     </div>
                 </>
             );
