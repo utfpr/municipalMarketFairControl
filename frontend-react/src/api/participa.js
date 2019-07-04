@@ -2,13 +2,12 @@ import axios from 'axios';
 
 const host = `${process.env.REACT_APP_HOST}/participa`;
 
-export async function setPosicao(cpf, celula) {
-  const res = await axios.post(`${host}/posicao`, {
+export function setPosicao(cpf, celula) {
+  return axios.post(`${host}/posicao`, {
     cpf_feirante: Number(cpf), celula_id: celula, force: 1,
   }, {
     headers: { token: localStorage.getItem('token') },
   });
-  return res ? res.data : [];
 }
 
 export async function getConfirmados() {

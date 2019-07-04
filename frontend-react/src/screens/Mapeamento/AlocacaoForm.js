@@ -53,14 +53,17 @@ class AlocacaoForm extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 return participaAPI.setPosicao(values.nome, celula.id)
-                    .then(() => {
+                    .then(response => {
                         refresh();
                         loadCelulas();
                         resetFields();
-                        onSuccess();
+                        if (onSuccess) {
+                            onSuccess();
+                        }
                         message.success('Feirante atualizado com sucesso', 2.5);
-                    }).catch(() => {
-                        message.error('Não foi possível atualizar,tente novamente mais tarde', 2.5);
+                    }).catch(ex => {
+                        message.error('Não foi possível atualizar, tente novamente mais tarde', 2.5);
+                        console.warn(ex);
                     });
             }
         });
@@ -78,7 +81,9 @@ class AlocacaoForm extends Component {
         return  participaAPI.setPosicao(cpf, null)
             .then(() => {
                 refresh();
-                onSuccess();
+                if (onSuccess) {
+                    onSuccess();
+                }
                 message.success('Feirante removido com sucesso', 2.5);
             }).catch(() => {
                 message.error('Não foi possível atualizar,tente novamente mais tarde', 2.5);
