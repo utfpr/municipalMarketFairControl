@@ -223,7 +223,7 @@ const getDadosCelulaFeiraAtual = async (celulaId) => {
     },
   });
 
-  return feirantesNaCelula || {};
+  return feirantesNaCelula || [];
 };
 
 const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false) => {

@@ -169,7 +169,9 @@ router.post(
     if (celulaId !== null) {
       const dadosCelula = await participaController.getDadosCelulaFeiraAtual(celulaId);
       console.log(dadosCelula);
-      if ((dadosCelula.length === 2 || dadosCelula[0].periodo === 3) && !force) {
+      if (
+        (dadosCelula.length === 2 || (dadosCelula[0] && dadosCelula[0].periodo === 3)) && !force
+      ) {
         return res.status(400).send({ msg: 'celula_ocupada' });
       }
     }
