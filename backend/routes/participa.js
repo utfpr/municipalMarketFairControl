@@ -64,7 +64,7 @@ router.get('/confirmados', authMiddleware.isSupervisor, async (req, res) => {
   return res.json(confirmados);
 });
 
-router.get('/participacao', authMiddleware.isFeiranteOrSupervisor, async (req, res) => {
+router.get('/participacao', authMiddleware.isFeirante, async (req, res) => {
   const { cpf } = req;
   const participacao = await participaController.getParticipacaoUltimaFeira(cpf);
   if (!participacao) {
