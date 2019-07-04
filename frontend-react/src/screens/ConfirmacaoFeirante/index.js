@@ -127,7 +127,20 @@ class ConfirmacaoFeirante extends PureComponent {
                 </>
             );
         }
+
         if (current === 1) {
+            return (
+                <>
+                    <h4 className={styles.alignCenter}>Aguardando alocação e confirmação.</h4>
+                    <div className={classNames([styles.alignCenter, styles.presenca])}>
+                        <Button onClick={this._cancelaParticipacao} type="danger">Cancelar Presença</Button>
+
+                    </div>
+                </>
+            );
+        }
+
+        if (current === 2) {
             return (
                 <>
                     <h4 className={styles.alignCenter}>Você tem até o dia {moment(feiraAtual.data_limite).format('DD/MM/YYYY [às] HH:mm')} para cancelar presença</h4>
@@ -199,6 +212,7 @@ class ConfirmacaoFeirante extends PureComponent {
 
                 <Steps current={current}>
                     <Step title="Confirmar Presença" />
+                    <Step title="Aguardando confirmação" />
                     <Step title="Presença Confirmada" />
                 </Steps>
 
