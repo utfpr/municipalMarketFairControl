@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-
 import moment from 'moment-timezone';
 import { 
     Statistic, Row, Col, Card,
@@ -7,7 +6,6 @@ import {
 } from 'antd';
 
 import ContentComponent from '../../components/ContentComponent';
-
 import * as relatorioAPI from '../../api/relatorio';
 import styles from './Relatorios.module.scss';
 
