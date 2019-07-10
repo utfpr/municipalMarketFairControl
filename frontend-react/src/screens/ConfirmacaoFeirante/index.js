@@ -31,6 +31,7 @@ class ConfirmacaoFeirante extends PureComponent {
         visible: false,
         current: 0,
         selectedPeriodo: null,
+        participacao: {},
 
         customMap: {
             ...Map,
@@ -47,8 +48,10 @@ class ConfirmacaoFeirante extends PureComponent {
             this.setState({ loading: true });
             const avisos = await avisoAPI.getAvisosProximaFeira();
             const feiraAtual = await feiraAPI.feiraAtual();
-            this._getUltimaFeira();
-            this.setState({ avisos, feiraAtual, loading: false });
+            this.setState({ avisos, feiraAtual: feiraAtual });
+            await this._getUltimaFeira();
+            this.setState({ loading: false });
+
         } catch (ex) {
             console.warn(ex);
             this.setState({ loading: false });
@@ -56,8 +59,22 @@ class ConfirmacaoFeirante extends PureComponent {
     }
 
     _getUltimaFeira = async () => {
+        const { feiraAtual } = this.state;
         const participacao = await participaAPI.getParticipacaoUltimaFeira();
-        console.log(participacao);
+        if (participacao.length) {
+            let current = 0;
+            const ultimaFeira = participacao[0];
+
+            if (moment(feiraAtual.data).isSame(moment(ultimaFeira.data_feira))) {
+                if (ultimaFeira.periodo && !ultimaFeira.celula_id) {
+                    current = 1;
+                } else if (ultimaFeira.periodo && ultimaFeira.celula_id) {
+                    current = 2;
+                }
+            }
+            
+            this.setState({ participacao: participacao[0], current });
+        }
     }
 
     _showModal = () => {
@@ -80,6 +97,13 @@ class ConfirmacaoFeirante extends PureComponent {
             }).catch(ex => {
                 console.error(ex);
             });
+    }
+
+    _renderCelulaColor = (celulaDoMapa, index) => {
+        const { participacao } = this.state;
+
+        if (celulaDoMapa.id !== participacao.celula_id) return 'celulaMapa livre';
+        return 'celulaMapa diaTodo';
     }
 
     _cancelaParticipacao = () => {
