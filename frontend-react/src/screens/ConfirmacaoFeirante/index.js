@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 import {
     Row, Form, Steps,
-    Modal, Button, Radio,
+    Modal, Button,
     Select,
 } from 'antd';
 import moment from 'moment-timezone';
@@ -207,7 +207,6 @@ class ConfirmacaoFeirante extends PureComponent {
             return (
                 <>
                     <div className={classNames([styles.alignCenter, styles.presenca])}>
-
                         <SVGMap
                             map={customMap}
                             onLocationClick={this._onClick}
@@ -223,7 +222,6 @@ class ConfirmacaoFeirante extends PureComponent {
                 </>
             );
         }
-
     }
 
     _renderAvisos = () => {
