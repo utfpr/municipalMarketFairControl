@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/celula';
+const host = `${process.env.REACT_APP_HOST}/celula`;
 
 export  async function get() {
   const info = await axios
@@ -8,5 +8,5 @@ export  async function get() {
       headers: { token: localStorage.getItem('token') },
     })
     .catch(() => null);
-  return info === null ? null : info.data;
+  return info ? info.data : [];
 }

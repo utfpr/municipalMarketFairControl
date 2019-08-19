@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const feira = 'http://localhost:3000/api/feira';
-const participa = 'http://localhost:3000/api/participa';
+const feira = `${process.env.REACT_APP_HOST}/feira`;
+const participa = `${process.env.REACT_APP_HOST}/participa`;
 
 export async function getFeiras() {
   const feiras = (await axios.get(
@@ -12,9 +12,21 @@ export async function getFeiras() {
   return feiras;
 }
 
+export async function getFaturamentoPeriodo(data) {
+  const faturamento = await axios.get(`${participa}/faturamento-periodo/${data}`, {
+    headers: { token: localStorage.getItem('token') },
+  });
+  return faturamento.data.faturamentoPorPeriodo;
+}
+
 export async function getParticipantes(data) {
-  return (await axios.get(
+  const relatorios = await axios.get(
     `${participa}/data/${data}`,
     { headers: { token: localStorage.getItem('token') } },
-  )).data;
+  ).catch(ex => {
+    console.warn(ex);
+    return false;
+  });
+
+  return relatorios && !relatorios.msg ? relatorios.data : false;
 }

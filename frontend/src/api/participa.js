@@ -1,31 +1,46 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/participa/';
+const host = `${process.env.REACT_APP_HOST}/participa`;
 
-export async function setPosicao(cpf, celula) {
-  const res = await axios.post(`${host}posicao`, {
-    cpf_feirante: cpf, celula_id: celula, force: 1,
+export function setPosicao(cpf, celula) {
+  return axios.post(`${host}/posicao`, {
+    cpf_feirante: Number(cpf), celula_id: celula, force: 1,
   }, {
     headers: { token: localStorage.getItem('token') },
   });
-  if (res.status === 200) {
-    // eslint-disable-next-line no-alert
-    alert(`cpf ${cpf} : celula ${celula}`);
-  } else {
-    // eslint-disable-next-line no-alert
-    alert('Não foi possivel fazer a associação');
-  }
 }
 
 export async function getConfirmados() {
-  const info = await axios.get(`${host}confirmados`, {
+  const info = await axios.get(`${host}/confirmados`, {
     headers: { token: localStorage.getItem('token') },
   });
-  return info === null ? null : info.data;
+  return info ? info.data : [];
 }
 
-export default async function getParticipa(data){
-  let a = "10/10/2018"
-  const feirantes = await axios.get(`${host}/:${data}`).catch(e => console.log(`Erro ${e}`));
-  return feirantes.data;
+export async function setPeriodo(periodo) {
+  const info = await axios.post(`${host}/confirma`, {
+    periodo,
+  }, {
+    headers: { token: localStorage.getItem('token') },
+  });
+  return info ? info.data : {};
+}
+
+export async function cancelaParticipacao() {
+  const info = await axios.post(`${host}/cancela`, {}, {
+    headers: { token: localStorage.getItem('token') },
+  });
+  return info ? info.data : {};
+}
+
+export async function getParticipa(data){
+  const feirantes = await axios.get(`${host}/${data}`).catch(e => console.log(`Erro ${e}`));
+  return feirantes;
+}
+
+export async function getParticipacaoUltimaFeira(){
+  const participacao = await axios.get(`${host}/participacao`, {
+    headers: { token: localStorage.getItem('token') },
+  }).catch(e => console.log(`Erro ${e}`));
+  return participacao.data;
 }

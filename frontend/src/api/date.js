@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/date';
+const host = `${process.env.REACT_APP_HOST}/date`;
 
 export default async function getDate() {
     let r;
@@ -8,7 +8,7 @@ export default async function getDate() {
     .then(res =>{
         r = res.data
     })
-    .catch(e => console.log(e));
+    .catch(e => console.warn(e));
     
     return r;
   }

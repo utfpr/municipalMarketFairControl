@@ -1,37 +1,31 @@
 {
-  "name": "frontend",
+  "name": "frontend-react-1",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
-  },
   "dependencies": {
-    "ant-design-vue": "^1.1.6",
-    "axios": "^0.18.0",
-    "babel-eslint": "^10.0.1",
-    "cpf-check": "^2.0.4",
-    "eslint": "^5.7.0",
-    "eslint-plugin-vue": "^4.7.1",
-    "moment": "^2.22.2",
-    "panzoom": "^7.0.2",
-    "register-service-worker": "^1.0.0",
-    "string-mask": "^0.3.0",
-    "vue": "^2.5.17",
-    "vue-drag-drop": "^1.1.4",
-    "vue-resize-directive": "^1.1.4",
-    "vue-router": "^3.0.1",
-    "vue-svg-pan-zoom": "^0.1.0",
-    "vue-the-mask": "^0.11.1",
-    "vuedraggable": "^2.16.0"
+    "antd": "3.16.1",
+    "axios": "0.18.0",
+    "moment-timezone": "0.5.23",
+    "node-sass": "4.11.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-router-dom": "5.0.0",
+    "react-scripts": "2.1.8",
+    "react-svg-map": "2.0.0"
   },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.5",
-    "@vue/cli-plugin-eslint": "^3.0.5",
-    "@vue/cli-plugin-pwa": "^3.0.5",
-    "@vue/cli-service": "^3.0.5",
-    "@vue/eslint-config-airbnb": "^3.0.5",
-    "vue-template-compiler": "^2.5.17"
-  }
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

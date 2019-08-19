@@ -1,12 +1,19 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000/api/supervisor/';
+const host = `${process.env.REACT_APP_HOST}/supervisor`;
+
+const formatCPF = cpf => {
+  return cpf.replace('.', '').replace('.', '').replace('-', '');
+}
 
 export async function get() {
   const data = await axios
     .get(host, { headers: { token: localStorage.getItem('token') } })
-    .catch(() => null)
-    .then(record => record.data);
+    .then(record => {
+      if (!record.data) return [];
+      return record.data;
+    })
+    .catch(ex => console.warn(ex));
 
   return data.map(record => ({
     ...record,
@@ -28,23 +35,26 @@ export async function post(cpf, nome, senha, isAdm) {
       cpf,
       nome,
       senha,
-      is_adm: isAdm,
+      is_adm: isAdm ? 1 : 0,
     },
     { headers: { token: localStorage.getItem('token') } },
   );
 }
 
-export async function put(cpf, nome, isAdm) {
+export async function put(cpf, nome, isAdm, senha) {
+  const cleanedCPF = formatCPF(cpf);
   await axios.put(
-    `${host}${cpf}`,
+    `${host}/${cleanedCPF}`,
     {
       nome,
       is_adm: isAdm,
+      senha,
     },
     { headers: { token: localStorage.getItem('token') } },
   );
 }
 
-export async function del(cpf) {
-  axios.delete(`${host}${cpf}`, { headers: { token: localStorage.getItem('token') } });
+export function del(cpf) {
+  const cleanedCPF = formatCPF(cpf);
+  return axios.delete(`${host}/${cleanedCPF}`, { headers: { token: localStorage.getItem('token') } });
 }
