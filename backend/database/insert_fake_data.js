@@ -1,4 +1,5 @@
 const faker = require('faker');
+const moment = require('moment');
 const models = require('../models');
 const categoriaController = require('../controllers/categoria');
 const celulaController = require('../controllers/celula');
@@ -7,7 +8,6 @@ const feiranteController = require('../controllers/feirante');
 const feiraController = require('../controllers/feira');
 const participaController = require('../controllers/participa');
 const supervisorController = require('../controllers/supervisor');
-const { proximoDomingo } = require('../controllers/utils');
 // const { insert_celulas } = require('./insert_celulas');
 
 const insert_data = async () => {
@@ -131,7 +131,11 @@ const insert_data = async () => {
     subcategoria.id,
   ).catch(ex => console.error(ex));
 
-  await feiraController.addFeira(proximoDomingo()).catch(ex => console.error(ex));
+  await feiraController.addFeira(moment()
+    .utc()
+    .startOf('isoWeek')
+    .add(6, 'day')
+    .hour(18)).catch(ex => console.error(ex));
 
   await celulaController.updateCelula(1, { cpf_feirante: feirante1.cpf }).catch(ex => console.error(ex));
   await celulaController.updateCelula(2, { cpf_feirante: feirante2.cpf }).catch(ex => console.error(ex));
