@@ -73,7 +73,7 @@ class LoginScreen extends PureComponent {
                 <div className={styles.container}>
                     <div className={styles.card}>
                         <img className={styles.brazao} alt="brazão" src={image} />
-                        <h1>Sistema da Feira</h1>
+                        <h1>Feira da Economia Criativa de<br/>Campo Mourão</h1>
                         <Form onSubmit={this._handleSubmit}>
                             <Form.Item
                                 validateStatus={cpfError ? 'error' : ''}
