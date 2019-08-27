@@ -310,12 +310,13 @@ class ConfirmacaoFeirante extends PureComponent {
 
         {this._renderCurrentStep()}
 
-        <Modal visible={visible} onCancel={this._hideModal} footer={null}>
+        <Modal visible={visible} onCancel={this._hideModal} footer={null} width="80%">
           <img
             src={`${process.env.REACT_APP_HOST}/image/${
               feiraAtual.evento_image_url
             }`}
             alt="evento"
+            className={styles.imagemEvento}
           />
         </Modal>
       </ContentComponent>
