@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
+import MaskedInput from 'react-text-mask';
 
 import styles from './LoginScreen.module.scss';
 import image from '../../assets/brazao.png';
 
-import { 
+import {
     Input, Icon, Button, Form,
     message,
 } from 'antd';
@@ -21,7 +22,7 @@ class LoginScreen extends PureComponent {
 
     componentDidMount() {
         const { history } = this.props;
-        if (localStorage.getItem('token') !== null){
+        if (localStorage.getItem('token') !== null) {
             if (localStorage.getItem('tag') === 'feirante') {
                 history.push('/feirante');
             }
@@ -44,7 +45,7 @@ class LoginScreen extends PureComponent {
                         localStorage.setItem('userID', response.data.userID);
                         localStorage.setItem('token', response.data.token);
                         localStorage.setItem('tag', response.data.tag);
-        
+
                         if (response.data.tag === 'feirante') {
                             history.push('/feirante');
                         } else {
@@ -69,7 +70,7 @@ class LoginScreen extends PureComponent {
         const senhaError = isFieldTouched('senha') && getFieldError('senha');
         return (
             <div className={styles.holder}>
-                <div className={styles.bgImage}/>
+                <div className={styles.bgImage} />
                 <div className={styles.container}>
                     <div className={styles.card}>
                         <img className={styles.brazao} alt="brazão" src={image} />
@@ -81,27 +82,23 @@ class LoginScreen extends PureComponent {
                             >
                                 {getFieldDecorator('cpf', {
                                     rules: [
-                                        { 
-                                            required: true,
-                                        }, { 
+                                        {
                                             validator: validateCPF,
                                         },
                                     ],
                                 })(
-                                    <Input 
-                                        prefix={
-                                            <Icon
-                                                type="user"
-                                                style={{ color: 'rgba(0,0,0,.25)' }}
-                                            />
-                                        }
+                                    <MaskedInput
                                         placeholder="CPF"
+                                        mask={[/[0-9]/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
+                                        render={(ref, props) => (
+                                            <input className="ant-input" ref={ref} {...props} />
+                                        )}
                                     />
                                 )}
                             </Form.Item>
                             <Form.Item
-                            validateStatus={senhaError ? 'error' : ''}
-                            help={senhaError || ''}
+                                validateStatus={senhaError ? 'error' : ''}
+                                help={senhaError || ''}
                             >
                                 {getFieldDecorator('senha', {
                                     rules: [{
@@ -109,26 +106,20 @@ class LoginScreen extends PureComponent {
                                         message: 'Insira sua senha!'
                                     }],
                                 })(
-                                    <Input 
-                                        prefix={
-                                            <Icon 
-                                                type="lock"
-                                                style={{ color: 'rgba(0,0,0,.25)' }}
-                                            />
-                                        } 
+                                    <Input
                                         type="password"
-                                        placeholder="senha"
+                                        placeholder="Senha"
                                     />
                                 )}
                             </Form.Item>
                             <Form.Item>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                block
-                                disabled={hasErrors(getFieldsError())}
-                            >
-                                Entrar
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    block
+                                    disabled={hasErrors(getFieldsError())}
+                                >
+                                    Entrar
                             </Button>
                             </Form.Item>
                         </Form>
