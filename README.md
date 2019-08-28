@@ -52,5 +52,20 @@ Então se não for alterado nada dentro do arquivo `package.json`, não é neces
 - Senha: `123456`
 
 ## .env
-Algumas configurações do front-end como a porta de execução e o endereço backend, estão localizadas dentro do arquivo `/frontend/.env`.
-Caso for necessário fazer a alteração do mesmo, pare o servidor frontend, altere a configuração dentro do `.env` e rode novamente o servidor frontend. 
+Dentro da pasta ´frontend´ faça uma cópia do arquivo `.env-default` e de o nome de `.env`. Ele serve para definir as configurações do front-end, como a porta de execução e o endereço backend.
+Caso for necessário fazer a alteração do mesmo, pare o servidor frontend, altere a configuração dentro do `.env` e rode novamente o servidor frontend.
+
+# Cuidado
+Caso use um banco um usuário diferente de `root` sem senha para o banco de dados, é necessário alterar as informações contidas no arquivo `backend/config/config.json`. Porém, lembre-se de **NÃO FAZER O COMMIT DESTAS ALTERAÇÕES**, pois essas alterações se tornarão publicas e sua senha será exposta, caso for uma senha sensível. Para fazer a alterações, basta substituir o trecho de código contendo as suas informações.
+
+```json
+ "development": {
+    "username": "SEU USUARIO AQUI",
+    "password": "SUA SENHA AQUI",
+    "database": "feira_municipal",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false,
+    "operatorsAliases": false
+  },
+```
