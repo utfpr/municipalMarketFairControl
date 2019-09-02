@@ -39,7 +39,7 @@ class LoginScreen extends PureComponent {
         message.loading('Carregando...', 0);
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
-                await login(values.cpf, values.senha)
+                await login(values.cpf.replace(/\D+/g, ''), values.senha)
                     .then(response => {
                         message.success('Logado com sucesso', 1.0);
                         localStorage.setItem('userID', response.data.userID);
@@ -74,7 +74,7 @@ class LoginScreen extends PureComponent {
                 <div className={styles.container}>
                     <div className={styles.card}>
                         <img className={styles.brazao} alt="brazão" src={image} />
-                        <h1>Feira da Economia Criativa de<br/>Campo Mourão</h1>
+                        <h1>Feira da Economia Criativa de<br />Campo Mourão</h1>
                         <Form onSubmit={this._handleSubmit}>
                             <Form.Item
                                 validateStatus={cpfError ? 'error' : ''}
