@@ -48,6 +48,7 @@ export default class RelatorioFeirante extends PureComponent {
         if (periodo = 2 ) return "Tarde";
         return "Manhã e Tarde";
     }
+
     
     render() {
         const { presencas, loading } = this.state;
@@ -55,26 +56,24 @@ export default class RelatorioFeirante extends PureComponent {
         return (
             <ContentComponent
                 loading={loading}
+                buttonProps={{
+                    text: 'Adicionar',
+                    onClick: this.showModal,
+                    type: 'primary',
+                    icon: 'plus',
+                }}
                 title="Relatórios"
+                
             >
                 <Row gutter={10}>
                     <Col span={4}>
                         <div>
                             <Input
-                                placeholder="Faturamento"
+                                placeholder="Pesquisar"
                                 formatter={value => `R$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 parser={value => value.replace(/\$\s?|(,*)/g, '')}
                             />
-                            <div style={{ marginTop: 5 }}>
-
-                                <Button
-                                    onClick={this.toggle}
-                                    type="primary">
-
-                                    Adicionar
-    
-                                </Button>
-                            </div>
+                            
                         </div>
                     </Col>
                 </Row>
@@ -113,7 +112,13 @@ export default class RelatorioFeirante extends PureComponent {
                         render={this._renderPeriodo}
                         width={90}
                     />
-
+                    <Column
+                        title="Ações"
+                        dataIndex="acoes"
+                        key="acoes"
+                        render={this._renderPeriodo}
+                        width={90}
+                    />
                 </Table>
 
 
