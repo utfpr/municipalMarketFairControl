@@ -275,6 +275,23 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
   return confirmacao.update({ celula_id: celulaId });
 };
 
+const alteraFaturamento = async (feira, feirante, valor) => {
+  if (feira === null) return null;
+  if (feirante === null) return null;
+
+  if (feira) {
+    if (feirante){
+      return models.participa.update({ 
+        feirante.faturamento: valor}
+      );
+    }
+  }
+
+  return null;
+  // altera o faturamento de um feirante em uma determinada feira
+  // retorna null se der errado
+};
+
 module.exports = {
   getFeirantesParticipantes,
   getFeirantesNaoParticipantes,

@@ -188,4 +188,31 @@ router.post(
   },
 );
 
+// put last event billing
+router.put('/:faturamento', async (cpfFeirante, dataFeira, faturamento) => {
+  const feira = await feiraController.findFeira(dataFeira);
+  const feirante = await feiranteController.findFeiranteByCpf(cpfFeirante);
+
+  if (feira == NULL){
+    return res.status(400).json({ msg: 'data_incorreta' });
+  }
+
+  if (feirante == NULL){
+    return res.status(400).json({ msg: 'cpf_incorreto' });
+  }
+
+  if (faturamento == NULL || faturamento < 0){
+    return res.status(400).json({ msg: 'cpf_incorreto' });
+  }
+
+  const result = await participaController.alteraFaturamento(feira, feirante, faturamento);
+
+  if (result != NULL){
+    return res.status(200).json({ msg: 'ok' });
+  }
+
+  return res.status(400).json({ msg: 'erro_desconhecido' });
+
+});
+
 module.exports = router;
