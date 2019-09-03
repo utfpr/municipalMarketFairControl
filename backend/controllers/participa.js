@@ -5,6 +5,18 @@ const feiranteController = require('./feirante');
 const celulaController = require('./celula');
 
 
+
+const getFaturamentoFeirante = async (cpfFeirante) => {
+  const feirante = await models.participa.findAll({
+    where: {
+      cpf_feirante: cpfFeirante,
+    },
+  });
+
+  return feirante.faturamento;
+};
+
+
 const getFaturamento = async (cpfFeirante, dataFeira) => {
   const feirante = await models.participa.findOne({
     where: {
