@@ -64,6 +64,19 @@ class ConfirmacaoFeirante extends PureComponent {
           current = 1;
         } else if (ultimaFeira.periodo && ultimaFeira.celula_id) {
           current = 2;
+          if (ultimaFeira.faturamento === 0) {
+            return (
+              <ContentComponent>
+                <Alert
+                  message="Aviso!"
+                  description="Você deve lançar o faturamento da feira anterior"
+                  type="info"
+                  showIcon
+                  onClick="history.push('/relatorio')"
+                />
+              </ContentComponent>
+            );
+          }
         }
       }
 
@@ -88,6 +101,7 @@ class ConfirmacaoFeirante extends PureComponent {
     return participaAPI
       .setPeriodo(selectedPeriodo)
       .then(response => {
+        this._getUltimaFeira();
         this.setState({ current: 1, selectedPeriodo: null });
       })
       .catch(ex => {
