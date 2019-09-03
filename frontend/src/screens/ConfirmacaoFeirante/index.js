@@ -64,19 +64,6 @@ class ConfirmacaoFeirante extends PureComponent {
           current = 1;
         } else if (ultimaFeira.periodo && ultimaFeira.celula_id) {
           current = 2;
-          if (ultimaFeira.faturamento === 0) {
-            return (
-              <ContentComponent>
-                <Alert
-                  message="Aviso!"
-                  description="Você deve lançar o faturamento da feira anterior"
-                  type="info"
-                  showIcon
-                  onClick="history.push('/relatorio')"
-                />
-              </ContentComponent>
-            );
-          }
         }
       }
 
@@ -101,7 +88,6 @@ class ConfirmacaoFeirante extends PureComponent {
     return participaAPI
       .setPeriodo(selectedPeriodo)
       .then(response => {
-        this._getUltimaFeira();
         this.setState({ current: 1, selectedPeriodo: null });
       })
       .catch(ex => {
@@ -290,8 +276,24 @@ class ConfirmacaoFeirante extends PureComponent {
     );
   };
 
+  _renderSteps = () => {
+    const {current = 0} = this.state;
+    return (
+      <>
+        <Steps current={current}>
+            <Step title="Confirmar Presença" />
+            <Step title="Aguardando confirmação" />
+            <Step title="Presença Confirmada" />
+          </Steps>
+
+          {this._renderCurrentStep()}
+      </>
+    )
+
+  }
+
   render() {
-    const { loading, feiraAtual, current, visible } = this.state;
+    const { loading, feiraAtual, visible, participacao } = this.state;
 
     if (loading) return null;
     if (feiraAtual.data === undefined) {
@@ -316,14 +318,12 @@ class ConfirmacaoFeirante extends PureComponent {
         {this._renderFotoEventoFeira()}
         {this._renderAvisos()}
 
-        <Steps current={current}>
-          <Step title="Confirmar Presença" />
-          <Step title="Aguardando confirmação" />
-          <Step title="Presença Confirmada" />
-        </Steps>
-
-        {this._renderCurrentStep()}
-
+        
+        {
+          !participacao.faturamento && moment(feiraAtual.data).isSame(moment(participacao.data_feira))
+            ? null 
+            : this._renderSteps()
+        }
         <Modal visible={visible} onCancel={this._hideModal} footer={null} width="80%">
           <img
             src={`${process.env.REACT_APP_HOST}/image/${
