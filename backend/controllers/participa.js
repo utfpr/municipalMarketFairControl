@@ -305,4 +305,5 @@ module.exports = {
   isFeiranteConfirmadoFeiraAtual,
   getParticipacaoUltimaFeira,
   getParticipacoes,
+  alteraFaturamento,
 };
