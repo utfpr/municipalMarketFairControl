@@ -282,7 +282,7 @@ const alteraFaturamento = async (feira, feirante, valor) => {
   if (feira) {
     if (feirante){
       return models.participa.update({ 
-        feirante.faturamento: valor}
+        faturamento: valor}
       );
     }
   }
