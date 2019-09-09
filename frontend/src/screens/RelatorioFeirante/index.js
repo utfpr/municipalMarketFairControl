@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 import moment from 'moment-timezone';
 import {
-    Table, Input, Button, Col, Row
+    Table, Input, Button, Col, Row, Modal, Popconfirm
 } from 'antd';
 
 import * as feiraAPI from '../../api/feira';
@@ -49,7 +49,55 @@ export default class RelatorioFeirante extends PureComponent {
         return "Manhã e Tarde";
     }
 
+    showModal = () => {
+        this.setState({
+          visible: true,
+        });
+      };
     
+      handleOk = () => {
+        this.setState({ loading: true });
+        setTimeout(() => {
+          this.setState({ loading: false, visible: false });
+        }, 3000);
+      };
+    
+      handleCancel = () => {
+        this.setState({ visible: false });
+      };
+
+
+    _renderModal = () => {
+            const { visible, loading } = this.state;
+            return (
+              <div>
+                
+                <Modal
+                  visible={visible}
+                  title="Title"
+                  onOk={this.handleOk}
+                  onCancel={this.handleCancel}
+                  footer={[
+                    <Button key="back" onClick={this.handleCancel}>
+                      Return
+                    </Button>,
+                    <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+                      Submit
+                    </Button>,
+                  ]}
+                >
+                  <p>Some contents...</p>
+                  <p>Some contents...</p>
+                  <p>Some contents...</p>
+                  <p>Some contents...</p>
+                  <p>Some contents...</p>
+                </Modal>
+              </div>
+            );
+          }
+        
+
+
     render() {
         const { presencas, loading } = this.state;
 
@@ -83,7 +131,7 @@ export default class RelatorioFeirante extends PureComponent {
                     loading={loading}
                     rowKey={linha => linha.data}
                     locale={{
-                        emptyText: <EmptyComponent />
+                        emptyText: <EmptyComponent onButtonClick={this.showModal} />
                     }}
                 >
                     <Column
@@ -114,14 +162,35 @@ export default class RelatorioFeirante extends PureComponent {
                     />
                     <Column
                         title="Ações"
-                        dataIndex="acoes"
                         key="acoes"
-                        render={this._renderPeriodo}
-                        width={90}
+                        render={linha => (
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Button 
+                                loading={loading}
+                                buttonProps={{
+                                    text: 'Adicionar',
+                                    onClick: this.showModal,
+                                    type: 'primary',
+                                    icon: 'plus',
+                                }}
+                                title="Relatórios">
+                                    Detalhes
+                                </Button>
+                                <Popconfirm
+                                    title="Você quer deletar esta categoria?"
+                                    okText="Sim"
+                                    cancelText="Não"
+                                    onConfirm={this._renderPeriodo}
+                                >
+                                    <Button shape="circle" icon="delete" type="danger" />
+                                </Popconfirm>
+                            </div>
+                        )}
+                        width={160}
                     />
                 </Table>
 
-
+                { this._renderModal() }
             </ContentComponent>
         );
     }
