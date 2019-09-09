@@ -32,8 +32,8 @@ export default class RelatorioFeirante extends PureComponent {
         try {
             // Chamar a rota de relatorios do 
             await getParticipacaoUltimaFeira()
-                .then(response => {
-                    const { data } = response;
+                .then(data => {
+                    console.log(data);
                     this.setState({ presencas: data });
                 }).catch(ex => console.warn(ex));
 
@@ -102,17 +102,7 @@ export default class RelatorioFeirante extends PureComponent {
         const { presencas, loading } = this.state;
 
         return (
-            <ContentComponent
-                loading={loading}
-                buttonProps={{
-                    text: 'Adicionar',
-                    onClick: this.showModal,
-                    type: 'primary',
-                    icon: 'plus',
-                }}
-                title="Relatórios"
-                
-            >
+            <ContentComponent>
                 <Row gutter={10}>
                     <Col span={4}>
                         <div>
@@ -166,24 +156,12 @@ export default class RelatorioFeirante extends PureComponent {
                         render={linha => (
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Button 
-                                loading={loading}
-                                buttonProps={{
-                                    text: 'Adicionar',
-                                    onClick: this.showModal,
-                                    type: 'primary',
-                                    icon: 'plus',
-                                }}
-                                title="Relatórios">
-                                    Detalhes
-                                </Button>
-                                <Popconfirm
-                                    title="Você quer deletar esta categoria?"
-                                    okText="Sim"
-                                    cancelText="Não"
-                                    onConfirm={this._renderPeriodo}
+                                    loading={loading}
+                                    onClick={this.showModal}
+                                    type="primary"
                                 >
-                                    <Button shape="circle" icon="delete" type="danger" />
-                                </Popconfirm>
+                                    Adicionar
+                                </Button>
                             </div>
                         )}
                         width={160}
