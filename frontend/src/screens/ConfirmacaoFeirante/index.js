@@ -292,6 +292,29 @@ class ConfirmacaoFeirante extends PureComponent {
 
   }
 
+  _renderAlert = () => {
+    const { history } = this.props;
+      return (
+        <ContentComponent>
+          <Alert
+            message="Aviso"
+            description={
+              <div>
+                <p>O lançamento da última feira ainda está pendente!</p>
+                <Button
+                  type="primary"
+                  onClick={() => { history.push('../feirante/relatorio')}}
+                >Lançar</Button>
+              </div>
+            }
+            type="info"
+            showIcon
+            />
+        </ContentComponent>
+      );
+
+  }
+
   render() {
     const { loading, feiraAtual, visible, participacao } = this.state;
 
@@ -318,12 +341,12 @@ class ConfirmacaoFeirante extends PureComponent {
         {this._renderFotoEventoFeira()}
         {this._renderAvisos()}
 
-        
         {
-          !participacao.faturamento && moment(feiraAtual.data).isSame(moment(participacao.data_feira))
-            ? null 
+          !participacao.faturamento && !moment(feiraAtual.data, 'yyyy-mm-dd').isSame(moment(participacao.data_feira))
+            ? this._renderAlert() 
             : this._renderSteps()
         }
+        
         <Modal visible={visible} onCancel={this._hideModal} footer={null} width="80%">
           <img
             src={`${process.env.REACT_APP_HOST}/image/${
