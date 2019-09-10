@@ -204,7 +204,7 @@ class AlocacaoForm extends Component {
                         }]})(
                             <Select
                                 showSearch
-                                style={{ width: 200 }}
+                                style={{ width: 300 }}
                                 disabled={!celula || !celula.feirantes || celula.feirantes.length === 2 || (celula.feirantes[0] && celula.feirantes[0].periodo === 3)}
                                 placeholder="Selecione um feirante..."
                                 optionFilterProp="children"
@@ -219,7 +219,9 @@ class AlocacaoForm extends Component {
                                                 cpf={confirmado.feirante.cpf}
                                                 value={confirmado.feirante.cpf}
                                             >
-                                                {nome}
+                                                <span style={{fontWeight: "bold"}}>{nome}</span>
+                                                <br />
+                                                <span style={{fontStyle: "italic"}}>{confirmado.sub_categoria.nome}</span>
                                             </Option>
                                         );
                                     })

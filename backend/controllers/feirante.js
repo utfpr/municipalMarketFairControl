@@ -89,7 +89,7 @@ const listFeirante = async () => {
       status: true,
     },
 
-    include: ['endereco'],
+    include: ['endereco', 'sub_categoria'],
   });
 
   return feirantes.map(el => ({
@@ -110,6 +110,7 @@ const listFeirante = async () => {
     },
     voltagemEe: el.voltagem_ee,
     subCategoriaId: el.sub_categoria_id,
+    ...el,
   }));
 };
 
