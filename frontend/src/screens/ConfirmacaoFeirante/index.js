@@ -300,7 +300,7 @@ class ConfirmacaoFeirante extends PureComponent {
             message="Aviso"
             description={
               <div>
-                <p>O lançamento da última feira ainda está pendente!</p>
+                <p>É necessário lançar o faturamento da última feira para prosseguir</p>
                 <Button
                   type="primary"
                   onClick={() => { history.push('../feirante/relatorio')}}
