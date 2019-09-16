@@ -6,8 +6,8 @@ export function setPosicao(cpf, celula) {
   return axios.post(`${host}/posicao`, {
     cpf_feirante: Number(cpf), celula_id: celula, force: 1,
   }, {
-    headers: { token: localStorage.getItem('token') },
-  });
+      headers: { token: localStorage.getItem('token') },
+    });
 }
 
 export async function getConfirmados() {
@@ -21,8 +21,8 @@ export async function setPeriodo(periodo) {
   const info = await axios.post(`${host}/confirma`, {
     periodo,
   }, {
-    headers: { token: localStorage.getItem('token') },
-  });
+      headers: { token: localStorage.getItem('token') },
+    });
   return info ? info.data : {};
 }
 
@@ -33,13 +33,21 @@ export async function cancelaParticipacao() {
   return info ? info.data : {};
 }
 
-export async function getParticipa(data){
+export async function getParticipa(data) {
   const feirantes = await axios.get(`${host}/${data}`).catch(e => console.log(`Erro ${e}`));
   return feirantes;
 }
 
-export async function getParticipacaoUltimaFeira(){
+export async function getParticipacaoUltimaFeira() {
   const participacao = await axios.get(`${host}/participacao`, {
+    headers: { token: localStorage.getItem('token') },
+  }).catch(e => console.log(`Erro ${e}`));
+  return participacao.data;
+}
+
+
+export async function getParticipacaoUltimaFeira() {
+  const participacao = await axios.get(`${host}/participacao/faturamento`, {
     headers: { token: localStorage.getItem('token') },
   }).catch(e => console.log(`Erro ${e}`));
   return participacao.data;

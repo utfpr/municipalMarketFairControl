@@ -89,7 +89,7 @@ router.post(
   async (req, res) => {
     if (!validationResult(req).isEmpty()) return res.status(400).send();
 
-    const cpfFeirante = req.cpf;
+    const cpf = req.cpf;
     const { periodo } = req.body;
 
     const feira = await feiraController.findFeiraAtual();
@@ -188,26 +188,23 @@ router.post(
   },
 );
 
-// put last event billing
-router.put('/:faturamento', async (cpfFeirante, dataFeira, faturamento) => {
+router.put('/faturamento', authMiddleware.isFeirante, async (req, res) => {
+  const { body, cpf } = req;
+  console.log(cpf);
+  const { faturamento } = body;
   const feira = await feiraController.findFeira(dataFeira);
-  const feirante = await feiranteController.findFeiranteByCpf(cpfFeirante);
 
-  if (feira == NULL){
+  if (!feira) {
     return res.status(400).json({ msg: 'data_incorreta' });
   }
 
-  if (feirante == NULL){
+  if (!faturamento || faturamento < 0) {
     return res.status(400).json({ msg: 'cpf_incorreto' });
   }
 
-  if (faturamento == NULL || faturamento < 0){
-    return res.status(400).json({ msg: 'cpf_incorreto' });
-  }
+  const result = await participaController.alteraFaturamento(feira, cpf, faturamento);
 
-  const result = await participaController.alteraFaturamento(feira, feirante, faturamento);
-
-  if (result != NULL){
+  if (result) {
     return res.status(200).json({ msg: 'ok' });
   }
 
