@@ -276,8 +276,47 @@ class ConfirmacaoFeirante extends PureComponent {
     );
   };
 
+  _renderSteps = () => {
+    const {current = 0} = this.state;
+    return (
+      <>
+        <Steps current={current}>
+            <Step title="Confirmar Presença" />
+            <Step title="Aguardando confirmação" />
+            <Step title="Presença Confirmada" />
+          </Steps>
+
+          {this._renderCurrentStep()}
+      </>
+    )
+
+  }
+
+  _renderAlert = () => {
+    const { history } = this.props;
+      return (
+        <ContentComponent>
+          <Alert
+            message="Aviso"
+            description={
+              <div>
+                <p>É necessário lançar o faturamento da última feira para prosseguir</p>
+                <Button
+                  type="primary"
+                  onClick={() => { history.push('../feirante/relatorio')}}
+                >Lançar</Button>
+              </div>
+            }
+            type="info"
+            showIcon
+            />
+        </ContentComponent>
+      );
+
+  }
+
   render() {
-    const { loading, feiraAtual, current, visible } = this.state;
+    const { loading, feiraAtual, visible, participacao } = this.state;
 
     if (loading) return null;
     if (feiraAtual.data === undefined) {
@@ -302,14 +341,12 @@ class ConfirmacaoFeirante extends PureComponent {
         {this._renderFotoEventoFeira()}
         {this._renderAvisos()}
 
-        <Steps current={current}>
-          <Step title="Confirmar Presença" />
-          <Step title="Aguardando confirmação" />
-          <Step title="Presença Confirmada" />
-        </Steps>
-
-        {this._renderCurrentStep()}
-
+        {
+          !participacao.faturamento && !moment(feiraAtual.data, 'yyyy-mm-dd').isSame(moment(participacao.data_feira))
+            ? this._renderAlert() 
+            : this._renderSteps()
+        }
+        
         <Modal visible={visible} onCancel={this._hideModal} footer={null} width="80%">
           <img
             src={`${process.env.REACT_APP_HOST}/image/${
