@@ -46,9 +46,9 @@ export async function getParticipacaoUltimaFeira() {
 }
 
 
-export async function getParticipacaoUltimaFeira() {
+/*export async function getParticipacaoUltimaFeira() {
   const participacao = await axios.get(`${host}/participacao/faturamento`, {
     headers: { token: localStorage.getItem('token') },
   }).catch(e => console.log(`Erro ${e}`));
   return participacao.data;
-}
+}*/

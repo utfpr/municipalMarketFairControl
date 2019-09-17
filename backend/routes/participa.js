@@ -168,7 +168,7 @@ router.post(
 
     if (celulaId !== null) {
       const dadosCelula = await participaController.getDadosCelulaFeiraAtual(celulaId);
-      console.log(dadosCelula);
+
       if (
         (dadosCelula.length === 2 || (dadosCelula[0] && dadosCelula[0].periodo === 3)) && !force
       ) {
@@ -190,9 +190,9 @@ router.post(
 
 router.put('/faturamento', authMiddleware.isFeirante, async (req, res) => {
   const { body, cpf } = req;
-  console.log(cpf);
-  const { faturamento } = body;
-  const feira = await feiraController.findFeira(dataFeira);
+  const { faturamento, data_feira } = body;
+  
+  const feira = await feiraController.findFeira(data_feira);
 
   if (!feira) {
     return res.status(400).json({ msg: 'data_incorreta' });
