@@ -11,6 +11,7 @@ import ContentComponent from '../../components/ContentComponent';
 import styles from './RelatorioFeirante.module.scss';
 import EmptyComponent from '../../components/EmptyComponent';
 import { getParticipacaoUltimaFeira } from '../../api/participa';
+import WrappedFaturamentoForm from './FaturamentoForm';
 
 const { Column } = Table;
 
@@ -21,6 +22,7 @@ export default class RelatorioFeirante extends PureComponent {
         loading: true,
         dataFeira: '',
         presencas: [],
+        selectedFeira: {}
     };
 
     componentDidMount() {
@@ -49,9 +51,10 @@ export default class RelatorioFeirante extends PureComponent {
         return "Manhã e Tarde";
     }
 
-    showModal = () => {
+    showModal = feira => {
         this.setState({
           visible: true,
+          selectedFeira: feira,
         });
       };
     
@@ -63,34 +66,22 @@ export default class RelatorioFeirante extends PureComponent {
       };
     
       handleCancel = () => {
-        this.setState({ visible: false });
+        this.setState({ visible: false, selectedFeira: {} });
       };
 
 
     _renderModal = () => {
-            const { visible, loading } = this.state;
+            const { visible, loading, selectedFeira } = this.state;
             return (
               <div>
                 
                 <Modal
                   visible={visible}
                   title="Title"
-                  onOk={this.handleOk}
+                  footer={null}
                   onCancel={this.handleCancel}
-                  footer={[
-                    <Button key="back" onClick={this.handleCancel}>
-                      Return
-                    </Button>,
-                    <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
-                      Submit
-                    </Button>,
-                  ]}
                 >
-                  <p>Some contents...</p>
-                  <p>Some contents...</p>
-                  <p>Some contents...</p>
-                  <p>Some contents...</p>
-                  <p>Some contents...</p>
+                  <WrappedFaturamentoForm feira={selectedFeira} />
                 </Modal>
               </div>
             );
@@ -153,11 +144,11 @@ export default class RelatorioFeirante extends PureComponent {
                     <Column
                         title="Ações"
                         key="acoes"
-                        render={linha => (
+                        render={feira => (
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Button 
                                     loading={loading}
-                                    onClick={this.showModal}
+                                    onClick={() => this.showModal(feira)}
                                     type="primary"
                                 >
                                     Adicionar
