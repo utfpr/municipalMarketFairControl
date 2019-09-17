@@ -77,7 +77,7 @@ export default class RelatorioFeirante extends PureComponent {
                 
                 <Modal
                   visible={visible}
-                  title="Title"
+                  title="faturamento"
                   footer={null}
                   onCancel={this.handleCancel}
                 >
@@ -112,7 +112,8 @@ export default class RelatorioFeirante extends PureComponent {
                     loading={loading}
                     rowKey={linha => linha.data}
                     locale={{
-                        emptyText: <EmptyComponent onButtonClick={this.showModal} />
+                        emptyText: <EmptyComponent onButton
+                        ={this.showModal} />
                     }}
                 >
                     <Column

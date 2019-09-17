@@ -80,18 +80,21 @@ class FaturamentoForm extends React.Component {
       callback();
       return;
     }
-    callback('Price must greater than zero!');
+    callback('valor de faturamento tem que ser maior que 0');
   };
 
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
-        <Form.Item label="Faturamento">
+        <Form.Item label="R$" >
           {getFieldDecorator('faturamento', {
             initialValue: { number: 0 },
+            
+            
             rules: [{ validator: this.checkPrice }],
           })(<PriceInput />)}
+         
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
