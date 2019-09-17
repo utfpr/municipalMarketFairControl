@@ -248,7 +248,7 @@ class FeiraScreen extends PureComponent {
                     </Button>
                 </Form>
             </Modal>
-        );
+        );//here
     }
 
     _showModal = () => {
