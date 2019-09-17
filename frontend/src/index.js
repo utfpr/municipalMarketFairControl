@@ -5,7 +5,7 @@ import axios from 'axios';
 import * as serviceWorker from './serviceWorker';
 
 axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = 'https://deploy-preview-126--feiracriativacm.netlify.com';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
