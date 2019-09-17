@@ -264,7 +264,6 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
     const confirmacaoCelulaOcupada = await models.sequelize.participa.findOne({
       where: { data_feira: feira.data, celula_id: celulaId },
     });
-    console.log(confirmacaoCelulaOcupada);
     try {
       await confirmacaoCelulaOcupada.update({ celula_id: null });
     } catch (error) {
@@ -278,7 +277,7 @@ const setPosicaoFeiranteFeiraAtual = async (cpfFeirante, celulaId, force = false
 const alteraFaturamento = async (feira, cpf_feirante, faturamento) => {
   if (!feira && !cpf_feirante) return null;
 
-  const participacaoFeirante = await models.sequelize.participa.findOne({
+  const participacaoFeirante = await models.participa.findOne({
     where: { data_feira: feira.data, cpf_feirante },
   });
 
