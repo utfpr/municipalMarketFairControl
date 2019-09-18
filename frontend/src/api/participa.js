@@ -33,14 +33,27 @@ export async function cancelaParticipacao() {
   return info ? info.data : {};
 }
 
-export async function getParticipa(data){
-  const feirantes = await axios.get(`${host}/${data}`).catch(e => console.log(`Erro ${e}`));
+export async function getParticipa(data) {
+  const feirantes = await axios
+    .get(`${host}/${data}`)
+    .catch(e => console.log(`Erro ${e}`));
   return feirantes;
 }
 
-export async function getParticipacaoUltimaFeira(){
-  const participacao = await axios.get(`${host}/participacao`, {
-    headers: { token: localStorage.getItem('token') },
-  }).catch(e => console.log(`Erro ${e}`));
+export async function getParticipacaoUltimaFeira() {
+  const participacao = await axios
+    .get(`${host}/participacao`, {
+      headers: { token: localStorage.getItem("token") }
+    })
+    .catch(e => console.log(`Erro ${e}`));
+  return participacao.data;
+}
+
+export async function getParticipacaoGeral() {
+  const participacao = await axios
+    .get(`${host}/participacoes`, {
+      headers: { token: localStorage.getItem("token") }
+    })
+    .catch(e => console.log(`Erro ${e}`));
   return participacao.data;
 }

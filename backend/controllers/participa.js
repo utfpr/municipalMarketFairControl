@@ -5,6 +5,18 @@ const feiranteController = require('./feirante');
 const celulaController = require('./celula');
 
 
+
+const getFaturamentoFeirante = async (cpfFeirante) => {
+  const feirante = await models.participa.findAll({
+    where: {
+      cpf_feirante: cpfFeirante,
+    },
+  });
+
+  return feirante.faturamento;
+};
+
+
 const getFaturamento = async (cpfFeirante, dataFeira) => {
   const feirante = await models.participa.findOne({
     where: {
@@ -102,26 +114,31 @@ const listFeirantesConfirmados = async (dataFeira) => {
 
   if (feira === null) return null;
 
-  const confirmacoes = await feira.getFeirantes({
+  return feira.getFeirantes({
+    include: [{ model: models.subcategoria, as: 'sub_categoria' }],
     order: [[Sequelize.literal('participa.hora_confirmacao'), 'ASC']],
+  }).then(confirmacoes => {
+    return confirmacoes.map(confirmacao => ({
+      feirante: {
+        cpf: confirmacao.cpf,
+        nome: confirmacao.nome,
+        usaEe: confirmacao.usa_ee,
+        nomeFantasia: confirmacao.nome_fantasia,
+        comprimentoBarraca: confirmacao.comprimento_barraca,
+        larguraBarraca: confirmacao.largura_barraca,
+        voltagemEe: confirmacao.voltagem_ee,
+        subCategoriaId: confirmacao.sub_categoria_id,
+      },
+      periodo: confirmacao.participa.periodo,
+      horaConfirmacao: confirmacao.participa.hora_confirmacao,
+      celulaId: confirmacao.participa.celula_id,
+      sub_categoria: confirmacao.sub_categoria,
+      // ...confirmacao,
+    }));
   });
 
-  return confirmacoes.map(confirmacao => ({
-    feirante: {
-      cpf: confirmacao.cpf,
-      nome: confirmacao.nome,
-      usaEe: confirmacao.usa_ee,
-      nomeFantasia: confirmacao.nome_fantasia,
-      comprimentoBarraca: confirmacao.comprimento_barraca,
-      larguraBarraca: confirmacao.largura_barraca,
-      voltagemEe: confirmacao.voltagem_ee,
-      subCategoriaId: confirmacao.sub_categoria_id,
-    },
+  // console.log(confirmacoes);
 
-    periodo: confirmacao.participa.periodo,
-    horaConfirmacao: confirmacao.participa.hora_confirmacao,
-    celulaId: confirmacao.participa.celula_id,
-  }));
 };
 
 // Feirantes confirmados feira atual

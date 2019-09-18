@@ -40,6 +40,7 @@ module.exports = function(sequelize, DataTypes) {
     models.subcategoria.belongsTo(models.categoria, {
       foreignKey: 'categoria_id',
       sourceKey: 'id',
+      as: 'categoria'
     });
   };
 
