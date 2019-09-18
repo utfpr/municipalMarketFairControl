@@ -1,49 +1,35 @@
-import axios from "axios";
+import axios from 'axios';
 
 const host = `${process.env.REACT_APP_HOST}/participa`;
 
 export function setPosicao(cpf, celula) {
-  return axios.post(
-    `${host}/posicao`,
-    {
-      cpf_feirante: Number(cpf),
-      celula_id: celula,
-      force: 1
-    },
-    {
-      headers: { token: localStorage.getItem("token") }
-    }
-  );
+  return axios.post(`${host}/posicao`, {
+    cpf_feirante: Number(cpf), celula_id: celula, force: 1,
+  }, {
+    headers: { token: localStorage.getItem('token') },
+  });
 }
 
 export async function getConfirmados() {
   const info = await axios.get(`${host}/confirmados`, {
-    headers: { token: localStorage.getItem("token") }
+    headers: { token: localStorage.getItem('token') },
   });
   return info ? info.data : [];
 }
 
 export async function setPeriodo(periodo) {
-  const info = await axios.post(
-    `${host}/confirma`,
-    {
-      periodo
-    },
-    {
-      headers: { token: localStorage.getItem("token") }
-    }
-  );
+  const info = await axios.post(`${host}/confirma`, {
+    periodo,
+  }, {
+    headers: { token: localStorage.getItem('token') },
+  });
   return info ? info.data : {};
 }
 
 export async function cancelaParticipacao() {
-  const info = await axios.post(
-    `${host}/cancela`,
-    {},
-    {
-      headers: { token: localStorage.getItem("token") }
-    }
-  );
+  const info = await axios.post(`${host}/cancela`, {}, {
+    headers: { token: localStorage.getItem('token') },
+  });
   return info ? info.data : {};
 }
 

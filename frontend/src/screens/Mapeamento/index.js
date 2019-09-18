@@ -184,7 +184,12 @@ export default class MapeamentoScreen extends Component {
                 >
                     <Column
                         title="Nome"
-                        dataIndex="feirante.nome"
+                        dataIndex="feirante"
+                        render={feirante => feirante.nomeFantasia || feirante.nome}
+                    />
+                    <Column
+                        title="Sub Categoria"
+                        dataIndex="sub_categoria.nome"
                     />
                     <Column
                         title="Periodo"
