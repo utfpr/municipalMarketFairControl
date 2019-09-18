@@ -120,8 +120,8 @@ class ConfirmacaoFeirante extends PureComponent {
       locations: customMap.locations.map((location, index) => {
         const feirantes = confirmados.feirantes
           ? confirmados.feirantes.filter(
-              feirante => feirante.celulaId === index
-            )
+            feirante => feirante.celulaId === index
+          )
           : [];
         const newLocation = {
           ...location,
@@ -252,8 +252,8 @@ class ConfirmacaoFeirante extends PureComponent {
             })}
           </Row>
         ) : (
-          <p>Sem avisos para a próxima feira</p>
-        )}
+            <p>Sem avisos para a próxima feira</p>
+          )}
       </div>
     );
   };
@@ -270,38 +270,16 @@ class ConfirmacaoFeirante extends PureComponent {
         style={{
           backgroundImage: `url(${
             process.env.REACT_APP_HOST
-          }/image/${feiraEventoImagem})`
+            }/image/${feiraEventoImagem})`
         }}
       />
     );
   };
 
-  render() {
-    const { loading, feiraAtual, current, visible } = this.state;
-
-    if (loading) return null;
-    if (feiraAtual.data === undefined) {
-      return (
-        <ContentComponent>
-          <Alert
-            message="Aviso"
-            description="Não há feiras cadastradas para esta semana"
-            type="info"
-            showIcon
-          />
-        </ContentComponent>
-      );
-    }
-
+  _renderSteps = () => {
+    const { current = 0 } = this.state;
     return (
-      <ContentComponent
-        loading={loading}
-        title={`Próxima feira: ${moment(feiraAtual.data).format("DD/MM/YYYY")}`}
-        limitedSize
-      >
-        {this._renderFotoEventoFeira()}
-        {this._renderAvisos()}
-
+      <>
         <Steps current={current}>
           <Step title="Confirmar Presença" />
           <Step title="Aguardando confirmação" />
@@ -309,16 +287,85 @@ class ConfirmacaoFeirante extends PureComponent {
         </Steps>
 
         {this._renderCurrentStep()}
+      </>
+    )
+
+  }
+
+  _renderAlert = () => {
+    const { history } = this.props;
+    return (
+      <ContentComponent>
+        <Alert
+          message="Aviso"
+          deion={
+            <div>
+              <p>É necessário lançar o faturamento da última feira para prosseguir</p>
+              <Button
+                type="primary"
+                onClick={() => { history.push('../feirante/relatorio') }}
+              >Lançar</Button>
+            </div>
+          }
+          type="info"
+          showIcon
+        />
+      </ContentComponent>
+    );
+
+  }
+
+  _renderContent = () => {
+    const { feiraAtual, visible, participacao } = this.state;
+    return (
+      <>
+        {this._renderFotoEventoFeira()}
+        {this._renderAvisos()}
+
+        {
+          !participacao.faturamento && !moment(feiraAtual.data, 'yyyy-mm-dd').isSame(moment(participacao.data_feira))
+            ? this._renderAlert()
+            : this._renderSteps()
+        }
 
         <Modal visible={visible} onCancel={this._hideModal} footer={null} width="80%">
           <img
             src={`${process.env.REACT_APP_HOST}/image/${
               feiraAtual.evento_image_url
-            }`}
+              }`}
             alt="evento"
             className={styles.imagemEvento}
           />
         </Modal>
+      </>
+    )
+  }
+
+  render() {
+    const { loading, feiraAtual } = this.state;
+
+    return (
+      <ContentComponent
+        loading={loading}
+        title={
+          feiraAtual.data
+            ? `Próxima feira: ${moment(feiraAtual.data).format("DD/MM/YYYY")}`
+            : null
+        }
+        limitedSize
+      >
+        {
+          !loading && !feiraAtual.data
+            ? (
+              <Alert
+                message="Aviso"
+                deion="Não há feiras cadastradas para esta semana"
+                type="info"
+                showIcon
+              />
+            ) : this._renderContent()
+
+        }
       </ContentComponent>
     );
   }
