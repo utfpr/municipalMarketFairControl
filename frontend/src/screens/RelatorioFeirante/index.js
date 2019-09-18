@@ -77,7 +77,7 @@ export default class RelatorioFeirante extends PureComponent {
                 
                 <Modal
                   visible={visible}
-                  title="faturamento"
+                  title="Faturamento"
                   footer={null}
                   onCancel={this.handleCancel}
                 >
